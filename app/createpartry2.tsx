@@ -3,10 +3,12 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from 'r
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from "expo-router";
 
 const CreatePartyScreen = () => {
     const insets = useSafeAreaInsets(); // Get safe area insets
-
+    const router = useRouter();
     const [topic, setTopic] = useState('หาเพื่อนเล่นครับ'); // Initial value
     const [type, setType] = useState('badminton');
     const [total, setTotal] = useState(3);
@@ -15,6 +17,8 @@ const CreatePartyScreen = () => {
     const [description, setDescription] = useState('เล่นชิวๆ ไม่จริงจัง เน้นออกกำลังกาย'); // Initial value
     const [showDatepicker, setShowDatepicker] = useState(false);
     const [showTimepicker, setShowTimepicker] = useState(false);
+    const [memberName, setMemberName] = useState(null);
+    
 
     const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -36,10 +40,20 @@ const CreatePartyScreen = () => {
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+
+
+
+
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Create Party</Text>
+                <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/index")}/>
+                    <Text style={styles.headerTitle}>Create Party</Text>
             </View>
 
+            <View style={styles.memberItem}>
+                <View style={styles.memberIcon} />  {/* Replace with your icon component */}
+                <Text style={styles.memberName}>{memberName}</Text>
+            </View>
+            
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Topic:</Text>
                 <TextInput style={styles.input} value={topic} onChangeText={setTopic} />
@@ -52,6 +66,8 @@ const CreatePartyScreen = () => {
                         style={styles.picker} // Style the Picker itself
                     >
                         <Picker.Item label="Badminton" value="badminton" />
+                        <Picker.Item label="Football" value="football" />
+                        <Picker.Item label="Tennis" value="tennis" />
                         <Picker.Item label="Other" value="other" />
                     </Picker>
                 </View>
@@ -112,10 +128,10 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between', // Align items on both ends
         alignItems: 'center', // Vertically center items
-        paddingHorizontal: 20, // Add horizontal padding
-        paddingVertical: 10, // Add vertical padding
+        paddingHorizontal: 10, // Add horizontal padding
+        paddingVertical: 20, // Add vertical padding
+        paddingTop:50,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
     },
@@ -125,11 +141,13 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         padding: 20,
+        paddingTop:1,
     },
     label: {
         fontSize: 16,
         marginBottom: 5,
         marginTop: 10, // Add margin top for spacing
+        fontWeight:'bold',
     },
     input: {
         borderWidth: 1,
@@ -144,12 +162,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 10, // Add margin bottom for spacing
     },
-    picker: { // Style the Picker itself (if needed)
-        // You might need to adjust styles for different platforms
-        // For example, on Android, you might want to remove the underline:
-        // underlineColorAndroid: 'transparent', 
+    picker: { 
     },
-
+    
     multilineInput: {
         height: 80, // Adjust height for multiline input
         textAlignVertical: 'top', // Align text to the top
@@ -184,6 +199,26 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    memberItem: {
+        flexDirection: 'row',       // Arrange icon and text horizontally
+        alignItems: 'center',      // Vertically align icon and text
+        paddingVertical: 8,        // Add some vertical padding 
+        paddingHorizontal: 12,      // Add some horizontal padding
+        backgroundColor: '#FFFFFF', // White background for the item
+        elevation: 2,   
+        // paddingTop:20           // Shadow for Android (works with backgroundColor)
+      },
+      memberIcon: {
+        width: 100,                // Adjust icon size as needed
+        height: 100,               // Adjust icon size as needed
+        borderRadius: 50,         // Make icon circular
+        backgroundColor: '#EEEEEE',
+         // Light gray placeholder 
+      },
+      memberName: {
+        fontSize: 16,             // Adjust font size as needed
+        color: '#333333',         // Dark gray text color
+      },
 });
 
 export default CreatePartyScreen;
