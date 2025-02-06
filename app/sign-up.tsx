@@ -13,7 +13,7 @@ export default function SignUpScreen() {
         console.log(username, password)
         if(email !== "" && password !== "" && confirm !== "") {
             if(password === confirm) {
-                axios.post("http://localhost:3000/signup", {
+                axios.post("http://40.81.22.116:3000/signup", {
                     email: email,
                     password: password,
                     user_type: "customer"
@@ -66,7 +66,7 @@ export default function SignUpScreen() {
                 onChangeText={(value)=>setConfirm(value)}
             />
             <View style={myStyleSheet.buttoninput1}>
-                <Button title='Sign up' color="black" onPress={() => submitSignUp} />
+                <Button title='Sign up' color="black" onPress={() => submitSignUp()} />
             </View>
             <View style={myStyleSheet.buttoninput2}>
                 <Button color="#000" title='Sign up with Google' />

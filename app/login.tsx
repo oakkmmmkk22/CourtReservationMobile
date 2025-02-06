@@ -8,11 +8,12 @@ export default function LoginScreen() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const submitLogin = () => {
-        axios.post("http://localhost:3000/login",{
-            email:username,
+        axios.post("http://40.81.22.116:3000/login",{
+            username:username,
             password:password,
         })
         .then((response) => {
+            console.log(response.data)
             if ( response.data.status ){
                 console.log("Logged in successfully");
                 router.push('/home')
@@ -25,8 +26,8 @@ export default function LoginScreen() {
           console.error("Error fetching data: ", error);
         });
         console.log(username, password)
-        setUsername("")
-        setPassword("")
+        // setUsername("")
+        // setPassword("")
     }
 
     return (
