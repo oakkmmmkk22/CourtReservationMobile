@@ -23,6 +23,9 @@ export default function SignUpScreen() {
                         router.push('/home')
                     }
                 })
+                .catch(error => {
+                    console.error("Axios error:", error.message);
+                });
             }
             else{
             }

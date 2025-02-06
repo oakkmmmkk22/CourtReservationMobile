@@ -24,14 +24,6 @@ export default function LoginScreen() {
         })
         .catch(error => {
             console.error("Axios error:", error.message);
-            if (error.response) {
-                console.error("Response Data:", error.response.data);
-                console.error("Response Status:", error.response.status);
-            } else if (error.request) {
-                console.error("No response received:", error.request);
-            } else {
-                console.error("Request setup error:", error.message);
-            }
         });
         
         console.log(username, password)
