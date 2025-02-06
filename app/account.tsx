@@ -38,7 +38,7 @@ export default function AccountPage() {
                 <View style={styles.row}>
                     <Text style={styles.label}>Email:</Text>
                     <Text style={styles.value}>{userData.email}</Text>
-                    <TouchableOpacity onPress={() => handleEditPress("/changemail")}>
+                    <TouchableOpacity onPress={() => handleEditPress("/changeemail")}>
                         <Image 
                             source={require('../assets/images/favicon.png')} // เปลี่ยน path ตามรูป icon ของคุณ
                             style={styles.editIcon} 
