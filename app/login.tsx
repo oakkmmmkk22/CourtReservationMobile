@@ -10,9 +10,9 @@ export default function LoginScreen() {
     const submitLogin = () => {
         axios.post("http://40.81.22.116:3000/login",{
             username:username,
-            password:password,
-        })
-        .then((response) => {
+            password:password
+        }).then((response) => {
+            console.log("oak here in login")
             console.log(response.data)
             if ( response.data.status ){
                 console.log("Logged in successfully");
@@ -22,9 +22,18 @@ export default function LoginScreen() {
                 console.log("login false");
             }
         })
-        .catch((error) => {
-          console.error("Error fetching data: ", error);
+        .catch(error => {
+            console.error("Axios error:", error.message);
+            if (error.response) {
+                console.error("Response Data:", error.response.data);
+                console.error("Response Status:", error.response.status);
+            } else if (error.request) {
+                console.error("No response received:", error.request);
+            } else {
+                console.error("Request setup error:", error.message);
+            }
         });
+        
         console.log(username, password)
         // setUsername("")
         // setPassword("")
@@ -49,7 +58,7 @@ export default function LoginScreen() {
                 onChangeText={(value)=>setPassword(value)}
             />
             <View style={myStyleSheet.buttoninput1}>
-                <Button title='Log in' color="black" onPress={()=>submitLogin()} />
+                <Button title='Log in' color="black" onPress={() => submitLogin()} />
             </View>
             <View style={myStyleSheet.buttoninput2}>
                 <Button color="#000" title='Sign In with Google' />
