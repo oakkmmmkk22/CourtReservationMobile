@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'; // For Date
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 const CreatePartyScreen = () => {
     const insets = useSafeAreaInsets(); // Get safe area insets
@@ -36,11 +37,31 @@ const CreatePartyScreen = () => {
     const handleCreateParty = () => {
         console.log('Creating party with data:', { topic, type, total, date, time, description });
         // Here you would typically send the data to your backend
+        
+        // axios.post("http://40.81.22.116:3000/login",{
+        //     username:username,
+        //     password:password,
+        // })
+        // .then((response) => {
+        //     console.log(response.data)
+        //     if ( response.data.status ){
+        //         console.log("Logged in successfully");
+        //         router.push('/home')
+        //     }
+        //     else{
+        //         console.log("login false");
+        //     }
+        // })
+        // .catch((error) => {
+        //   console.error("Error fetching data: ", error);
+        // });
+        // console.log(username, password)
+        // setUsername("")
+        // setPassword("")
     };
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
-
 
 
 
@@ -68,6 +89,7 @@ const CreatePartyScreen = () => {
                         <Picker.Item label="Badminton" value="badminton" />
                         <Picker.Item label="Football" value="football" />
                         <Picker.Item label="Tennis" value="tennis" />
+                        <Picker.Item label="Valleyball" value="valleyball" />
                         <Picker.Item label="Other" value="other" />
                     </Picker>
                 </View>
