@@ -68,6 +68,7 @@ const CreatePartyScreen = () => {
                         <Picker.Item label="Badminton" value="badminton" />
                         <Picker.Item label="Football" value="football" />
                         <Picker.Item label="Tennis" value="tennis" />
+                        <Picker.Item label="Valleyball" value="valleyball" />
                         <Picker.Item label="Other" value="other" />
                     </Picker>
                 </View>
