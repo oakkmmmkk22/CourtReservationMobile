@@ -1,12 +1,29 @@
 import { View, Text, StyleSheet, TextInput, Button } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 export default function LoginScreen() {
     const router = useRouter(); // ใช้เปลี่ยนหน้า
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const submitLogin = (username, password) => {
+    const submitLogin = () => {
+        axios.post("http://localhost:3000/login",{
+            email:username,
+            password:password,
+        })
+        .then((response) => {
+            if ( response.data.status ){
+                console.log("Logged in successfully");
+                router.push('/home')
+            }
+            else{
+                console.log("login false");
+            }
+        })
+        .catch((error) => {
+          console.error("Error fetching data: ", error);
+        });
         console.log(username, password)
         setUsername("")
         setPassword("")
@@ -31,7 +48,7 @@ export default function LoginScreen() {
                 onChangeText={(value)=>setPassword(value)}
             />
             <View style={myStyleSheet.buttoninput1}>
-                <Button title='Log in' color="black" onPress={()=>submitLogin(username, password)} />
+                <Button title='Log in' color="black" onPress={()=>submitLogin()} />
             </View>
             <View style={myStyleSheet.buttoninput2}>
                 <Button color="#000" title='Sign In with Google' />
