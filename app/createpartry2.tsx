@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import axios from "axios";
+import { Calendar } from 'react-native-calendars';
 
 const CreatePartyScreen = () => {
     const insets = useSafeAreaInsets(); // Get safe area insets
@@ -16,9 +17,9 @@ const CreatePartyScreen = () => {
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
     const [description, setDescription] = useState('เล่นชิวๆ ไม่จริงจัง เน้นออกกำลังกาย'); // Initial value
-    const [showDatepicker, setShowDatepicker] = useState(false);
     const [showTimepicker, setShowTimepicker] = useState(false);
     const [memberName, setMemberName] = useState(null);
+    const [showModal,setShowModal] = useState(false);
     
 
     const onChangeDate = (event, selectedDate) => {
@@ -96,20 +97,35 @@ const CreatePartyScreen = () => {
 
                 <Text style={styles.label}>Total:</Text>
                 <TextInput style={styles.input} value={total.toString()} onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" />
-
+                
                 <Text style={styles.label}>Date:</Text>
-                <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatepicker(true)}>
+                <TouchableOpacity style={styles.dateButton} onPress={() => setShowModal(true)}>
                     <Text>{date.toLocaleDateString()}</Text>
                 </TouchableOpacity>
-                {showDatepicker && (
-                    <DateTimePicker
-                        value={date}
-                        mode="date"
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChangeDate}
-                    />
-                )}
+
+
+                <Modal visible={showModal} animationType="fade" transparent={true} >
+                    <View style={styles.centerview}> 
+                        <View style={styles.modalview}>
+                            <Calendar style={styles.calendar}
+                            onDayPress={ date => {
+                                console.log(date)
+                                setDate(new Date(date.dateString))
+                                setShowModal(false)
+                            }} 
+                            minDate={"2025-01-01"}
+                            maxDate={"2025-12-31"}
+                            
+                            />
+                            <TouchableOpacity onPress={() => setShowModal(false) }>
+                                <button style={styles.close}>
+                                    <Text style={styles.close}>Close</Text>
+                                </button>
+                            </TouchableOpacity>
+                        </View>
+                    </View> 
+                </Modal>
+                        
 
                 <Text style={styles.label}>Time:</Text>
                 <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
@@ -131,7 +147,7 @@ const CreatePartyScreen = () => {
                     value={description}
                     onChangeText={setDescription}
                     multiline={true}
-                    numberOfLines={3} // For multiline input
+                    numberOfLines={3} 
                 />
 
 
@@ -146,13 +162,13 @@ const CreatePartyScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff', // Or your background color
+        backgroundColor: '#fff', 
     },
     header: {
         flexDirection: 'row',
-        alignItems: 'center', // Vertically center items
-        paddingHorizontal: 10, // Add horizontal padding
-        paddingVertical: 20, // Add vertical padding
+        alignItems: 'center', 
+        paddingHorizontal: 10, 
+        paddingVertical: 20, 
         paddingTop:50,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
@@ -168,7 +184,7 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         marginBottom: 5,
-        marginTop: 10, // Add margin top for spacing
+        marginTop: 10, 
         fontWeight:'bold',
     },
     input: {
@@ -178,18 +194,18 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
     },
-    pickerContainer: { // Style the Picker container
+    pickerContainer: { 
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
-        marginBottom: 10, // Add margin bottom for spacing
+        marginBottom: 10, 
     },
     picker: { 
     },
     
     multilineInput: {
-        height: 80, // Adjust height for multiline input
-        textAlignVertical: 'top', // Align text to the top
+        height: 80, 
+        textAlignVertical: 'top', 
     },
     dateButton: {
         borderWidth: 1,
@@ -210,7 +226,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     createButton: {
-        backgroundColor: '#007AFF', // Example button color
+        backgroundColor: '#000', 
         borderRadius: 5,
         padding: 12,
         alignItems: 'center',
@@ -222,25 +238,52 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     memberItem: {
-        flexDirection: 'row',       // Arrange icon and text horizontally
-        alignItems: 'center',      // Vertically align icon and text
-        paddingVertical: 8,        // Add some vertical padding 
-        paddingHorizontal: 12,      // Add some horizontal padding
-        backgroundColor: '#FFFFFF', // White background for the item
+        flexDirection: 'row',       
+        alignItems: 'center',     
+        paddingVertical: 8,        
+        paddingHorizontal: 12,      
+        backgroundColor: '#FFFFFF', 
         elevation: 2,   
-        // paddingTop:20           // Shadow for Android (works with backgroundColor)
+        
       },
       memberIcon: {
-        width: 100,                // Adjust icon size as needed
-        height: 100,               // Adjust icon size as needed
-        borderRadius: 50,         // Make icon circular
+        width: 100,                
+        height: 100,              
+        borderRadius: 50,         
         backgroundColor: '#EEEEEE',
-         // Light gray placeholder 
+
       },
       memberName: {
-        fontSize: 16,             // Adjust font size as needed
-        color: '#333333',         // Dark gray text color
+        fontSize: 16,             
+        color: '#333333',         
       },
+      centerview:{
+        flex:1,
+        backgroundColor:'rgba(0, 0, 0, 0.5)',
+        alignItems:'center',
+        justifyContent:'center'
+      },
+      modalview:{
+        borderRadius:20,
+        padding:5,
+        alignItems:'center',
+        shadowColor:'#000',
+        width:300,
+        height:420,
+        backgroundColor:'white',
+        
+      },
+      calendar:{
+        width:280,
+        height:300,
+      },
+      close:{
+        margin:70,
+        fontSize:15,
+        backgroundColor:'black',
+        color:'white'
+      }
+
 });
 
 export default CreatePartyScreen;
