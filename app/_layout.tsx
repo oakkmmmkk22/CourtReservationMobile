@@ -15,6 +15,13 @@ export default function RootLayout() {
       <Stack.Screen name="home" options={{ title: "Home", headerShown:false }} />
       <Stack.Screen name="createparty" options={{ title: "creaet", headerShown:false }} />
       <Stack.Screen name="createpartry2" options={{ title: "creat2", headerShown:false }} /> 
+      <Stack.Screen name="setting" options={{ title: "setting", headerShown:true }} /> 
+      <Stack.Screen name="account" options={{ title: "account", headerShown:true }} /> 
+      <Stack.Screen name="changeemail" options={{ title: "changeemail", headerShown:true }} /> 
+      <Stack.Screen name="changepassword" options={{ title: "changepassword", headerShown:true }} /> 
+      <Stack.Screen name="changeusername" options={{ title: "changeusername", headerShown:true }} /> 
+      <Stack.Screen name="report" options={{ title: "report", headerShown:true }} /> 
+      <Stack.Screen name="point" options={{ title: "point", headerShown:true }} /> 
     </Stack>
   );
 }
