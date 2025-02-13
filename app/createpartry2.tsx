@@ -67,7 +67,7 @@ const CreatePartyScreen = () => {
 
 
             <View style={styles.header}>
-                <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/index")}/>
+                <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/")}/>
                     <Text style={styles.headerTitle}>Create Party</Text>
             </View>
 
