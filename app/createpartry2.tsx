@@ -22,12 +22,6 @@ const CreatePartyScreen = () => {
     const [showModal,setShowModal] = useState(false);
     
 
-    const onChangeDate = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShowDatepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
-        setDate(currentDate);
-    };
-
     const onChangeTime = (event, selectedTime) => {
         const currentTime = selectedTime || time;
         setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
