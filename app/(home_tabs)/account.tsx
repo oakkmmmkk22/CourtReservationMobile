@@ -19,7 +19,7 @@ export default function AccountPage() {
         <View style={styles.container}>
             <View style={styles.profile}>
                 <Image 
-                    source={require('../assets/images/favicon.png')} // เปลี่ยน path ตามรูปของคุณ
+                    source={require('../../assets/images/favicon.png')} // เปลี่ยน path ตามรูปของคุณ
                     style={styles.profileImage} 
                 />
             </View>
@@ -30,7 +30,7 @@ export default function AccountPage() {
                     <Text style={styles.value}>{userData.username}</Text>
                     <TouchableOpacity onPress={() => handleEditPress("/changeusername")}>
                         <Image 
-                            source={require('../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
+                            source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
                             style={styles.editIcon} 
                         />
                     </TouchableOpacity>
@@ -40,7 +40,7 @@ export default function AccountPage() {
                     <Text style={styles.value}>{userData.email}</Text>
                     <TouchableOpacity onPress={() => handleEditPress("/changeemail")}>
                         <Image 
-                            source={require('../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
+                            source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
                             style={styles.editIcon} 
                         />
                     </TouchableOpacity>
@@ -50,7 +50,7 @@ export default function AccountPage() {
                     <Text style={styles.value}>********</Text> {/* ปกปิดรหัสผ่าน */}
                     <TouchableOpacity onPress={() => handleEditPress("/changepassword")}>
                         <Image 
-                            source={require('../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
+                            source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
                             style={styles.editIcon} 
                         />
                     </TouchableOpacity>
