@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity } from "react-native";
-import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
+import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 
 const HomeScreen = () => {
@@ -94,13 +94,25 @@ const HomeScreen = () => {
       </View>
 
       {/* Category Icons */}
-      <View style={styles.categoryContainer}>
-      <FontAwesome5 name="futbol" size={24} color="black" />
-      <FontAwesome5 name="table-tennis" size={24} color="black" />
-      <FontAwesome5 name="basketball-ball" size={24} color="black" />
-      <Ionicons name="tennisball" size={24} color="black" />
-      </View>
-
+      <View style={{ flex: 1 }}>
+      <ScrollView 
+        horizontal={true} 
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+         
+          <FontAwesome5 name="futbol" style={styles.ic}  />
+          <FontAwesome5 name="table-tennis" style={styles.ic} />
+          <FontAwesome5 name="basketball-ball" style={styles.ic} />
+          <Ionicons name="tennisball"  style={styles.ic} />
+          <MaterialCommunityIcons name="badminton"  style={styles.ic} />
+          <FontAwesome5 name="golf-ball" style={styles.ic} />
+          <MaterialCommunityIcons name="rugby"  style={styles.ic} />
+          
+        </View>
+      </ScrollView>
+    </View>
 
       <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
       <FlatList
@@ -184,6 +196,12 @@ const styles = StyleSheet.create({
     height:0.5 ,
     width:'75%',
     marginVertical:5,
+  },
+  ic:{
+    fontSize:34 ,
+    color:'black',
+    marginRight: 40,
+    // paddingBottom:'10%'
   }
 });
 
