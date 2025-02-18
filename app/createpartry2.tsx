@@ -135,6 +135,9 @@ const CreatePartyScreen = () => {
                     />
                 )}
 
+                <Text style={styles.label}>Place:</Text>
+                
+                
                 <Text style={styles.label}>Description:</Text>
                 <TextInput
                     style={[styles.input, styles.multilineInput]}
