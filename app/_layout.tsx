@@ -6,16 +6,14 @@ export default function RootLayout() {
 
 
   return (
-    <Stack initialRouteName="profile"> 
+    <Stack> 
       <Stack.Screen name="index" options={{ title: "index", headerShown:false }} />
       <Stack.Screen name="about" options={{ title: "About Us", headerShown:false }} />
       <Stack.Screen name="profile" options={{ title: "Profile", headerShown:false }} />
       <Stack.Screen name="login" options={{ title: "Login", headerShown:false }} />
       <Stack.Screen name="sign-up" options={{ title: "Sign-Up", headerShown:false }} />
-      <Stack.Screen name="home" options={{ title: "Home", headerShown:false }} />
       <Stack.Screen name="createpartry2" options={{ title: "creat2", headerShown:false }} /> 
       <Stack.Screen name="setting" options={{ title: "setting", headerShown:true }} /> 
-      <Stack.Screen name="account" options={{ title: "account", headerShown:true }} /> 
       <Stack.Screen name="changeemail" options={{ title: "changeemail", headerShown:true }} /> 
       <Stack.Screen name="changepassword" options={{ title: "changepassword", headerShown:true }} /> 
       <Stack.Screen name="changeusername" options={{ title: "changeusername", headerShown:true }} /> 

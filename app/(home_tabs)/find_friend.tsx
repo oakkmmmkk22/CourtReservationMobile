@@ -4,7 +4,7 @@ export default function App() {
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        hello this is about
+        hello this is find friend
     </View>
   );
 }
