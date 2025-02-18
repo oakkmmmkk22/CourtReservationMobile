@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, StyleSheet } from "react-native";
+import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import DropProfile from "./dropprofile";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const HomeScreen = () => {
-  // ใช้ useState แทน const stadiums
+  const [showModal,setShowModal] = useState(false);
+  
   const [stadiums, setStadiums] = useState([
     {
       id: "1",
@@ -52,9 +55,27 @@ const HomeScreen = () => {
         <View style={styles.pointsContainer}>
           <Ionicons name="diamond" size={20} color="purple" />
           <Text style={styles.points}>2,000</Text>
-          <Ionicons name="person-circle" size={30} color="white" />
+          <Ionicons name="person-circle" size={30} color="white" onPress={() => setShowModal(true)} />
         </View>
       </View>
+      
+      <Modal visible={showModal} animationType="fade" transparent={true} >
+        <View style={styles.centerview}>
+          <View style={styles.modalview}>
+              <button>
+                <Text>Profile</Text>
+              </button>
+
+              <button>
+                <Text>Setting</Text>
+              </button>
+
+              <button>
+                <Text>logout</Text>
+              </button>
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
@@ -123,6 +144,23 @@ const styles = StyleSheet.create({
   cardRating: { marginLeft: 5 },
 
   bottomNav: { flexDirection: "row", justifyContent: "space-around", padding: 10, backgroundColor: "white" },
+  centerview:{
+    flex:1,
+    backgroundColor:'rgba(0, 0, 0, 0.5)',
+    padding:'7%',
+    alignItems:'flex-end'
+    
+
+  },
+  modalview:{
+    borderRadius:20,
+    paddingTop:'10%',
+    shadowColor:'#000',
+    width:130,
+    height:160,
+    backgroundColor:'white',
+    
+  },
 });
 
 export default HomeScreen;
