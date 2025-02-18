@@ -22,6 +22,7 @@ export default function RootLayout() {
       <Stack.Screen name="changeusername" options={{ title: "changeusername", headerShown:true }} /> 
       <Stack.Screen name="report" options={{ title: "report", headerShown:true }} /> 
       <Stack.Screen name="point" options={{ title: "point", headerShown:true }} /> 
+      <Stack.Screen name="(home_tabs)" options={{ title: "(home_tabs)", headerShown:false }} /> 
     </Stack>
   );
 }
