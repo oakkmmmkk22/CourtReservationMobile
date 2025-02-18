@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal } from "react-native";
+import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import DropProfile from "./dropprofile";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
 
 const HomeScreen = () => {
   const [showModal,setShowModal] = useState(false);
@@ -59,22 +58,33 @@ const HomeScreen = () => {
         </View>
       </View>
       
-      <Modal visible={showModal} animationType="fade" transparent={true} >
-        <View style={styles.centerview}>
-          <View style={styles.modalview}>
-              <button>
-                <Text>Profile</Text>
-              </button>
+      <Modal visible={showModal} animationType="fade" transparent={true}>
+          <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+            <View style={styles.centerview}>
+              <TouchableWithoutFeedback>
+                <View style={styles.modalview}>
+                  
+                    <TouchableOpacity style={styles.btn}>
+                      <Ionicons name="person" size={18} color="black"  />
+                      <Text style={{ marginLeft: 8}}>User</Text>
+                    </TouchableOpacity>
+                    <View style={styles.line}/>
 
-              <button>
-                <Text>Setting</Text>
-              </button>
-
-              <button>
-                <Text>logout</Text>
-              </button>
-          </View>
-        </View>
+                    <TouchableOpacity style={styles.btn}>
+                      <Ionicons name="settings" size={18} color="black" />
+                      <Text style={{ marginLeft: 8 }}>Setting</Text>
+                    </TouchableOpacity>
+                    <View style={styles.line}/>
+                  
+                    <TouchableOpacity style={styles.btn}>
+                      <Ionicons name="log-out" size={18} color="black" />
+                      <Text style={{ marginLeft: 8 }}>Logout</Text>
+                    </TouchableOpacity>
+                  
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
       </Modal>
 
       <View style={styles.searchContainer}>
@@ -104,9 +114,9 @@ const HomeScreen = () => {
               <Text style={styles.cardLocation}>{item.location}</Text>
               <Text style={styles.cardHours}>{item.openHours}</Text>
               <View style={styles.cardFooter}>
-                <Ionicons name="call" size={16} color="green" />
+                <Ionicons name="call" size={18} color="green" />
                 <Text style={styles.cardPhone}>{item.phone}</Text>
-                <MaterialIcons name="star" size={16} color="gold" />
+                <MaterialIcons name="star" size={20} color="gold" />
                 <Text style={styles.cardRating}>{item.rating}</Text>
               </View>
             </View>
@@ -134,14 +144,14 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: "bold", padding: 10 },
 
   card: { flexDirection: "row", backgroundColor: "white", margin: 10, borderRadius: 10, overflow: "hidden" },
-  cardImage: { width: 100, height: 100 },
-  cardContent: { flex: 1, padding: 10 },
-  cardTitle: { fontSize: 16, fontWeight: "bold" },
-  cardLocation: { fontSize: 12, color: "gray" },
-  cardHours: { fontSize: 12, color: "gray" },
+  cardImage: { width: 100, height: 150 },
+  cardContent: { flex: 1, padding: 30 },
+  cardTitle: { fontSize: 18, fontWeight: "bold" },
+  cardLocation: { fontSize: 15, color: "gray" },
+  cardHours: { fontSize: 15, color: "gray" },
   cardFooter: { flexDirection: "row", alignItems: "center", marginTop: 5 },
-  cardPhone: { marginLeft: 5, marginRight: 10 },
-  cardRating: { marginLeft: 5 },
+  cardPhone: { marginLeft: 5, marginRight: 10,fontSize: 15 },
+  cardRating: { marginLeft: 5,fontSize: 15 },
 
   bottomNav: { flexDirection: "row", justifyContent: "space-around", padding: 10, backgroundColor: "white" },
   centerview:{
@@ -154,13 +164,27 @@ const styles = StyleSheet.create({
   },
   modalview:{
     borderRadius:20,
-    paddingTop:'10%',
     shadowColor:'#000',
     width:130,
     height:160,
     backgroundColor:'white',
+    alignItems:'center',
+    justifyContent:'center',
+    flexDirection:'column',
     
   },
+  btn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin:10,
+    
+  },
+  line:{
+    backgroundColor:'black',
+    height:0.5 ,
+    width:'75%',
+    marginVertical:5,
+  }
 });
 
 export default HomeScreen;

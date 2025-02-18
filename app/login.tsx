@@ -8,7 +8,7 @@ export default function LoginScreen() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const submitLogin = () => {
-        axios.post("http://40.81.22.116:3000/login",{
+        axios.post("http://localhost:3000/login",{
             username:username,
             password:password
         }).then((response) => {

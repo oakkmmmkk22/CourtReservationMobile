@@ -9,25 +9,15 @@ export default function ChangePasswordPage() {
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
     const handleChangePassword = async () => {
-        // ตรวจสอบว่ารหัสผ่านใหม่และยืนยันรหัสผ่านใหม่ตรงกันหรือไม่
-        if (newPassword !== confirmNewPassword) {
-            Alert.alert("New password and confirm new password do not match.");
-            return;
-        }
-
-        // ตรวจสอบรหัสผ่านปัจจุบัน (สมมติว่าคุณมีฟังก์ชันตรวจสอบในไฟล์ auth.js)
-        //const passwordCorrect = await verifyPassword(currentPassword); // verifyPassword คือฟังก์ชันที่คุณต้อง implement เอง
+        
+        
             const passwordCorrect = true;
-        if (passwordCorrect) {
-            // เปลี่ยนรหัสผ่าน (สมมติว่าคุณมีฟังก์ชันสำหรับเปลี่ยนในไฟล์ api.js)
-           // const success = await updatePassword(newPassword); // updatePassword คือฟังก์ชันที่คุณต้อง implement เอง
-            const success =true;
-            if (success) {
-                Alert.alert("Change Password Successful");
-                router.back(); // กลับไปหน้าก่อนหน้า
-            } else {
-                Alert.alert("Error changing password. Please try again.");
-            }
+        if (newPassword == confirmNewPassword) {
+           //axios
+            
+
+
+            Alert.alert("Change Password Successful");
         } else {
             Alert.alert("Wrong Current Password");
         }
