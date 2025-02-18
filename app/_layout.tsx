@@ -13,7 +13,6 @@ export default function RootLayout() {
       <Stack.Screen name="login" options={{ title: "Login", headerShown:false }} />
       <Stack.Screen name="sign-up" options={{ title: "Sign-Up", headerShown:false }} />
       <Stack.Screen name="home" options={{ title: "Home", headerShown:false }} />
-      <Stack.Screen name="createparty" options={{ title: "creaet", headerShown:false }} />
       <Stack.Screen name="createpartry2" options={{ title: "creat2", headerShown:false }} /> 
       <Stack.Screen name="setting" options={{ title: "setting", headerShown:true }} /> 
       <Stack.Screen name="account" options={{ title: "account", headerShown:true }} /> 
