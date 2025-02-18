@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity , Text} from 'react-native';
 import { useRouter } from "expo-router";
 
 export default function Stadium() {
@@ -17,29 +17,37 @@ export default function Stadium() {
       <Tabs.Screen 
         name='home' 
         options={{ 
-          title: "home", 
-          headerShown: false 
+          title: "Sports", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
         }}
       />
       <Tabs.Screen 
         name='find_friend'  
         options={{ 
-          title: "find friend", 
-          headerShown: false 
+          title: "Find Friend", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
         }} 
       />
       <Tabs.Screen 
         name='my_booking'  
         options={{ 
-          title: "my booking", 
-          headerShown: false 
+          title: "My book", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
         }} 
       />
       <Tabs.Screen 
         name='setting'  
         options={{ 
-          title: "setting", 
-          headerShown: false 
+          title: "Setting", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
         }} 
       />
       <Tabs.Screen 

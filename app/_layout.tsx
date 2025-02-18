@@ -20,6 +20,7 @@ export default function RootLayout() {
       <Stack.Screen name="report" options={{ title: "report", headerShown:true }} /> 
       <Stack.Screen name="point" options={{ title: "point", headerShown:true }} /> 
       <Stack.Screen name="(home_tabs)" options={{ title: "(home_tabs)", headerShown:false }} /> 
+      <Stack.Screen name="(home_tabs)/home" options={{ title: "(home_tabs)/home", headerShown:false }} /> 
     </Stack>
   );
 }
