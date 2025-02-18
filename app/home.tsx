@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal } from "react-native";
+import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import DropProfile from "./dropprofile";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
 
 const HomeScreen = () => {
   const [showModal,setShowModal] = useState(false);
@@ -59,22 +58,29 @@ const HomeScreen = () => {
         </View>
       </View>
       
-      <Modal visible={showModal} animationType="fade" transparent={true} >
-        <View style={styles.centerview}>
-          <View style={styles.modalview}>
-              <button>
-                <Text>Profile</Text>
-              </button>
+      <Modal visible={showModal} animationType="fade" transparent={true}>
+          <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+            <View style={styles.centerview}>
+              <TouchableWithoutFeedback>
+                <View style={styles.modalview}>
+                    <button>
+                      <Ionicons name="person" size={18} color="black" />
+                      <Text style={{ marginLeft: 8 }}>User</Text>
+                    </button>
 
-              <button>
-                <Text>Setting</Text>
-              </button>
-
-              <button>
-                <Text>logout</Text>
-              </button>
-          </View>
-        </View>
+                    <button>
+                      <Ionicons name="settings" size={18} color="black" />
+                      <Text style={{ marginLeft: 8 }}>Setting</Text>
+                    </button>
+                  
+                    <button>
+                      <Ionicons name="log-out" size={18} color="black" />
+                      <Text style={{ marginLeft: 8 }}>Logout</Text>
+                    </button>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
       </Modal>
 
       <View style={styles.searchContainer}>
@@ -153,8 +159,8 @@ const styles = StyleSheet.create({
 
   },
   modalview:{
+    paddingTop:'2%',
     borderRadius:20,
-    paddingTop:'10%',
     shadowColor:'#000',
     width:130,
     height:160,
