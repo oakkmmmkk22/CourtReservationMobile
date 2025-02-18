@@ -18,7 +18,7 @@ export default function SignUpScreen() {
                     email: email,
                     password: password,
                     user_type: "client",
-                    point:0
+                    point:100
                 }).then((response) => {
                     console.log(response.data);
                     if(response.data.success){
