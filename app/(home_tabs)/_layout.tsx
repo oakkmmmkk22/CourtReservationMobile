@@ -1,6 +1,8 @@
 import { Tabs } from 'expo-router';
-import { Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity , Text} from 'react-native';
 import { useRouter } from "expo-router";
+import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+
 
 export default function Stadium() {
   const router = useRouter(); // ใช้เปลี่ยนหน้า
@@ -11,35 +13,57 @@ export default function Stadium() {
   return (
     <Tabs
       screenOptions={{
-        tabBarStyle: { height: 60 }
+        tabBarStyle: { height: 60 },
+        tabBarActiveTintColor: 'black', // สีเมื่อแท็บถูกเลือก
+        
       }}
     >
       <Tabs.Screen 
         name='home' 
         options={{ 
-          title: "home", 
-          headerShown: false 
+          title: "Sports", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="home" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen 
         name='find_friend'  
         options={{ 
-          title: "find friend", 
-          headerShown: false 
+          title: "Find Friend", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="user-friends" size={size} color={color} />
+          ),
         }} 
       />
       <Tabs.Screen 
         name='my_booking'  
         options={{ 
-          title: "my booking", 
-          headerShown: false 
+          title: "My book", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="history" size={size} color={color} />
+          ),
         }} 
       />
       <Tabs.Screen 
         name='setting'  
         options={{ 
-          title: "setting", 
-          headerShown: false 
+          title: "Setting", 
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings" size={size} color={color} />
+          ),
         }} 
       />
       <Tabs.Screen 

@@ -49,14 +49,14 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.logo}>sports</Text>
         <View style={styles.pointsContainer}>
           <Ionicons name="diamond" size={20} color="purple" />
           <Text style={styles.points}>2,000</Text>
           <Ionicons name="person-circle" size={30} color="white" onPress={() => setShowModal(true)} />
         </View>
-      </View>
+      </View> */}
       
       <Modal visible={showModal} animationType="fade" transparent={true}>
           <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
@@ -94,25 +94,25 @@ const HomeScreen = () => {
       </View>
 
       {/* Category Icons */}
-      <View style={{ flex: 1 }}>
-      <ScrollView 
-        horizontal={true} 
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-         
-          <FontAwesome5 name="futbol" style={styles.ic}  />
-          <FontAwesome5 name="table-tennis" style={styles.ic} />
-          <FontAwesome5 name="basketball-ball" style={styles.ic} />
-          <Ionicons name="tennisball"  style={styles.ic} />
-          <MaterialCommunityIcons name="badminton"  style={styles.ic} />
-          <FontAwesome5 name="golf-ball" style={styles.ic} />
-          <MaterialCommunityIcons name="rugby"  style={styles.ic} />
+      <View style={{ margin: 5 }}>
+        <ScrollView 
+          horizontal={true} 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           
-        </View>
-      </ScrollView>
-    </View>
+            <FontAwesome5 name="futbol" style={styles.ic}  />
+            <FontAwesome5 name="table-tennis" style={styles.ic} />
+            <FontAwesome5 name="basketball-ball" style={styles.ic} />
+            <Ionicons name="tennisball"  style={styles.ic} />
+            <MaterialCommunityIcons name="badminton"  style={styles.ic} />
+            <FontAwesome5 name="golf-ball" style={styles.ic} />
+            <MaterialCommunityIcons name="rugby"  style={styles.ic} />
+            
+          </View>
+        </ScrollView>
+      </View>
 
       <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
       <FlatList
