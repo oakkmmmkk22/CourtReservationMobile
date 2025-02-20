@@ -1,7 +1,10 @@
 import { Tabs } from 'expo-router';
-import { Image, TouchableOpacity , Text, View} from 'react-native';
+import { Image, TouchableOpacity , Text, Modal,TouchableWithoutFeedback,View,StyleSheet} from 'react-native';
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { Pencil } from 'lucide-react-native';
+
 
 
 export default function Stadium() {
@@ -9,6 +12,7 @@ export default function Stadium() {
   const handlePress = () => {
     router.push('/setting')
   };
+  const [showModal,setShowModal] = useState(false);
 
   return (
     <Tabs
@@ -29,13 +33,57 @@ export default function Stadium() {
             <FontAwesome5 name="home" size={size} color={color} />
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={handlePress}>
-              <Image
-                source={require('../../assets/images/crystal.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
-                style={{ width: 30, height: 30, marginLeft: 10 }}
-              />
-            </TouchableOpacity>
-          ),
+
+
+            <View>
+              
+              <View style={styles.header}>
+                    <View style={styles.pointsContainer}>
+                      
+                    <TouchableOpacity onPress={() => router.push('/point')}>
+                <Image
+                  source={require('../../assets/images/crystal.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
+                  style={{ width: 30, height: 30, marginLeft: 10 }}
+                />
+              </TouchableOpacity>
+                      <Text style={styles.points}>2,000</Text>
+                      <Ionicons name="person-circle" size={35} color="white" onPress={() => setShowModal(true)} />
+                    </View>
+                </View>
+
+              <Modal visible={showModal} animationType="fade" transparent={true}>
+                    <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+                          <View style={styles.centerview}>
+                              <TouchableWithoutFeedback>
+                                  <View style={styles.modalview}>
+                                    
+                                      <TouchableOpacity style={styles.btn}>
+                                        <Ionicons name="person" size={18} color="black"  />
+                                        <Text style={{ marginLeft: 8}}>User</Text>
+                                      </TouchableOpacity>
+                                      <View style={styles.line}/>
+        
+                                      <TouchableOpacity style={styles.btn}>
+                                        <Ionicons name="settings" size={18} color="black" />
+                                        <Text style={{ marginLeft: 8 }}>Setting</Text>
+                                      </TouchableOpacity>
+                                      <View style={styles.line}/>
+                                    
+                                      <TouchableOpacity style={styles.btn}>
+                                        <Ionicons name="log-out" size={18} color="black" />
+                                        <Text style={{ marginLeft: 8 }}>Logout</Text>
+                                      </TouchableOpacity>
+                                    
+                                  </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                      </TouchableWithoutFeedback>
+                  </Modal>
+              
+            </View>
+          )
+
+
         }}
       />
       <Tabs.Screen 
@@ -48,6 +96,11 @@ export default function Stadium() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-friends" size={size} color={color} />
           ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.push('/createpartry2')}>
+               <Pencil size={24} color="white" />
+            </TouchableOpacity>
+          )
         }} 
       />
       <Tabs.Screen 
@@ -72,6 +125,8 @@ export default function Stadium() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" size={size} color={color} />
           ),
+          
+          
         }} 
       />
       <Tabs.Screen 
@@ -145,7 +200,7 @@ export default function Stadium() {
           tabBarItemStyle: { display: 'none' }, 
           headerShown: true,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.push('/account')}>
+            <TouchableOpacity onPress={() => router.push('/setting')}>
               <Image
                 source={require('../../assets/images/arrow_back.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
                 style={{ width: 30, height: 30, marginLeft: 10 }}
@@ -157,3 +212,51 @@ export default function Stadium() {
     </Tabs>
   );
 };
+
+const styles = StyleSheet.create({
+  centerview:{
+    flex:1,
+    backgroundColor:'rgba(0, 0, 0, 0.5)',
+    padding:'7%',
+    alignItems:'flex-end'
+
+  },
+  modalview:{
+    borderRadius:20,
+    shadowColor:'#000',
+    width:130,
+    height:160,
+    backgroundColor:'white',
+    alignItems:'center',
+    justifyContent:'center',
+    flexDirection:'column',
+    
+  },
+  btn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin:10,
+    
+  },
+  line:{
+    backgroundColor:'black',
+    height:0.5 ,
+    width:'75%',
+    marginVertical:5,
+  },
+  header: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    backgroundColor: "black", 
+    padding: 15 
+  },
+  pointsContainer: { 
+    flexDirection: "row",
+     alignItems: "center" 
+    },
+  points: { 
+    color: "white", 
+    marginHorizontal: 5 
+  },
+
+})
