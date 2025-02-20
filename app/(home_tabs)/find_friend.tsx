@@ -1,11 +1,7 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal, Button } from "react-native";
 import { useRouter } from "expo-router";
 import { Bell, Pencil } from "lucide-react-native";
-=======
-import { View, Text } from "react-native";
->>>>>>> 1b30ae4a1e83099db2895fa2a7bebf5ac9f77ff0
 
 const FindFriend = () => {
   const router = useRouter();
@@ -13,7 +9,6 @@ const FindFriend = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-<<<<<<< HEAD
     <View style={{ flex: 1 }}>
       {/* Header */}
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: "black", padding: 16, paddingTop: 30 }}>
@@ -52,11 +47,3 @@ const FindFriend = () => {
 };
 
 export default FindFriend;
-=======
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>hello this is find friend</Text>
-    </View>
-  );
-}
-
->>>>>>> 1b30ae4a1e83099db2895fa2a7bebf5ac9f77ff0
