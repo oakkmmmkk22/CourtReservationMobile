@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from "expo-router";
-import axios from "axios";
 import { Calendar } from 'react-native-calendars';
+import { useRouter } from "expo-router";
+// import axios from "axios";
 
 const CreatePartyScreen = () => {
-    const insets = useSafeAreaInsets(); // Get safe area insets
     const router = useRouter();
+    const insets = useSafeAreaInsets(); // Get safe area insets
     const [topic, setTopic] = useState('หาเพื่อนเล่นครับ'); // Initial value
     const [type, setType] = useState('badminton');
     const [total, setTotal] = useState(3);
@@ -22,11 +22,11 @@ const CreatePartyScreen = () => {
     const [showModal,setShowModal] = useState(false);
     
 
-    const onChangeTime = (event, selectedTime) => {
-        const currentTime = selectedTime || time;
-        setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
-        setTime(currentTime);
-    };
+    // const onChangeTime = (event, selectedTime) => {
+    //     const currentTime = selectedTime || time;
+    //     setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
+    //     setTime(currentTime);
+    // };
 
 
     const handleCreateParty = () => {
@@ -131,7 +131,7 @@ const CreatePartyScreen = () => {
                         mode="time"
                         is24Hour={true}
                         display="default"
-                        onChange={onChangeTime}
+                        // onChange={onChangeTime}
                     />
                 )}
 
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
         borderRadius:20,
         padding:5,
         alignItems:'center',
-        shadowColor:'#000',
+        boxShadow: "0px 4px 10px rgba(0,0,0,0.25)",
         width:300,
         height:420,
         backgroundColor:'white',
