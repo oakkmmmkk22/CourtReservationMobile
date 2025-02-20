@@ -20,7 +20,7 @@ export default function ReportPage() {
            const success =true;
         if (success) {
             Alert.alert("Report submitted successfully.");
-            router.back(); // กลับไปหน้าก่อนหน้า
+            router.push('/setting'); // กลับไปหน้าก่อนหน้า
         } else {
             Alert.alert("Error submitting report. Please try again.");
         }

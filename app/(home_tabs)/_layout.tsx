@@ -3,6 +3,8 @@ import { Image, TouchableOpacity , Text, Modal,TouchableWithoutFeedback,View,Sty
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
+import { Pencil } from 'lucide-react-native';
+
 
 
 export default function Stadium() {
@@ -31,6 +33,7 @@ export default function Stadium() {
             <FontAwesome5 name="home" size={size} color={color} />
           ),
           headerRight: () => (
+
             <View>
               
               <View style={styles.header}>
@@ -72,6 +75,7 @@ export default function Stadium() {
               
             </View>
           )
+ 
         }}
       />
       <Tabs.Screen 
@@ -84,6 +88,11 @@ export default function Stadium() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-friends" size={size} color={color} />
           ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.push('/createpartry2')}>
+               <Pencil size={24} color="white" />
+            </TouchableOpacity>
+          )
         }} 
       />
       <Tabs.Screen 
@@ -108,6 +117,8 @@ export default function Stadium() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" size={size} color={color} />
           ),
+          
+          
         }} 
       />
       <Tabs.Screen 
@@ -181,7 +192,7 @@ export default function Stadium() {
           tabBarItemStyle: { display: 'none' }, 
           headerShown: true,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.push('/account')}>
+            <TouchableOpacity onPress={() => router.push('/setting')}>
               <Image
                 source={require('../../assets/images/arrow_back.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
                 style={{ width: 30, height: 30, marginLeft: 10 }}
