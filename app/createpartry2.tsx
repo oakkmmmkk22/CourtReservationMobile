@@ -11,14 +11,14 @@ import { useRouter } from "expo-router";
 const CreatePartyScreen = () => {
     const router = useRouter();
     const insets = useSafeAreaInsets(); // Get safe area insets
-    const [topic, setTopic] = useState('หาเพื่อนเล่นครับ'); // Initial value
+    const [topic, setTopic] = useState(""); // Initial value
     const [type, setType] = useState('badminton');
-    const [total, setTotal] = useState(3);
+    const [total, setTotal] = useState(1);
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
-    const [description, setDescription] = useState('เล่นชิวๆ ไม่จริงจัง เน้นออกกำลังกาย'); // Initial value
+    const [description, setDescription] = useState(""); // Initial value
     const [showTimepicker, setShowTimepicker] = useState(false);
-    const [memberName, setMemberName] = useState(null);
+    const [memberName, setMemberName] = useState("Username");
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [formattedDate, setFormattedDate] = useState("");
@@ -71,22 +71,27 @@ const CreatePartyScreen = () => {
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
 
-
-
-            <View style={styles.header}>
+            <View style={styles.header}> //header
                 <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/")}/>
                     <Text style={styles.headerTitle}>Create Party</Text>
             </View>
 
-            <View style={styles.memberItem}>
+            <View style={styles.memberItem}> //username
                 <View style={styles.memberIcon} />  
                 <Text style={styles.memberName}>{memberName}</Text>
             </View>
             
+            //Topic
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Topic:</Text>
-                <TextInput style={styles.input} value={topic} onChangeText={setTopic} />
+                <TextInput 
+                    placeholder="Topic" 
+                    style={styles.input} 
+                    value={topic} 
+                    onChangeText={setTopic} 
+                />
 
+                //Type sport
                 <Text style={styles.label}>Type:</Text>
                 <View style={styles.pickerContainer}> 
                     <Picker
@@ -102,19 +107,25 @@ const CreatePartyScreen = () => {
                     </Picker>
                 </View>
 
+                //Total people
                 <Text style={styles.label}>Total:</Text>
-                <TextInput style={styles.input} value={total.toString()} onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" />
+                    <TextInput  
+                    style={styles.input} 
+                    value={total.toString()} 
+                    onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" 
+                />
                 
+                //Date
                 <Text style={styles.label}>Date:</Text>
                 <TouchableOpacity style={styles.dateButton} onPress={() => setShowModal(true)}>
-                    <Text>{formattedDate ? formattedDate : "เลือกวันที่"}</Text>
+                    <Text>{formattedDate ? formattedDate : "Choose Date"}</Text>
                 </TouchableOpacity>
-
 
                 <Modal visible={showModal} animationType="fade" transparent={true} >
                     <View style={styles.centerview}> 
                         <View style={styles.modalview}>
                             <Calendar style={styles.calendar}
+
                                 onDayPress={ date => {
                                     //console.log(date);
                                     let selectedDate = date.dateString;
@@ -136,7 +147,7 @@ const CreatePartyScreen = () => {
                     </View> 
                 </Modal>
                         
-
+                //Time               
                 <Text style={styles.label}>Time:</Text>
                 <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
                     <Text>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
@@ -151,11 +162,14 @@ const CreatePartyScreen = () => {
                     />
                 )}
 
+                //Place
                 <Text style={styles.label}>Place:</Text>
                 
                 
+                //Description
                 <Text style={styles.label}>Description:</Text>
                 <TextInput
+                    placeholder="Description"
                     style={[styles.input, styles.multilineInput]}
                     value={description}
                     onChangeText={setDescription}
@@ -163,7 +177,7 @@ const CreatePartyScreen = () => {
                     numberOfLines={3} 
                 />
 
-
+                //BTN Create
                 <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
                     <Text style={styles.createButtonText}>Create Party</Text>
                 </TouchableOpacity>
@@ -267,8 +281,10 @@ const styles = StyleSheet.create({
 
       },
       memberName: {
-        fontSize: 16,             
-        color: '#333333',         
+        fontSize: 26,             
+        color: '#333333',
+        marginLeft:20,
+        fontWeight:'bold',         
       },
       centerview:{
         flex:1,
