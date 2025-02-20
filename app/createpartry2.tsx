@@ -1,36 +1,49 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from "expo-router";
-import axios from "axios";
 import { Calendar } from 'react-native-calendars';
+import { useRouter } from "expo-router";
+// import axios from "axios";
 
 const CreatePartyScreen = () => {
-    const insets = useSafeAreaInsets(); // Get safe area insets
     const router = useRouter();
-    const [topic, setTopic] = useState('หาเพื่อนเล่นครับ'); // Initial value
+    const insets = useSafeAreaInsets(); // Get safe area insets
+    const [topic, setTopic] = useState(""); // Initial value
     const [type, setType] = useState('badminton');
-    const [total, setTotal] = useState(3);
+    const [total, setTotal] = useState(1);
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
-    const [description, setDescription] = useState('เล่นชิวๆ ไม่จริงจัง เน้นออกกำลังกาย'); // Initial value
+    const [description, setDescription] = useState(""); // Initial value
     const [showTimepicker, setShowTimepicker] = useState(false);
-    const [memberName, setMemberName] = useState(null);
+    const [memberName, setMemberName] = useState("Username");
     const [showModal,setShowModal] = useState(false);
+    const [formattedTime, setFormattedTime] = useState("");
+    const [formattedDate, setFormattedDate] = useState("");
     
 
+    // const onChangeTime = (event, selectedTime) => {
+    //     const currentTime = selectedTime || time;
+    //     setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
+    //     setTime(currentTime);
+    // };
+    
     const onChangeTime = (event, selectedTime) => {
-        const currentTime = selectedTime || time;
-        setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
-        setTime(currentTime);
+        setShowTimepicker(false); 
+        if (selectedTime) {
+            setTime(selectedTime);   
+            const hours = selectedTime.getHours().toString().padStart(2, "0");
+            const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
+            setFormattedTime(`${hours}:${minutes}`);
+        
+        }
     };
-
+    
 
     const handleCreateParty = () => {
-        console.log('Creating party with data:', { topic, type, total, date, time, description });
+        console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
         // Here you would typically send the data to your backend
         
         // axios.post("http://40.81.22.116:3000/login",{
@@ -58,28 +71,33 @@ const CreatePartyScreen = () => {
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
 
-
-
-            <View style={styles.header}>
+            <View style={styles.header}> //header
                 <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/")}/>
                     <Text style={styles.headerTitle}>Create Party</Text>
             </View>
 
-            <View style={styles.memberItem}>
-                <View style={styles.memberIcon} />  {/* Replace with your icon component */}
+            <View style={styles.memberItem}> //username
+                <View style={styles.memberIcon} />  
                 <Text style={styles.memberName}>{memberName}</Text>
             </View>
             
+            //Topic
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Topic:</Text>
-                <TextInput style={styles.input} value={topic} onChangeText={setTopic} />
+                <TextInput 
+                    placeholder="Topic" 
+                    style={styles.input} 
+                    value={topic} 
+                    onChangeText={setTopic} 
+                />
 
+                //Type sport
                 <Text style={styles.label}>Type:</Text>
-                <View style={styles.pickerContainer}> {/* Container for styling the Picker */}
+                <View style={styles.pickerContainer}> 
                     <Picker
                         selectedValue={type}
                         onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-                        style={styles.picker} // Style the Picker itself
+                        style={styles.picker} 
                     >
                         <Picker.Item label="Badminton" value="badminton" />
                         <Picker.Item label="Football" value="football" />
@@ -89,38 +107,47 @@ const CreatePartyScreen = () => {
                     </Picker>
                 </View>
 
+                //Total people
                 <Text style={styles.label}>Total:</Text>
-                <TextInput style={styles.input} value={total.toString()} onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" />
+                    <TextInput  
+                    style={styles.input} 
+                    value={total.toString()} 
+                    onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" 
+                />
                 
+                //Date
                 <Text style={styles.label}>Date:</Text>
                 <TouchableOpacity style={styles.dateButton} onPress={() => setShowModal(true)}>
-                    <Text>{date.toLocaleDateString()}</Text>
+                    <Text>{formattedDate ? formattedDate : "Choose Date"}</Text>
                 </TouchableOpacity>
-
 
                 <Modal visible={showModal} animationType="fade" transparent={true} >
                     <View style={styles.centerview}> 
                         <View style={styles.modalview}>
                             <Calendar style={styles.calendar}
-                            onDayPress={ date => {
-                                console.log(date)
-                                setDate(new Date(date.dateString))
-                                setShowModal(false)
-                            }} 
-                            minDate={"2025-01-01"}
-                            maxDate={"2025-12-31"}
+
+                                onDayPress={ date => {
+                                    //console.log(date);
+                                    let selectedDate = date.dateString;
+                                    // selectedDate.setHours(0, 0, 0, 0);
+                                    // setDate(selectedDate);
+                                    setFormattedDate(selectedDate);
+                                    setShowModal(false);
+                                }} 
+                                minDate={"2025-01-01"}
+                                maxDate={"2025-12-31"}
                             
                             />
-                            <TouchableOpacity onPress={() => setShowModal(false) }>
-                                <button style={styles.close}>
-                                    <Text style={styles.close}>Close</Text>
-                                </button>
+                            <TouchableOpacity onPress={() => setShowModal(false) }>    
+                                <View style={styles.close}>
+                                    <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View> 
                 </Modal>
                         
-
+                //Time               
                 <Text style={styles.label}>Time:</Text>
                 <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
                     <Text>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
@@ -130,16 +157,19 @@ const CreatePartyScreen = () => {
                         value={time}
                         mode="time"
                         is24Hour={true}
-                        display="default"
+                        display="spinner"
                         onChange={onChangeTime}
                     />
                 )}
 
+                //Place
                 <Text style={styles.label}>Place:</Text>
                 
                 
+                //Description
                 <Text style={styles.label}>Description:</Text>
                 <TextInput
+                    placeholder="Description"
                     style={[styles.input, styles.multilineInput]}
                     value={description}
                     onChangeText={setDescription}
@@ -147,7 +177,7 @@ const CreatePartyScreen = () => {
                     numberOfLines={3} 
                 />
 
-
+                //BTN Create
                 <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
                     <Text style={styles.createButtonText}>Create Party</Text>
                 </TouchableOpacity>
@@ -251,8 +281,10 @@ const styles = StyleSheet.create({
 
       },
       memberName: {
-        fontSize: 16,             
-        color: '#333333',         
+        fontSize: 26,             
+        color: '#333333',
+        marginLeft:20,
+        fontWeight:'bold',         
       },
       centerview:{
         flex:1,
@@ -264,7 +296,7 @@ const styles = StyleSheet.create({
         borderRadius:20,
         padding:5,
         alignItems:'center',
-        shadowColor:'#000',
+        shadowColor: '#000',
         width:300,
         height:420,
         backgroundColor:'white',
@@ -278,8 +310,11 @@ const styles = StyleSheet.create({
         margin:70,
         fontSize:15,
         backgroundColor:'black',
-        color:'white'
-      }
+        width:100,
+        alignItems:'center'
+        
+      },
+      
 
 });
 

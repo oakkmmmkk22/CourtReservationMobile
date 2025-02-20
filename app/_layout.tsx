@@ -13,28 +13,9 @@ export default function RootLayout() {
       <Stack.Screen name="login" options={{ title: "Login", headerShown:false }} />
       <Stack.Screen name="sign-up" options={{ title: "Sign-Up", headerShown:false }} />
       <Stack.Screen name="createpartry2" options={{ title: "creat2", headerShown:false }} /> 
-      <Stack.Screen name="setting" options={{ title: "setting", headerShown:true }} /> 
-      <Stack.Screen name="changeemail" options={{ title: "changeemail", headerShown:true }} /> 
-      <Stack.Screen name="changepassword" options={{ title: "changepassword", headerShown:true }} /> 
-      <Stack.Screen name="changeusername" options={{ title: "changeusername", headerShown:true }} /> 
-      <Stack.Screen name="report" options={{ title: "report", headerShown:true }} /> 
       <Stack.Screen name="point" options={{ title: "point", headerShown:true }} /> 
-      <Stack.Screen name="findfriend" options={{ title: "findfriend", headerShown:false }} /> 
       <Stack.Screen name="(home_tabs)" options={{ title: "(home_tabs)", headerShown:false }} /> 
+      <Stack.Screen name="(home_tabs)/home" options={{ title: "(home_tabs)/home", headerShown:false }} /> 
     </Stack>
   );
 }
-// const myStyleSheet = StyleSheet.create({
-//   container: {
-//       flex: 1,
-//       paddingTop: "25%",
-//       paddingLeft:"45%",
-
-//   },
-//   iconTextContainer: {
-//     flexDirection: 'row', 
-//     alignItems: 'center', 
-//     fontWeight:'bold',
-//   },
-
-// })

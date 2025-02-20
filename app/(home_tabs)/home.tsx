@@ -57,84 +57,87 @@ const HomeScreen = () => {
           <Ionicons name="person-circle" size={30} color="white" onPress={() => setShowModal(true)} />
         </View>
       </View> */}
-      
-      <Modal visible={showModal} animationType="fade" transparent={true}>
-          <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-            <View style={styles.centerview}>
-              <TouchableWithoutFeedback>
-                <View style={styles.modalview}>
-                  
-                    <TouchableOpacity style={styles.btn}>
-                      <Ionicons name="person" size={18} color="black"  />
-                      <Text style={{ marginLeft: 8}}>User</Text>
-                    </TouchableOpacity>
-                    <View style={styles.line}/>
-
-                    <TouchableOpacity style={styles.btn}>
-                      <Ionicons name="settings" size={18} color="black" />
-                      <Text style={{ marginLeft: 8 }}>Setting</Text>
-                    </TouchableOpacity>
-                    <View style={styles.line}/>
-                  
-                    <TouchableOpacity style={styles.btn}>
-                      <Ionicons name="log-out" size={18} color="black" />
-                      <Text style={{ marginLeft: 8 }}>Logout</Text>
-                    </TouchableOpacity>
-                  
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-      </Modal>
-
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
-        <TextInput placeholder="SEARCH STADIUM" style={styles.searchInput} />
-        <Ionicons name="filter" size={20} color="black" />
-      </View>
-
-      {/* Category Icons */}
-      <View style={{ margin: 5 }}>
-        <ScrollView 
-          horizontal={true} 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           
-            <FontAwesome5 name="futbol" style={styles.ic}  />
-            <FontAwesome5 name="table-tennis" style={styles.ic} />
-            <FontAwesome5 name="basketball-ball" style={styles.ic} />
-            <Ionicons name="tennisball"  style={styles.ic} />
-            <MaterialCommunityIcons name="badminton"  style={styles.ic} />
-            <FontAwesome5 name="golf-ball" style={styles.ic} />
-            <MaterialCommunityIcons name="rugby"  style={styles.ic} />
-            
-          </View>
-        </ScrollView>
-      </View>
+          //not use becase wait header
+          <Modal visible={showModal} animationType="fade" transparent={true}>
+              <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+                  <View style={styles.centerview}>
+                      <TouchableWithoutFeedback>
+                          <View style={styles.modalview}>
+                            
+                              <TouchableOpacity style={styles.btn}>
+                                <Ionicons name="person" size={18} color="black"  />
+                                <Text style={{ marginLeft: 8}}>User</Text>
+                              </TouchableOpacity>
+                              <View style={styles.line}/>
 
-      <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
-      <FlatList
-        data={stadiums}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.cardImage} />
-            <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.cardLocation}>{item.location}</Text>
-              <Text style={styles.cardHours}>{item.openHours}</Text>
-              <View style={styles.cardFooter}>
-                <Ionicons name="call" size={18} color="green" />
-                <Text style={styles.cardPhone}>{item.phone}</Text>
-                <MaterialIcons name="star" size={20} color="gold" />
-                <Text style={styles.cardRating}>{item.rating}</Text>
-              </View>
-            </View>
+                              <TouchableOpacity style={styles.btn}>
+                                <Ionicons name="settings" size={18} color="black" />
+                                <Text style={{ marginLeft: 8 }}>Setting</Text>
+                              </TouchableOpacity>
+                              <View style={styles.line}/>
+                            
+                              <TouchableOpacity style={styles.btn}>
+                                <Ionicons name="log-out" size={18} color="black" />
+                                <Text style={{ marginLeft: 8 }}>Logout</Text>
+                              </TouchableOpacity>
+                            
+                          </View>
+                      </TouchableWithoutFeedback>
+                  </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+
+          //search bar
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
+            <TextInput placeholder="SEARCH STADIUM" style={styles.searchInput} />
+            <Ionicons name="filter" size={20} color="black" />
           </View>
-        )}
-      />
+
+          // Category Icons 
+          <View style={{ margin: 5 }}>
+            <ScrollView 
+              horizontal={true} 
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
+              >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              
+                <FontAwesome5 name="futbol" style={styles.ic}  />
+                <FontAwesome5 name="table-tennis" style={styles.ic} />
+                <FontAwesome5 name="basketball-ball" style={styles.ic} />
+                <Ionicons name="tennisball"  style={styles.ic} />
+                <MaterialCommunityIcons name="badminton"  style={styles.ic} />
+                <FontAwesome5 name="golf-ball" style={styles.ic} />
+                <MaterialCommunityIcons name="rugby"  style={styles.ic} />
+                
+              </View>
+            </ScrollView>
+          </View>
+
+          //all stadiums 
+          <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
+          <FlatList
+            data={stadiums}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.card}>
+                <Image source={{ uri: item.image }} style={styles.cardImage} />
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{item.name}</Text>
+                  <Text style={styles.cardLocation}>{item.location}</Text>
+                  <Text style={styles.cardHours}>{item.openHours}</Text>
+                  <View style={styles.cardFooter}>
+                    <Ionicons name="call" size={18} color="green" />
+                    <Text style={styles.cardPhone}>{item.phone}</Text>
+                    <MaterialIcons name="star" size={20} color="gold" />
+                    <Text style={styles.cardRating}>{item.rating}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+          />
     </View>
   );
 };
@@ -171,7 +174,6 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(0, 0, 0, 0.5)',
     padding:'7%',
     alignItems:'flex-end'
-    
 
   },
   modalview:{
