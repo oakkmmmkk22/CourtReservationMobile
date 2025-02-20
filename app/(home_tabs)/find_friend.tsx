@@ -10,18 +10,19 @@
 // }
 
 import React, { useState } from "react";
-import { View, Button, Text } from "react-native";
+import { View, Button, Text, Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const TimePickerExample = () => {
   const [time, setTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
-  const onChange = (event, selectedTime) => {
-    setShowPicker(false); // ปิด Picker หลังจากเลือกเวลา
+  const handleConfirm = (selectedTime) => {
     if (selectedTime) {
       setTime(selectedTime);
     }
+    setShowPicker(false);
   };
 
   return (
@@ -29,16 +30,29 @@ const TimePickerExample = () => {
       <Text>เลือกเวลา: {time.toLocaleTimeString()}</Text>
       <Button title="เลือกเวลา" onPress={() => setShowPicker(true)} />
 
-      {showPicker && (
-        <DateTimePicker
-          value={time}
+      {Platform.OS === "ios" || Platform.OS === "android" ? (
+        <DateTimePickerModal
+          isVisible={showPicker}
           mode="time"
-          display="default"
-          onChange={onChange}
+          onConfirm={handleConfirm}
+          onCancel={() => setShowPicker(false)}
         />
+      ) : (
+        showPicker && (
+          <DateTimePicker
+            value={time}
+            mode="time"
+            display="default"
+            onChange={(event, selectedTime) => {
+              setShowPicker(false);
+              if (selectedTime) setTime(selectedTime);
+            }}
+          />
+        )
       )}
     </View>
   );
 };
 
 export default TimePickerExample;
+
