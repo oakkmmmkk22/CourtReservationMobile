@@ -15,6 +15,7 @@ export default function RootLayout() {
       <Stack.Screen name="createpartry2" options={{ title: "creat2", headerShown:false }} /> 
       <Stack.Screen name="point" options={{ title: "point", headerShown:true }} /> 
       <Stack.Screen name="(home_tabs)" options={{ title: "(home_tabs)", headerShown:false }} /> 
+      <Stack.Screen name="(home_tabs)/home" options={{ title: "(home_tabs)/home", headerShown:false }} /> 
     </Stack>
   );
 }
