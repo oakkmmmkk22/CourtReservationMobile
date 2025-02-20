@@ -58,7 +58,7 @@ const HomeScreen = () => {
         </View>
       </View> */}
           
-          //not use becase wait header
+          {/* //not use becase wait header */}
           <Modal visible={showModal} animationType="fade" transparent={true}>
               <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
                   <View style={styles.centerview}>
@@ -88,14 +88,14 @@ const HomeScreen = () => {
                 </TouchableWithoutFeedback>
             </Modal>
 
-          //search bar
+          {/* //search bar */}
           <View style={styles.searchContainer}>
             <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
             <TextInput placeholder="SEARCH STADIUM" style={styles.searchInput} />
             <Ionicons name="filter" size={20} color="black" style={styles.searchIcon} />
           </View>
 
-          // Category Icons 
+          {/* // Category Icons  */}
           <View style={{ margin: 5 }}>
             <ScrollView 
               horizontal={true} 
@@ -116,7 +116,7 @@ const HomeScreen = () => {
             </ScrollView>
           </View>
 
-          //all stadiums 
+          {/* //all stadiums  */}
           <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
           <FlatList
             data={stadiums}
