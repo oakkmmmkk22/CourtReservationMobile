@@ -3,12 +3,16 @@ import React, { useState } from 'react'
 import { useRouter } from "expo-router";
 import axios from "axios";
 
+
+//http://10.0.2.2:3000 for emulator 
+//http://localhost:3000 for pc
+
 export default function LoginScreen() {
     const router = useRouter(); // ใช้เปลี่ยนหน้า
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const submitLogin = () => {
-        axios.post("http://localhost:3000/login",{
+        axios.post("http://10.0.2.2:3000/login",{
             username:username,
             password:password
         }).then((response) => {
