@@ -11,12 +11,7 @@ const FindFriend = () => {
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: "black", padding: 16, paddingTop: 30 }}>
-        <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>Find Friends</Text>
-        <TouchableOpacity onPress={() => router.push("/createpartry2")}> 
-          <Pencil size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+      
       
       <View style={{ padding: 16 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>

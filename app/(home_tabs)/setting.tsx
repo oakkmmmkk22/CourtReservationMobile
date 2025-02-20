@@ -41,7 +41,7 @@ export default function SettingPage() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Setting</Text>
+              
             </View>
             {settingsOptions.map((option, index) => (
                 <TouchableOpacity 
