@@ -269,7 +269,6 @@ const styles = StyleSheet.create({
   header: { 
     flexDirection: "row", 
     justifyContent: "space-between", 
-    backgroundColor: "black", 
     padding: 15 
   },
   pointsContainer: { 
