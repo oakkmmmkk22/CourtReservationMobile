@@ -21,7 +21,6 @@ export default function RootLayout() {
       <Stack.Screen name="point" options={{ title: "point", headerShown:true }} /> 
       <Stack.Screen name="findfriend" options={{ title: "findfriend", headerShown:false }} /> 
       <Stack.Screen name="(home_tabs)" options={{ title: "(home_tabs)", headerShown:false }} /> 
-      <Stack.Screen name="(home_tabs)/home" options={{ title: "(home_tabs)/home", headerShown:false }} /> 
     </Stack>
   );
 }
