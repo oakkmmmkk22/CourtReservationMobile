@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Image, TouchableOpacity , Text} from 'react-native';
+import { Image, TouchableOpacity , Text, View} from 'react-native';
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -35,7 +35,7 @@ export default function Stadium() {
                 style={{ width: 30, height: 30, marginLeft: 10 }}
               />
             </TouchableOpacity>
-          )
+          ),
         }}
       />
       <Tabs.Screen 
