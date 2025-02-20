@@ -78,19 +78,20 @@ export default function Stadium() {
                               <TouchableWithoutFeedback>
                                   <View style={styles.modalview}>
                                     
-                                      <TouchableOpacity style={styles.btn}>
+                                      <TouchableOpacity style={styles.btn} onPress={() => router.push('/account')}>
+                                        
                                         <Ionicons name="person" size={18} color="black"  />
                                         <Text style={{ marginLeft: 8}}>User</Text>
                                       </TouchableOpacity>
                                       <View style={styles.line}/>
         
-                                      <TouchableOpacity style={styles.btn}>
+                                      <TouchableOpacity style={styles.btn} onPress={() => router.push('/setting')}>
                                         <Ionicons name="settings" size={18} color="black" />
                                         <Text style={{ marginLeft: 8 }}>Setting</Text>
                                       </TouchableOpacity>
                                       <View style={styles.line}/>
                                     
-                                      <TouchableOpacity style={styles.btn}>
+                                      <TouchableOpacity style={styles.btn} onPress={() => router.push('/login')}>
                                         <Ionicons name="log-out" size={18} color="black" />
                                         <Text style={{ marginLeft: 8 }}>Logout</Text>
                                       </TouchableOpacity>

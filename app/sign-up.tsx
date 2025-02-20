@@ -13,7 +13,7 @@ export default function SignUpScreen() {
         console.log(username, password)
         if(email !== "" && password !== "" && confirm !== "") {
             if(password === confirm) {
-                axios.post("http://localhost:3000/signup", {
+                axios.post("http://10.0.2.2:3000/signup", {
                     username:username,
                     email: email,
                     password: password,
