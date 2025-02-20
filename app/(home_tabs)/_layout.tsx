@@ -13,6 +13,8 @@ export default function Stadium() {
     router.push('/setting')
   };
   const [showModal,setShowModal] = useState(false);
+  const [crytal,setCrytal] = useState(0);
+
 
   return (
     <Tabs
@@ -46,7 +48,7 @@ export default function Stadium() {
                   style={{ width: 30, height: 30, marginLeft: 10 }}
                 />
               </TouchableOpacity>
-                      <Text style={styles.points}>2,000</Text>
+                      <Text style={styles.points}>{crytal}</Text>
                       <Ionicons name="person-circle" size={35} color="white" onPress={() => setShowModal(true)} />
                     </View>
                 </View>
