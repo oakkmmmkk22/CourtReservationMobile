@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Pencil } from 'lucide-react-native';
+import axios from "axios";
 
 
 
@@ -14,9 +15,27 @@ export default function Stadium() {
   };
   const [showModal,setShowModal] = useState(false);
   const [crytal,setCrytal] = useState(0);
+  
+//test api ผ่านแต่ยังไม่ได้ทดสอบผ่านตัวแปร และทดสอบดึงuserid
+
+  axios.get("http://10.0.2.2:3000/user/points/2")
+    
+    .then((response) => {
+    console.log("fin")
+    setCrytal(response.data.points)
+    console.log(response.data)
+    
+})
+.catch(error => {
+    console.error("Axios error:", error.message);
+});
+
 
 
   return (
+   
+
+
     <Tabs
       screenOptions={{
         tabBarStyle: { height: 60 },
