@@ -53,7 +53,7 @@ export default function ReportPage() {
                 onChangeText={setReportProblem}
             />
 
-            <Button title="Report" onPress={handleReport} />
+            <Button title="Report" color="black" onPress={handleReport} />
         </View>
     );
 }
@@ -77,4 +77,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         textAlignVertical: 'top', // จัดข้อความให้อยู่ด้านบนของ TextInput
     },
+   
+    
 });
