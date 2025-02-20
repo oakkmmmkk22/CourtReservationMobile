@@ -35,6 +35,25 @@ const HomeScreen = () => {
       status: "Paid",
       image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
     },
+    {
+      id: "4",
+      name: "Muay STADIUM",
+      court: "Basketball Court",
+      time: "12.00 - 13.00 ",
+      price: "50",
+      status: "Paid",
+      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    },
+    {
+      id: "5",
+      name: "Muay STADIUM",
+      court: "Basketball Court",
+      time: "12.00 - 13.00 ",
+      price: "50",
+      status: "Paid",
+      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    },
+
 
 
     
