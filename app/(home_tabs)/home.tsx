@@ -122,20 +122,22 @@ const HomeScreen = () => {
             data={stadiums}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View style={styles.card}>
-                <Image source={{ uri: item.image }} style={styles.cardImage} />
-                <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>{item.name}</Text>
-                  <Text style={styles.cardLocation}>{item.location}</Text>
-                  <Text style={styles.cardHours}>{item.openHours}</Text>
-                  <View style={styles.cardFooter}>
-                    <Ionicons name="call" size={18} color="green" />
-                    <Text style={styles.cardPhone}>{item.phone}</Text>
-                    <MaterialIcons name="star" size={20} color="gold" />
-                    <Text style={styles.cardRating}>{item.rating}</Text>
+              <TouchableOpacity>
+                <View style={styles.card}>
+                  <Image source={{ uri: item.image }} style={styles.cardImage} />
+                  <View style={styles.cardContent}>
+                    <Text style={styles.cardTitle}>{item.name}</Text>
+                    <Text style={styles.cardLocation}>{item.location}</Text>
+                    <Text style={styles.cardHours}>{item.openHours}</Text>
+                    <View style={styles.cardFooter}>
+                      <Ionicons name="call" size={18} color="green" />
+                      <Text style={styles.cardPhone}>{item.phone}</Text>
+                      <MaterialIcons name="star" size={20} color="gold" />
+                      <Text style={styles.cardRating}>{item.rating}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
           />
     </View>
