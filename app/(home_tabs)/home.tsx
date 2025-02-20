@@ -49,14 +49,14 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.logo}>sports</Text>
         <View style={styles.pointsContainer}>
           <Ionicons name="diamond" size={20} color="purple" />
           <Text style={styles.points}>2,000</Text>
           <Ionicons name="person-circle" size={30} color="white" onPress={() => setShowModal(true)} />
         </View>
-      </View>
+      </View> */}
       
       <Modal visible={showModal} animationType="fade" transparent={true}>
           <TouchableWithoutFeedback onPress={() => setShowModal(false)}>

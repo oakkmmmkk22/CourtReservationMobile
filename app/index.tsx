@@ -17,7 +17,8 @@ export default function HomeScreen() {
       <Button title="Go to Create" onPress={() => router.push("/createpartry2")} />
       <Button title="Go to party" onPress={() => router.push("/party")} />
       <Button title="Go to point" onPress={() => router.push("/point")} />
-      <Button title="Go to booking" onPress={() => router.push("/(home_tabs)/home")} />
+      <Button title="Go to find" onPress={() => router.push("/findfriend")} />
+      <Button title="Go to booking" onPress={() => router.push("/(home_tabs)/my_booking")} />
      
 
     </View>
