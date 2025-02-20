@@ -34,11 +34,18 @@ export default function Stadium() {
           ),
           headerRight: () => (
 
+
             <View>
               
               <View style={styles.header}>
                     <View style={styles.pointsContainer}>
-                      <Ionicons name="diamond" size={20} color="purple" />
+                      
+                    <TouchableOpacity onPress={() => router.push('/point')}>
+                <Image
+                  source={require('../../assets/images/crystal.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
+                  style={{ width: 30, height: 30, marginLeft: 10 }}
+                />
+              </TouchableOpacity>
                       <Text style={styles.points}>2,000</Text>
                       <Ionicons name="person-circle" size={35} color="white" onPress={() => setShowModal(true)} />
                     </View>
@@ -75,7 +82,8 @@ export default function Stadium() {
               
             </View>
           )
- 
+
+
         }}
       />
       <Tabs.Screen 
