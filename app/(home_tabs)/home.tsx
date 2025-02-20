@@ -92,7 +92,7 @@ const HomeScreen = () => {
           <View style={styles.searchContainer}>
             <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
             <TextInput placeholder="SEARCH STADIUM" style={styles.searchInput} />
-            <Ionicons name="filter" size={20} color="black" />
+            <Ionicons name="filter" size={20} color="black" style={styles.searchIcon} />
           </View>
 
           // Category Icons 
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   points: { color: "white", marginHorizontal: 5 },
 
   searchContainer: { flexDirection: "row", backgroundColor: "white", margin: 10, padding: 10, borderRadius: 10 },
-  searchIcon: { marginRight: 10 },
+  searchIcon: { padding: 10 },
   searchInput: { flex: 1 },
 
   categoryContainer: { flexDirection: "row", justifyContent: "space-around", paddingVertical: 10 },
