@@ -30,7 +30,7 @@ export default function Stadium() {
             <FontAwesome5 name="home" size={size} color={color} />
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={handlePress}>
+            <TouchableOpacity onPress={() => router.push('/point')}>
               <Image
                 source={require('../../assets/images/crystal.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
                 style={{ width: 30, height: 30, marginLeft: 10 }}
