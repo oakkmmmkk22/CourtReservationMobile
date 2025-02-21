@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Linking, Alert } from 'react-native';
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 
 const TrueMoneyComponent = () => {
@@ -9,23 +10,49 @@ const TrueMoneyComponent = () => {
      const handleEditPress = (screen) => {
         router.push(screen);
     };
-  const [url, setUrl] = useState('https://gift.truemoney.com/campaign/?');
+  const [url, setUrl] = useState('');
 
-  const handleSend = () => {
+  const handleSend = async() => {
     // Basic URL validation (you might want more robust checks)
-    if (!url.startsWith('https://')) {
-      Alert.alert('Invalid URL', 'Please enter a valid URL starting with https://');
-      return;
+      
+    try {
+      // เรียก API แลกเปลี่ยน Voucher
+      const response = await axios.post("http://localhost:3000/redeem_voucher", {
+        voucher: url,
+        phone: "0970756504",
+      });
+  
+      if (response.data.success) {
+        const amount = response.data.amount; // ดึงจำนวนเงินที่ได้รับ
+        const user_id = 2;
+        
+        // ส่ง Notification พร้อมจำนวนเงิน
+        await axios.post("http://localhost:3000/notifications", {
+          user_id,
+          notification: `You have received ${amount} THB for the exchange transaction. Thank you very much for using our service.`,
+        });
+  
+        alert("Voucher redeemed successfully!");
+        setUrl("");
+        
+      } else {
+        alert(`Failed: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("Error redeeming voucher:", error);
+      alert("An error occurred while redeeming the voucher");
     }
 
-    // Open the URL in the device's browser
-    
-    else 
-        {
 
-        }
-      
-    ;
+
+
+
+
+
+
+
+
+
   };
 
   return (
