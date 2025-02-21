@@ -11,7 +11,7 @@ const TrueMoneyComponent = () => {
         router.push(screen);
     };
   const [url, setUrl] = useState('');
-
+  
   const handleSend = async() => {
     // Basic URL validation (you might want more robust checks)
       
@@ -80,7 +80,7 @@ const TrueMoneyComponent = () => {
           style={styles.input}
           value={url}
           onChangeText={setUrl}
-          placeholder=""
+          placeholder="https://gift.truemoney.com/campaign/"
           autoCapitalize="none" // Prevent auto-capitalization of URL
           keyboardType="url" // Optimize keyboard for URL input
         />
