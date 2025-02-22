@@ -5,7 +5,7 @@ import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@
 
 const HomeScreen = () => {
   const [showModal,setShowModal] = useState(false);
-  
+  const [searchQuery, setSearchQuery] = useState(''); 
   const [stadiums, setStadiums] = useState([
     {
       id: "1",
@@ -32,10 +32,24 @@ const HomeScreen = () => {
       openHours: "OPEN 12.00 AM - 08.00 PM",
       phone: "089-404-2414",
       rating: 5.0,
-      image: "https://your-image-url.com/image3.jpg",
+      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
     },
     
   ]);
+
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+  const handleSearchSubmit = (event) => {
+      event.preventDefault();
+      setSearchQuery("");
+      
+  };
+  const filteredStadiums = stadiums.filter(stadium => 
+    stadium.name.toLowerCase().includes(searchQuery.toLowerCase())
+    
+  );
 
 //   useEffect(() => {
 //     axios.get("")
@@ -90,8 +104,13 @@ const HomeScreen = () => {
 
           {/* //search bar */}
           <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
-            <TextInput placeholder="SEARCH STADIUM" style={styles.searchInput} />
+            <Ionicons name="search" size={20} color="gray" style={styles.searchIcon}  />
+            <TextInput 
+                placeholder="SEARCH STADIUM" 
+                style={styles.searchInput} 
+                value={searchQuery} 
+                onChange={handleSearchChange} 
+              />
             <Ionicons name="filter" size={20} color="black" style={styles.searchIcon} />
           </View>
 
@@ -119,7 +138,7 @@ const HomeScreen = () => {
           {/* //all stadiums  */}
           <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
           <FlatList
-            data={stadiums}
+            data={filteredStadiums}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity>
@@ -161,7 +180,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: "bold", padding: 10 },
 
   card: { flexDirection: "row", backgroundColor: "white", margin: 10, borderRadius: 10, overflow: "hidden" },
-  cardImage: { width: 100, height: 150 },
+  cardImage: { flex:1 },
   cardContent: { flex: 1, padding: 30 },
   cardTitle: { fontSize: 18, fontWeight: "bold" },
   cardLocation: { fontSize: 15, color: "gray" },
