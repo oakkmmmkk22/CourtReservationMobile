@@ -44,7 +44,7 @@ const CreatePartyScreen = () => {
 
     const handleCreateParty = () => {
         console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
-        // Here you would typically send the data to your backend
+        //  Here you would typically send the data to your backend
         
         // axios.post("http://40.81.22.116:3000/login",{
         //     username:username,
@@ -71,17 +71,19 @@ const CreatePartyScreen = () => {
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
 
-            <View style={styles.header}> //header
+                {/* header */}
+            <View style={styles.header}> 
                 <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/find_friend")}/>
                     <Text style={styles.headerTitle}>Create Party</Text>
             </View>
 
-            <View style={styles.memberItem}> //username
+                {/* username */}
+            <View style={styles.memberItem}> 
                 <View style={styles.memberIcon} />  
                 <Text style={styles.memberName}>{memberName}</Text>
             </View>
             
-            //Topic
+            {/* Topic */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Topic:</Text>
                 <TextInput 
@@ -91,7 +93,7 @@ const CreatePartyScreen = () => {
                     onChangeText={setTopic} 
                 />
 
-                //Type sport
+                {/* Type sport */}
                 <Text style={styles.label}>Type:</Text>
                 <View style={styles.pickerContainer}> 
                     <Picker
@@ -107,7 +109,7 @@ const CreatePartyScreen = () => {
                     </Picker>
                 </View>
 
-                //Total people
+                {/* Total people */}
                 <Text style={styles.label}>Total:</Text>
                     <TextInput  
                     style={styles.input} 
@@ -115,7 +117,7 @@ const CreatePartyScreen = () => {
                     onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" 
                 />
                 
-                //Date
+                {/* /Date */}
                 <Text style={styles.label}>Date:</Text>
                 <TouchableOpacity style={styles.dateButton} onPress={() => setShowModal(true)}>
                     <Text>{formattedDate ? formattedDate : "Choose Date"}</Text>
@@ -147,7 +149,7 @@ const CreatePartyScreen = () => {
                     </View> 
                 </Modal>
                         
-                //Time               
+                {/* Time                */}
                 <Text style={styles.label}>Time:</Text>
                 <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
                     <Text>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
@@ -162,11 +164,11 @@ const CreatePartyScreen = () => {
                     />
                 )}
 
-                //Place
+                {/* Place */}
                 <Text style={styles.label}>Place:</Text>
                 
                 
-                //Description
+                {/* Description */}
                 <Text style={styles.label}>Description:</Text>
                 <TextInput
                     placeholder="Description"
@@ -177,7 +179,7 @@ const CreatePartyScreen = () => {
                     numberOfLines={3} 
                 />
 
-                //BTN Create
+                {/* BTN Create */}
                 <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
                     <Text style={styles.createButtonText}>Create Party</Text>
                 </TouchableOpacity>
