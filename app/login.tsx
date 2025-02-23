@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, TextInput, Button } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from "expo-router";
 import axios from "axios";
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 //http://10.0.2.2:3000 for emulator 
 //http://localhost:3000 for pc
 
@@ -11,29 +11,37 @@ export default function LoginScreen() {
     const router = useRouter(); // ใช้เปลี่ยนหน้า
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const submitLogin = () => {
-        axios.post("http://10.0.2.2:3000/login",{
-            username:username,
-            password:password
-        }).then((response) => {
-            console.log("oak here in login")
-            console.log(response.data)
-            if ( response.data.status ){
+    const submitLogin = async () => {
+        try {
+            const response = await axios.post("http://localhost:3000/login", {
+                username,
+                password,
+            });
+    
+            console.log("oak here in login");
+            console.log(response.data);
+    
+            if (response.data.status) {
                 console.log("Logged in successfully");
-                router.push('/home')
-            }
-            else{
+                await AsyncStorage.setItem("token", response.data.token);
+                const token = await AsyncStorage.getItem("token"); //token
+               // const decoded = jwtDecode(token); // test decode
+               // console.log(decoded.userData.id);
+                router.push("/home"); // ไปหน้า Home
+                
+                
+               
+                
+               // console.log("User Info:", decoded);
+    
+               
+            } else {
                 console.log("login false");
             }
-        })
-        .catch(error => {
+        } catch (error) {
             console.error("Axios error:", error.message);
-        });
-        
-        console.log(username, password)
-        // setUsername("")
-        // setPassword("")
-    }
+        }
+    };
 
     return (
         <View style={myStyleSheet.container}>

@@ -18,7 +18,7 @@ export default function Stadium() {
   
 //test api ผ่านแต่ยังไม่ได้ทดสอบผ่านตัวแปร และทดสอบดึงuserid
 
-  axios.get("http://10.0.2.2:3000/user/points/2")
+  axios.get("http://localhost:3000/user/points/2")
     
     .then((response) => {
     console.log("fin")

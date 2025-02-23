@@ -2,39 +2,56 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Linking, Alert } from 'react-native';
 import { useRouter } from "expo-router";
 import axios from "axios";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 
 const TrueMoneyComponent = () => {
-     const router = useRouter();
-     
-     const handleEditPress = (screen) => {
-        router.push(screen);
-    };
+  const router = useRouter();
   const [url, setUrl] = useState('');
   
-  const handleSend = async() => {
-    // Basic URL validation (you might want more robust checks)
-      
+  const handleEditPress = (screen) => {
+    router.push(screen);
+  };
+  
+  const handleSend = async () => {
     try {
-      // เรียก API แลกเปลี่ยน Voucher
+      // เรียก API เพื่อแลก Voucher
       const response = await axios.post("http://localhost:3000/redeem_voucher", {
         voucher: url,
-        phone: "0970756504",
+        phone: "0902236785",
       });
   
+      console.log("Redeem Response:", response.data); // ตรวจสอบข้อมูลที่ได้รับจาก API
+  
       if (response.data.success) {
-        const amount = response.data.amount; // ดึงจำนวนเงินที่ได้รับ
-        const user_id = 2;
-        
-        // ส่ง Notification พร้อมจำนวนเงิน
-        await axios.post("http://localhost:3000/notifications", {
-          user_id,
-          notification: `You have received ${amount} THB for the exchange transaction. Thank you very much for using our service.`,
+        const amount = response.data.amount;
+        console.log("Redeemed Amount:", amount);
+  
+        // ดึง token จาก AsyncStorage
+        const token = await AsyncStorage.getItem("token");
+        console.log("Token from AsyncStorage:", token);
+  
+        if (!token) {
+          throw new Error("No token found in AsyncStorage");
+        }
+  
+        // Decode token
+        const decoded = jwtDecode(token);
+        console.log("Decoded Token:", decoded);
+  
+        // เรียก API เพื่ออัพเดท exchange point
+        const responsed = await axios.put("http://localhost:3000/update_exchange_point", {
+          user_id: decoded.userData.id, // ใช้ user_id ที่ถูกต้อง
+          new_point: amount, // ส่ง new_point
         });
   
-        alert("Voucher redeemed successfully!");
-        setUrl("");
-        
+        console.log("Update Exchange Point Response:", responsed.data); // ตรวจสอบการตอบกลับจาก API
+  
+        if (responsed.data.success) {
+          console.log("Points updated successfully in database");
+        } else {
+          throw new Error("Failed to update exchange point");
+        }
       } else {
         alert(`Failed: ${response.data.message}`);
       }
@@ -42,17 +59,6 @@ const TrueMoneyComponent = () => {
       console.error("Error redeeming voucher:", error);
       alert("An error occurred while redeeming the voucher");
     }
-
-
-
-
-
-
-
-
-
-
-
   };
 
   return (

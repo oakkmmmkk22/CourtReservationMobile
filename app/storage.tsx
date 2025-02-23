@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ฟังก์ชันบันทึก user_id
-export const saveUserId = async (userId: string) => {
+export const savetoken = async (userId: string) => {
     try {
         await AsyncStorage.setItem('user_id', userId);
     } catch (error) {
@@ -10,7 +10,7 @@ export const saveUserId = async (userId: string) => {
 };
 
 // ฟังก์ชันดึง user_id
-export const getUserId = async () => {
+export const gettoken = async () => {
     try {
         const userId = await AsyncStorage.getItem('user_id');
         return userId; // ถ้าไม่มีค่า จะได้ null
@@ -21,7 +21,7 @@ export const getUserId = async () => {
 };
 
 // ฟังก์ชันลบ user_id (ถ้าต้องการ logout)
-export const removeUserId = async () => {
+export const removetoken = async () => {
     try {
         await AsyncStorage.removeItem('user_id');
     } catch (error) {
