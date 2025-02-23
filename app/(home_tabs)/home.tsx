@@ -4,8 +4,9 @@ import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@
 
 
 const HomeScreen = () => {
-  const [showModal,setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState(''); 
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchText, setSearchText] = useState(""); 
   const [stadiums, setStadiums] = useState([
     {
       id: "1",
@@ -39,17 +40,22 @@ const HomeScreen = () => {
 
 
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+      
+    
   };
   const handleSearchSubmit = (event) => {
-      event.preventDefault();
-      setSearchQuery("");
+      setSearchText(searchQuery);
+      setShowFilter(true);
+      // setSearchQuery("");
       
   };
   const filteredStadiums = stadiums.filter(stadium => 
-    stadium.name.toLowerCase().includes(searchQuery.toLowerCase())
+    stadium.name.toLowerCase().includes(searchText.toLowerCase()||searchQuery.toLowerCase())
+   
     
   );
+
+  
 
 //   useEffect(() => {
 //     axios.get("")
@@ -57,59 +63,23 @@ const HomeScreen = () => {
 //             setStadiums(response.data);
 //         })
 //         .catch(error => {
-            
+//             console.error("Error fetching data:", error);
 //         });
 // }, []);
 
+
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.logo}>sports</Text>
-        <View style={styles.pointsContainer}>
-          <Ionicons name="diamond" size={20} color="purple" />
-          <Text style={styles.points}>2,000</Text>
-          <Ionicons name="person-circle" size={30} color="white" onPress={() => setShowModal(true)} />
-        </View>
-      </View> */}
-          
-          {/* //not use becase wait header */}
-          <Modal visible={showModal} animationType="fade" transparent={true}>
-              <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-                  <View style={styles.centerview}>
-                      <TouchableWithoutFeedback>
-                          <View style={styles.modalview}>
-                            
-                              <TouchableOpacity style={styles.btn}>
-                                <Ionicons name="person" size={18} color="black"  />
-                                <Text style={{ marginLeft: 8}}>User</Text>
-                              </TouchableOpacity>
-                              <View style={styles.line}/>
-
-                              <TouchableOpacity style={styles.btn}>
-                                <Ionicons name="settings" size={18} color="black" />
-                                <Text style={{ marginLeft: 8 }}>Setting</Text>
-                              </TouchableOpacity>
-                              <View style={styles.line}/>
-                            
-                              <TouchableOpacity style={styles.btn}>
-                                <Ionicons name="log-out" size={18} color="black" />
-                                <Text style={{ marginLeft: 8 }}>Logout</Text>
-                              </TouchableOpacity>
-                            
-                          </View>
-                      </TouchableWithoutFeedback>
-                  </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-
+   
           {/* //search bar */}
           <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="gray" style={styles.searchIcon}  />
+
+            <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} onPress={handleSearchSubmit}  />  
             <TextInput 
                 placeholder="SEARCH STADIUM" 
                 style={styles.searchInput} 
                 value={searchQuery} 
-                onChange={handleSearchChange} 
+                onChangeText={setSearchQuery} 
               />
             <Ionicons name="filter" size={20} color="black" style={styles.searchIcon} />
           </View>
@@ -173,7 +143,7 @@ const styles = StyleSheet.create({
 
   searchContainer: { flexDirection: "row", backgroundColor: "white", margin: 10, padding: 10, borderRadius: 10 },
   searchIcon: { padding: 10 },
-  searchInput: { flex: 1 },
+  searchInput: { flex: 1,padding:10 },
 
   categoryContainer: { flexDirection: "row", justifyContent: "space-around", paddingVertical: 10 },
 
