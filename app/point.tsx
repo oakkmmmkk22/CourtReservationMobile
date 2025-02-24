@@ -37,7 +37,7 @@ const TrueMoneyComponent = () => {
   
         // Decode token
         const decoded = jwtDecode(token);
-        console.log("Decoded Token:", decoded.user_id);
+     
   
         // เรียก API เพื่ออัพเดท exchange point
         const responsed = await axios.put("http://localhost:3000/topup", {
