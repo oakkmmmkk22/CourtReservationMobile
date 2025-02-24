@@ -18,7 +18,7 @@ const TrueMoneyComponent = () => {
       // เรียก API เพื่อแลก Voucher
       const response = await axios.post("http://localhost:3000/redeem_voucher", {
         voucher: url,
-        phone: "0902236785",
+        phone: "0892374167",
       });
   
       console.log("Redeem Response:", response.data); // ตรวจสอบข้อมูลที่ได้รับจาก API
@@ -37,12 +37,12 @@ const TrueMoneyComponent = () => {
   
         // Decode token
         const decoded = jwtDecode(token);
-        console.log("Decoded Token:", decoded);
+        console.log("Decoded Token:", decoded.user_id);
   
         // เรียก API เพื่ออัพเดท exchange point
-        const responsed = await axios.put("http://localhost:3000/update_exchange_point", {
-          user_id: decoded.userData.id, // ใช้ user_id ที่ถูกต้อง
-          new_point: amount, // ส่ง new_point
+        const responsed = await axios.put("http://localhost:3000/topup", {
+          user_id:decoded.userData.id, // ใช้ user_id ที่ถูกต้อง
+          amount: amount, // ส่ง new_point
         });
   
         console.log("Update Exchange Point Response:", responsed.data); // ตรวจสอบการตอบกลับจาก API

@@ -25,10 +25,11 @@ export default function LoginScreen() {
                 console.log("Logged in successfully");
                 await AsyncStorage.setItem("token", response.data.token);
                 const token = await AsyncStorage.getItem("token"); //token
-               // const decoded = jwtDecode(token); // test decode
-               // console.log(decoded.userData.id);
+                const decoded = jwtDecode(token); // test decode
+                console.log(decoded.userData.id);
                 router.push("/home"); // ไปหน้า Home
                 
+                console.log("Decoded Token:", decoded.userData.id);
                 
                
                 
