@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { useRouter } from "expo-router";
 import { Ionicons } from '@expo/vector-icons'; // Import for icons (if needed)
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SettingPage() {
     const router = useRouter();
@@ -27,9 +28,12 @@ export default function SettingPage() {
         // Add more settings options as needed
     ];
 
-    const handlePress = (route) => {
+    const handlePress = async (route) => {
         if (route === "/logout") {
             // Handle logout logic here (e.g., clear tokens, etc.)
+            await AsyncStorage.removeItem("token");
+            const token = await AsyncStorage.getItem("token"); 
+            console.log("Token:",token );
             console.log("Logging out...");
             // After logout logic, navigate or reset navigation state if needed
             router.push("/login"); // Example: navigate to login screen

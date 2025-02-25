@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, TextInput, Button } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from "expo-router";
 import axios from "axios";
+import api from './axiosinstance';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignUpScreen() {
     const router = useRouter(); // ใช้เปลี่ยนหน้า
@@ -9,19 +11,21 @@ export default function SignUpScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
-    const submitSignUp = () => {
+    const submitSignUp =  () => {
         console.log(username, password)
         if(email !== "" && password !== "" && confirm !== "") {
             if(password === confirm) {
-                axios.post("http://localhost:3000/signup", {
+                api.post("/signup", {
                     username:username,
                     email: email,
                     password: password,
                     user_type: "client",
-                    points:100
+                    points:0
                 }).then((response) => {
                     console.log(response.data);
                     if(response.data.success){
+                         AsyncStorage.setItem("token", response.data.token);
+                         const token =  AsyncStorage.getItem("token"); //token
                         router.push('/home')
                     }
                 })

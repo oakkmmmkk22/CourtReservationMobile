@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import api from './axiosinstance';
 
 const TrueMoneyComponent = () => {
   const router = useRouter();
@@ -16,9 +17,9 @@ const TrueMoneyComponent = () => {
   const handleSend = async () => {
     try {
       // เรียก API เพื่อแลก Voucher
-      const response = await axios.post("http://localhost:3000/redeem_voucher", {
+      const response = await api.post("/redeem_voucher", {
         voucher: url,
-        phone: "0892374167",
+        phone: "0970756504",
       });
   
       console.log("Redeem Response:", response.data); // ตรวจสอบข้อมูลที่ได้รับจาก API
@@ -40,7 +41,7 @@ const TrueMoneyComponent = () => {
      
   
         // เรียก API เพื่ออัพเดท exchange point
-        const responsed = await axios.put("http://localhost:3000/topup", {
+        const responsed = await api.put("/topup", {
           user_id:decoded.userData.id, // ใช้ user_id ที่ถูกต้อง
           amount: amount, // ส่ง new_point
         });
@@ -49,15 +50,16 @@ const TrueMoneyComponent = () => {
   
         if (responsed.data.success) {
           console.log("Points updated successfully in database");
+          Alert.alert("Sucessfull","Top up complete");
         } else {
           throw new Error("Failed to update exchange point");
         }
       } else {
-        alert(`Failed: ${response.data.message}`);
+        Alert.alert(`Failed: ${response.data.message}`);
       }
     } catch (error) {
       console.error("Error redeeming voucher:", error);
-      alert("An error occurred while redeeming the voucher");
+      Alert.alert("An error occurred while redeeming the voucher");
     }
   };
 

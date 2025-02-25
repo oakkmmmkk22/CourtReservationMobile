@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import api from './axiosinstance';
 //http://10.0.2.2:3000 for emulator 
 //http://localhost:3000 for pc
 
@@ -13,7 +14,7 @@ export default function LoginScreen() {
     const [password, setPassword] = useState("");
     const submitLogin = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/login", {
+            const response = await api.post("/login", {
                 username,
                 password,
             });
