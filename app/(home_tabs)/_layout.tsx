@@ -33,7 +33,7 @@ export default function Stadium() {
     };
 
     fetchPoint();
-    const interval = setInterval(fetchPoint, 5000);
+    const interval = setInterval(fetchPoint, 10000);
 
     return () => clearInterval(interval);
 }, []);
