@@ -62,10 +62,7 @@ export default function Stadium() {
                     <View style={styles.pointsContainer}>
                       
                     <TouchableOpacity onPress={() => router.push('/point')}>
-                <Image
-                  source={require('../../assets/images/crystal.png')} // เปลี่ยนเป็น URL หรือ path ของรูปที่คุณต้องการ
-                  style={{ width: 30, height: 30, marginLeft: 10 }}
-                />
+                 <Text style={styles.price}>💎 </Text>
               </TouchableOpacity>
                       <Text style={styles.points}>{crytal}</Text>
                       <Ionicons name="person-circle" size={35} color="white" onPress={() => setShowModal(true)} />
@@ -138,6 +135,20 @@ export default function Stadium() {
         }} 
       />
       <Tabs.Screen 
+        name='cart'  
+        options={{ 
+          title: " Cart", 
+          headerShown: true,
+          tabBarItemStyle: { display: 'flex' }, 
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#ffffff',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="shopping-cart" size={size} color={color} />
+          ),
+        }} 
+      />
+     
+      <Tabs.Screen 
         name='setting'  
         options={{ 
           title: "Setting", 
@@ -170,7 +181,7 @@ export default function Stadium() {
       <Tabs.Screen 
         name='changeemail'  
         options={{ 
-          title: "changeemail", 
+          title: "change email", 
           tabBarItemStyle: { display: 'none' }, 
           headerShown: true,
           headerLeft: () => (
@@ -202,7 +213,7 @@ export default function Stadium() {
       <Tabs.Screen 
         name='changeusername'  
         options={{ 
-          title: "changeusername", 
+          title: "change username", 
           tabBarItemStyle: { display: 'none' }, 
           headerShown: true,
           headerLeft: () => (
@@ -279,5 +290,9 @@ const styles = StyleSheet.create({
     color: "white", 
     marginHorizontal: 5 
   },
+  price: {
+    fontSize: 16,
+    marginVertical: 5,
+},
 
 })

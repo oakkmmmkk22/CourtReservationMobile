@@ -5,6 +5,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import api from './axiosinstance';
+import { Ionicons } from '@expo/vector-icons';
 
 const TrueMoneyComponent = () => {
   const router = useRouter();
@@ -74,10 +75,7 @@ const TrueMoneyComponent = () => {
       {/* Amount Display */}
       <View style={styles.amountContainer}>
         <Text style={styles.amountText}>1 BATH = 1</Text>
-        <Image
-          source={require('../assets/images/crystal.png')} // Replace with your icon path
-          style={styles.crystalIcon}
-        />
+         <Text style={styles.price}>💎 </Text>
       </View>
 
       {/* URL Input */}
@@ -155,6 +153,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  price: {
+    fontSize: 20,
+    marginVertical: 5,
+},
 });
 
 export default TrueMoneyComponent;

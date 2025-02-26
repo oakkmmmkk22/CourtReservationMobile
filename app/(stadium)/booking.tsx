@@ -1,52 +1,46 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function BookingScreen() {
     const [selectedSport, setSelectedSport] = useState("BADMINTON");
+    const [cartVisible, setCartVisible] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
+    const router = useRouter();
 
     const courts = [
         { id: "1", name: "BADMINTON", zone: "Zone 1", price: 150, available: true },
         { id: "2", name: "BADMINTON", zone: "Zone 2", price: 150, available: false },
     ];
 
+    const addToCart = (item) => {
+        setCartItems([...cartItems, item]);
+        setCartVisible(true);
+    };
+
     return (
         <View style={styles.container}>
-            {/* Facilities Section */}
-            <View style={styles.facilities}>
-                {["Toilet", "Parking Sport", "Lending", "Room", "Store", "CCTV"].map((item, index) => (
-                    <View key={index} style={styles.facilityItem}>
-                        <Ionicons name="checkmark-circle" size={18} color="green" />
-                        <Text style={styles.facilityText}>{item}</Text>
-                    </View>
-                ))}
-            </View>
+            {/* Cart Button */}
+            <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/cart')}>
+                <Ionicons name="cart" size={30} color="blue" />
+            </TouchableOpacity>
 
-            {/* Period Selection */}
-            <View style={styles.periodContainer}>
-                <Picker
-                    selectedValue={selectedSport}
-                    onValueChange={(itemValue) => setSelectedSport(itemValue)}
-                    style={styles.picker}
-                >
-                    <Picker.Item label="BADMINTON" value="BADMINTON" />
-                    {/* เพิ่มกีฬาอื่นๆ ได้ที่นี่ */}
-                </Picker>
-                <View style={styles.dateTimeContainer}>
-                    <TouchableOpacity style={styles.dateTimeButton}>
-                        <Ionicons name="calendar" size={18} color="white" />
-                        <Text style={styles.dateTimeText}>25/12/2567</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.dateTimeButton}>
-                        <Ionicons name="time" size={18} color="white" />
-                        <Text style={styles.dateTimeText}>20.00 - 21.00</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.searchButton}>
-                        <Ionicons name="search" size={18} color="blue" />
-                    </TouchableOpacity>
+            {/* Cart Modal */}
+            <Modal visible={cartVisible} transparent animationType="slide">
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Shopping Cart</Text>
+                        {cartItems.map((item, index) => (
+                            <Text key={index} style={styles.cartItem}>{item.name} - {item.zone}</Text>
+                        ))}
+                        <TouchableOpacity onPress={() => setCartVisible(false)} style={styles.closeButton}>
+                            <Text style={styles.closeText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            </Modal>
 
             {/* Court List */}
             <FlatList
@@ -58,7 +52,7 @@ export default function BookingScreen() {
                         <Text style={styles.zone}>{item.zone}</Text>
                         <Text style={styles.price}>💎 {item.price} /Hr</Text>
                         {item.available ? (
-                            <TouchableOpacity style={styles.addButton}>
+                            <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item)}>
                                 <Text style={styles.addButtonText}>Add</Text>
                             </TouchableOpacity>
                         ) : (
@@ -79,53 +73,39 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: "#fff",
     },
-    facilities: {
-        flexDirection: "row",
-        flexWrap: "wrap",
+    cartButton: {
+        position: "absolute",
+        top: 20,
+        right: 20,
+        zIndex: 10,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    modalContent: {
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
         marginBottom: 10,
     },
-    facilityItem: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginRight: 10,
+    cartItem: {
+        fontSize: 16,
         marginBottom: 5,
     },
-    facilityText: {
-        marginLeft: 5,
-        fontSize: 14,
-        color: "black",
+    closeButton: {
+        marginTop: 10,
     },
-    periodContainer: {
-        backgroundColor: "#eef",
-        padding: 10,
-        borderRadius: 10,
-        marginBottom: 15,
-    },
-    picker: {
-        backgroundColor: "white",
-        borderRadius: 5,
-        marginBottom: 10,
-    },
-    dateTimeContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    dateTimeButton: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "blue",
-        padding: 8,
-        borderRadius: 5,
-    },
-    dateTimeText: {
-        color: "white",
-        marginLeft: 5,
-    },
-    searchButton: {
-        backgroundColor: "white",
-        padding: 8,
-        borderRadius: 5,
+    closeText: {
+        color: "red",
+        fontSize: 16,
     },
     card: {
         backgroundColor: "white",
