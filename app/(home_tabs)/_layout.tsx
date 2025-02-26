@@ -18,19 +18,32 @@ export default function Stadium() {
   
 
   useEffect(() => {
-    api.get("/point")
-        .then((response) => {
-            console.log("API Response:", response.data);
-            setCrytal(response.data[0].point);  // ✅ เข้าถึงค่าจาก array
-        })
-        .catch((error) => {
+    const fetchPoint = async () => {
+        try {
+           
+            const response = await api.get("/point");
+
+            if (response.data.length > 0) {
+                const newPoint = response.data[0].point;
+                setCrytal((prevPoint) => (prevPoint !== newPoint ? newPoint : prevPoint)); // ✅ ป้องกัน re-render ถ้าค่าเดิม
+            }
+        } catch (error) {
             console.error("API Error:", error);
-        });
+        }
+    };
+
+    fetchPoint();
+    const interval = setInterval(fetchPoint, 5000);
+
+    return () => clearInterval(interval);
 }, []);
 
 
+
+
+
   
-;
+
 
 
 
