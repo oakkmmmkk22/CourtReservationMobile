@@ -17,52 +17,72 @@ const TrueMoneyComponent = () => {
   
   const handleSend = async () => {
     try {
-      // เรียก API เพื่อแลก Voucher
-      const response = await api.post("/redeem_voucher", {
-        voucher: url,
-        phone: "0970756504",
-      });
-  
-      console.log("Redeem Response:", response.data); // ตรวจสอบข้อมูลที่ได้รับจาก API
-  
-      if (response.data.success) {
+        // 🎟️ Redeem Voucher
+        const response = await api.post("/redeem_voucher", {
+            voucher: url,
+            phone: "0954755865",
+        });
+
+        console.log("Redeem Response:", response.data);
+
+        if (!response.data.success) {
+            return Alert.alert("Failed", response.data.message);
+        }
+
         const amount = response.data.amount;
         console.log("Redeemed Amount:", amount);
-  
-        // ดึง token จาก AsyncStorage
+
+        // 🔑 ดึง token จาก AsyncStorage
         const token = await AsyncStorage.getItem("token");
         console.log("Token from AsyncStorage:", token);
-  
+
         if (!token) {
-          throw new Error("No token found in AsyncStorage");
+            throw new Error("No token found in AsyncStorage");
         }
-  
-        // Decode token
+
+        // 🆔 Decode token
         const decoded = jwtDecode(token);
-     
-  
-        // เรียก API เพื่ออัพเดท exchange point
-        const responsed = await api.put("/topup", {
-          user_id:decoded.userData.id, // ใช้ user_id ที่ถูกต้อง
-          amount: amount, // ส่ง new_point
-        });
-  
-        console.log("Update Exchange Point Response:", responsed.data); // ตรวจสอบการตอบกลับจาก API
-  
-        if (responsed.data.success) {
-          console.log("Points updated successfully in database");
-          Alert.alert("Sucessfull","Top up complete");
-        } else {
-          throw new Error("Failed to update exchange point");
+        if (!decoded || !decoded.userData || !decoded.userData.id) {
+            throw new Error("Invalid token structure");
         }
-      } else {
-        Alert.alert(`Failed: ${response.data.message}`);
-      }
+        
+        const userId = decoded.userData.id;
+
+        // 💰 อัพเดท exchange point
+        const topupResponse = await api.put("/topup", {
+            user_id: userId,
+            amount: amount,
+        });
+
+        console.log("Update Exchange Point Response:", topupResponse.data);
+
+        if (!topupResponse.data.success) {
+            throw new Error("Failed to update exchange point");
+        }
+
+        console.log("Points updated successfully in database");
+        Alert.alert("Successful", "Top up complete");
+
+        // 📥 บันทึก transaction ใน /deposit
+        const depoResponse = await api.post("/deposit", {
+            user_id: userId,
+            amount: amount,
+        });
+
+        console.log("Deposit Response:", depoResponse.data);
+
+        if (!depoResponse.data.success) {
+            throw new Error("Failed to insert transaction");
+        }
+
+        console.log("Transaction added successfully");
+
     } catch (error) {
-      console.error("Error redeeming voucher:", error);
-      Alert.alert("An error occurred while redeeming the voucher");
+        console.error("Error:", error);
+        Alert.alert("Error", error.message || "An error occurred while processing your request.");
     }
-  };
+};
+
 
   return (
     <View style={styles.container}>

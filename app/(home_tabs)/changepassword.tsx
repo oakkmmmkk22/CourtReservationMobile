@@ -51,7 +51,7 @@ export default function ChangePasswordPage() {
                 onChangeText={setConfirmNewPassword}
             />
 
-            <Button title="Save Changes" onPress={handleChangePassword} />
+            <Button title="Save Changes" color="black" onPress={handleChangePassword} />
         </View>
     );
 }

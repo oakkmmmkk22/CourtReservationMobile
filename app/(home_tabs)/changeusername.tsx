@@ -46,7 +46,7 @@ export default function ChangeUsernamePage() {
                 onChangeText={setPassword}
             />
 
-            <Button title="Save Changes" onPress={handleChangeUsername} />
+            <Button title="Save Changes" color="black" onPress={handleChangeUsername} />
         </View>
     );
 }

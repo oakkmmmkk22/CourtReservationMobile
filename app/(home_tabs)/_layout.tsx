@@ -6,6 +6,8 @@ import React, { useState ,useEffect} from "react";
 import { Pencil } from 'lucide-react-native';
 import axios from "axios";
 import api from '../axiosinstance';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 
 export default function Stadium() {
@@ -17,26 +19,27 @@ export default function Stadium() {
   const [crytal,setCrytal] = useState(0);
   
 
-  useEffect(() => {
-    const fetchPoint = async () => {
+  useFocusEffect(
+    useCallback(() => {
+      const fetchPoint = async () => {
         try {
-           
-            const response = await api.get("/point");
-
-            if (response.data.length > 0) {
-                const newPoint = response.data[0].point;
-                setCrytal((prevPoint) => (prevPoint !== newPoint ? newPoint : prevPoint)); // ✅ ป้องกัน re-render ถ้าค่าเดิม
-            }
+          const response = await api.get("/point");
+          if (response.data.length > 0) {
+            setCrytal(response.data[0].point);
+          }
         } catch (error) {
-            console.error("API Error:", error);
+          console.error("API Error:", error);
         }
-    };
-
-    fetchPoint();
-    const interval = setInterval(fetchPoint, 10000);
-
-    return () => clearInterval(interval);
-}, []);
+      };
+  
+      fetchPoint();
+      const interval = setInterval(fetchPoint, 10000);
+  
+      return () => {
+        clearInterval(interval); // หยุด Interval เมื่อออกจากหน้า
+      };
+    }, [])
+  );
 
 
 

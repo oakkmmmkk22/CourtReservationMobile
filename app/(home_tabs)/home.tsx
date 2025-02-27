@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { useRouter } from "expo-router";
 
 const HomeScreen = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(''); 
   const [showFilter, setShowFilter] = useState(false);
   const [searchText, setSearchText] = useState(""); 
@@ -111,7 +112,10 @@ const HomeScreen = () => {
             data={filteredStadiums}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/booking')}>
+                {/* //input some const for api*/}
+
+
                 <View style={styles.card}>
                   <Image source={{ uri: item.image }} style={styles.cardImage} />
                   <View style={styles.cardContent}>
