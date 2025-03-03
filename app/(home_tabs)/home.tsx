@@ -1,44 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import axios from "axios";
+import api from "../axiosinstance";
+
+interface Stadium {
+  id: string;
+  name: string;
+  location: string;
+  open_hour: string;
+  close_hour: string;
+  rating: number;
+  phone_number:string;
+  pictures:[];
+}
+
 
 const HomeScreen = () => {
-  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(''); 
   const [showFilter, setShowFilter] = useState(false);
   const [searchText, setSearchText] = useState(""); 
-  const [stadiums, setStadiums] = useState([
-    {
-      id: "1",
-      name: "Ruammitr Court",
-      location: "SRIRACHA, CHONBURI",
-      openHours: "OPEN 12.00 AM - 08.00 PM",
-      phone: "089-404-2414",
-      rating: 5.0,
-      image: "https://your-image-url.com/image1.jpg",
-    },
-    {
-      id: "2",
-      name: "Muay STADIUM",
-      location: "SRIRACHA, CHONBURI",
-      openHours: "OPEN 12.00 AM - 08.00 PM",
-      phone: "089-404-2414",
-      rating: 5.0,
-      image: "https://your-image-url.com/image2.jpg",
-    },
-    {
-      id: "3",
-      name: "Muay STADIUM",
-      location: "SRIRACHA, CHONBURI",
-      openHours: "OPEN 12.00 AM - 08.00 PM",
-      phone: "089-404-2414",
-      rating: 5.0,
-      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    },
+  const [stadiums, setStadiums] = useState<Stadium[]>([]);
+    // {
+    //   id: "1",
+    //   name: "Ruammitr Court",
+    //   location: "SRIRACHA, CHONBURI",
+    //   openHours: "OPEN 12.00 AM - 08.00 PM",
+    //   phone: "089-404-2414",
+    //   rating: 5.0,
+    //   image: "https://your-image-url.com/image1.jpg",
+    // },
+    // {
+    //   id: "2",
+    //   name: "Muay STADIUM",
+    //   location: "SRIRACHA, CHONBURI",
+    //   openHours: "OPEN 12.00 AM - 08.00 PM",
+    //   phone: "089-404-2414",
+    //   rating: 5.0,
+    //   image: "https://your-image-url.com/image2.jpg",
+    // },
+    // {
+    //   id: "3",
+    //   name: "Muay STADIUM",
+    //   location: "SRIRACHA, CHONBURI",
+    //   openHours: "OPEN 12.00 AM - 08.00 PM",
+    //   phone: "089-404-2414",
+    //   rating: 5.0,
+    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    // },
     
-  ]);
+  // ]);
 
+    useEffect(() => {
+      api.get("/test")
+          .then(response => {
+            if (Array.isArray(response.data.data)) {
+              const filteredData = response.data.data.map((stadium: any) => ({
+                id: stadium.id,
+                name: stadium.name,
+                location: stadium.location,
+                open_hour: stadium.open_hour,
+                close_hour: stadium.close_hour,
+                rating: stadium.rating,
+                phone_number: stadium.phone_number,
+                pictures: stadium.pictures,
+              }));
+              setStadiums(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
+            } else {
+              console.error("Expected an array but got:", response.data.data);
+            }
+          })
+          .catch(error => {
+              console.error("Error fetching data:", error);
+          });
+  }, []);
 
   const handleSearchChange = (event) => {
       
@@ -58,15 +93,6 @@ const HomeScreen = () => {
 
   
 
-//   useEffect(() => {
-//     axios.get("")
-//         .then(response => {
-//             setStadiums(response.data);
-//         })
-//         .catch(error => {
-//             console.error("Error fetching data:", error);
-//         });
-// }, []);
 
 
   return (
@@ -111,20 +137,18 @@ const HomeScreen = () => {
           <FlatList
             data={filteredStadiums}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => router.push('/booking')}>
-                {/* //input some const for api*/}
-
-
+            renderItem={({ item }: { item: Stadium }) => (
+              <TouchableOpacity>
                 <View style={styles.card}>
-                  <Image source={{ uri: item.image }} style={styles.cardImage} />
+                  <Image source={{ uri: item.pictures }} style={styles.cardImage} />
                   <View style={styles.cardContent}>
                     <Text style={styles.cardTitle}>{item.name}</Text>
                     <Text style={styles.cardLocation}>{item.location}</Text>
-                    <Text style={styles.cardHours}>{item.openHours}</Text>
+                    <Text style={styles.cardHours}>{item.open_hour}</Text>
+                    <Text style={styles.cardHours}>{item.close_hour}</Text>
                     <View style={styles.cardFooter}>
                       <Ionicons name="call" size={18} color="green" />
-                      <Text style={styles.cardPhone}>{item.phone}</Text>
+                      <Text style={styles.cardPhone}>{item.phone_number}</Text>
                       <MaterialIcons name="star" size={20} color="gold" />
                       <Text style={styles.cardRating}>{item.rating}</Text>
                     </View>
