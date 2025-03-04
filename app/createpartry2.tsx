@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handl
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useRouter } from "expo-router";
+import api from './axiosinstance';
 // import axios from "axios";
 
 const CreatePartyScreen = () => {
@@ -14,7 +15,7 @@ const CreatePartyScreen = () => {
     const [topic, setTopic] = useState(""); // Initial value
     const [type, setType] = useState('badminton');
     const [total, setTotal] = useState(1);
-    const [date, setDate] = useState(new Date());
+    // const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
     const [description, setDescription] = useState(""); // Initial value
     const [showTimepicker, setShowTimepicker] = useState(false);
@@ -43,30 +44,39 @@ const CreatePartyScreen = () => {
     
 
     const handleCreateParty = () => {
-        console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
         //  Here you would typically send the data to your backend
+        console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
+        if(topic!="" && type!="" && formattedDate!="" && formattedTime!="" && description!=""){
+                api.post("",{
+                    topic:topic,
+                    type:type,
+                    total:total,
+                    formattedDate:formattedDate,
+                    formattedTime:formattedTime,
+                    description:description,
+                })
+                .then((response) => {
+                    console.log(response.data)
+                    if ( response.data.status ){
+                        console.log("Create successfully");
+                        router.push('/home')
+                    }
+                    else{
+                        console.log("Create false");
+                    }
+                })
+                .catch((error) => {
+                console.error("Error fetching data: ", error);
+            });
+            // console.log(username, password)
+            // setUsername("")
+            // setPassword("")
+        }else{
+                // setTopic("Wrong!!!");
+                
+            }
         
-        // axios.post("http://40.81.22.116:3000/login",{
-        //     username:username,
-        //     password:password,
-        // })
-        // .then((response) => {
-        //     console.log(response.data)
-        //     if ( response.data.status ){
-        //         console.log("Logged in successfully");
-        //         router.push('/home')
-        //     }
-        //     else{
-        //         console.log("login false");
-        //     }
-        // })
-        // .catch((error) => {
-        //   console.error("Error fetching data: ", error);
-        // });
-        // console.log(username, password)
-        // setUsername("")
-        // setPassword("")
-    };
+        }
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
@@ -92,7 +102,7 @@ const CreatePartyScreen = () => {
                     value={topic} 
                     onChangeText={setTopic} 
                 />
-
+                {/* <Text style={styles.wrong}>{topic}</Text> */}
                 {/* Type sport */}
                 <Text style={styles.label}>Type:</Text>
                 <View style={styles.pickerContainer}> 
@@ -152,7 +162,7 @@ const CreatePartyScreen = () => {
                 {/* Time                */}
                 <Text style={styles.label}>Time:</Text>
                 <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
-                    <Text>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                    <Text>Choose Time</Text>
                 </TouchableOpacity>
                 {showTimepicker && (
                     <DateTimePicker
@@ -316,6 +326,11 @@ const styles = StyleSheet.create({
         alignItems:'center'
         
       },
+      wrong:{
+        fontSize: 15,
+        color:'red',
+        
+      }
       
 
 });
