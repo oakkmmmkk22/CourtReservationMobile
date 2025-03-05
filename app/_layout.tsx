@@ -18,6 +18,8 @@ export default function RootLayout() {
       <Stack.Screen name="(home_tabs)" options={{ title: "(home_tabs)", headerShown:false }} /> 
       <Stack.Screen name="(home_tabs)/home" options={{ title: "(home_tabs)/home", headerShown:false }} /> 
       <Stack.Screen name="(stadium)" options={{ title: "(stadium)", headerShown:false }} /> 
+      <Stack.Screen name="(home_tabs)/cart" options={{title: "(home_tabs)/cart" , headerShown:false}}/>
+      <Stack.Screen name="pay-slip" options={{title: "pay-slip" , headerShown:false}}/>
     </Stack>
   );
 }
