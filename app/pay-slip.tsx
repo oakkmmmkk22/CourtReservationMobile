@@ -73,7 +73,7 @@ const Slip = () => {
         </View>
 
         {/* ผู้ดำเนินการ */}
-        <View style={styles.row}>
+        <View style={styles.summary}>
           <Text style={styles.label}>Operator:</Text>
           <Text style={styles.value}>Admin</Text>
         </View>
