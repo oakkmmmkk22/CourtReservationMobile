@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useRouter } from "expo-router";
 import api from './axiosinstance';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from 'jwt-decode';
 // import axios from "axios";
 
 const CreatePartyScreen = () => {
@@ -19,30 +21,45 @@ const CreatePartyScreen = () => {
     const [time, setTime] = useState(new Date());
     const [description, setDescription] = useState(""); // Initial value
     const [showTimepicker, setShowTimepicker] = useState(false);
-    const [memberName, setMemberName] = useState("Username");
+    const [memberName, setMemberName] = useState("");
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [formattedDate, setFormattedDate] = useState("");
-    
+    const [wrongt,setWrongT] = useState("");
+    const [wrongTime,setWrongTime] = useState("");
+    const [wrongDate,setWrongDate] = useState("");
+    const [wrongDes,setWrongDes] = useState("");
 
     // const onChangeTime = (event, selectedTime) => {
     //     const currentTime = selectedTime || time;
     //     setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
     //     setTime(currentTime);
     // };
-    
-    const onChangeTime = (event, selectedTime) => {
-        setShowTimepicker(false); 
-        if (selectedTime) {
-            setTime(selectedTime);   
-            const hours = selectedTime.getHours().toString().padStart(2, "0");
-            const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
-            setFormattedTime(`${hours}:${minutes}`);
-        
-        }
+    const getToken = async () => {
+        const token = await AsyncStorage.getItem("token");
+        const decoded = jwtDecode(token); // test decode   
+        setMemberName(decoded.userData.username);
     };
-    
+   
 
+        
+        const onChangeTime = (event, selectedTime) => {
+            setShowTimepicker(false); 
+            if (selectedTime) {
+                setTime(selectedTime);   
+                const hours = selectedTime.getHours().toString().padStart(2, "0");
+                const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
+                setFormattedTime(`${hours}:${minutes}`);
+            
+            }
+        };
+
+
+
+    
+   
+    
+    
     const handleCreateParty = () => {
         //  Here you would typically send the data to your backend
         console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
@@ -72,7 +89,19 @@ const CreatePartyScreen = () => {
             // setUsername("")
             // setPassword("")
         }else{
-                // setTopic("Wrong!!!");
+                if(topic==""){
+
+                    setWrongT("*input Topic");
+                }
+                if(formattedDate ==""){
+                    setWrongDate("*input Date")
+                }
+                if(formattedTime==""){
+                    setWrongTime("*input Time");
+                }
+                if(description==""){
+                    setWrongDes("*input Description");
+                }
                 
             }
         
@@ -101,8 +130,10 @@ const CreatePartyScreen = () => {
                     style={styles.input} 
                     value={topic} 
                     onChangeText={setTopic} 
+                    placeholderTextColor={"lightgray"}
                 />
-                {/* <Text style={styles.wrong}>{topic}</Text> */}
+                <Text style={styles.wrong}>{wrongt}</Text> 
+
                 {/* Type sport */}
                 <Text style={styles.label}>Type:</Text>
                 <View style={styles.pickerContainer}> 
@@ -158,6 +189,8 @@ const CreatePartyScreen = () => {
                         </View>
                     </View> 
                 </Modal>
+                <Text style={styles.wrong}>{wrongDate}</Text> 
+
                         
                 {/* Time                */}
                 <Text style={styles.label}>Time:</Text>
@@ -173,7 +206,8 @@ const CreatePartyScreen = () => {
                         onChange={onChangeTime}
                     />
                 )}
-
+                <Text style={styles.wrong}>{wrongTime}</Text> 
+                
                 {/* Place */}
                 <Text style={styles.label}>Place:</Text>
                 
@@ -187,7 +221,10 @@ const CreatePartyScreen = () => {
                     onChangeText={setDescription}
                     multiline={true}
                     numberOfLines={3} 
+                    placeholderTextColor={"lightgray"}
+
                 />
+                <Text style={styles.wrong}>{wrongDes}</Text> 
 
                 {/* BTN Create */}
                 <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
