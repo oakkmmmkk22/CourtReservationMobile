@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from "expo-router";
-
+import api from '../axiosinstance';
 export default function ChangePasswordPage() {
     const router = useRouter();
     const [currentPassword, setCurrentPassword] = useState("");
@@ -12,8 +12,28 @@ export default function ChangePasswordPage() {
         
         
             const passwordCorrect = true;
-        if (newPassword == confirmNewPassword) {
-           //axios
+        if (newPassword === confirmNewPassword) {
+           
+                api.put("/change_password", {
+                    
+                    oldPassword : currentPassword,
+                    newPassword: newPassword,
+                   
+                   
+                }).then((response) => {
+                    console.log(response.data);
+                    if(response.data.success){
+                         
+                        router.push('/account');
+                        
+                        
+                    }
+                })
+                .catch(error => {
+                    console.error("Axios error:", error.message);
+                });
+            
+
             
 
 

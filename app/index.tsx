@@ -3,7 +3,6 @@ import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
   const router = useRouter(); // ใช้เปลี่ยนหน้า
-
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 
@@ -20,8 +19,8 @@ export default function HomeScreen() {
       <Button title="Go to my_booking" onPress={() => router.push("/(home_tabs)/my_booking")} />
       <Button title="Go to booking" onPress={() => router.push("/(stadium)/booking")} />
       <Button title="Go to testapi" onPress={() => router.push("/testapi")} />
-     
-
+      <Button title="Go to cart" onPress={()=> router.push("/(home_tabs)/cart")}></Button>
+      <Button title="Go to slip" onPress={()=> router.push("/pay-slip")}></Button>
     </View>
   );
 }

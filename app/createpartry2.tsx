@@ -6,6 +6,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handl
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useRouter } from "expo-router";
+import api from './axiosinstance';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from 'jwt-decode';
 // import axios from "axios";
 
 const CreatePartyScreen = () => {
@@ -14,59 +17,95 @@ const CreatePartyScreen = () => {
     const [topic, setTopic] = useState(""); // Initial value
     const [type, setType] = useState('badminton');
     const [total, setTotal] = useState(1);
-    const [date, setDate] = useState(new Date());
+    // const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
     const [description, setDescription] = useState(""); // Initial value
     const [showTimepicker, setShowTimepicker] = useState(false);
-    const [memberName, setMemberName] = useState("Username");
+    const [memberName, setMemberName] = useState("");
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [formattedDate, setFormattedDate] = useState("");
-    
+    const [wrongt,setWrongT] = useState("");
+    const [wrongTime,setWrongTime] = useState("");
+    const [wrongDate,setWrongDate] = useState("");
+    const [wrongDes,setWrongDes] = useState("");
 
     // const onChangeTime = (event, selectedTime) => {
     //     const currentTime = selectedTime || time;
     //     setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
     //     setTime(currentTime);
     // };
+    const getToken = async () => {
+        const token = await AsyncStorage.getItem("token");
+        const decoded = jwtDecode(token); // test decode   
+        setMemberName(decoded.userData.username);
+    };
+   
+
+        
+        const onChangeTime = (event, selectedTime) => {
+            setShowTimepicker(false); 
+            if (selectedTime) {
+                setTime(selectedTime);   
+                const hours = selectedTime.getHours().toString().padStart(2, "0");
+                const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
+                setFormattedTime(`${hours}:${minutes}`);
+            
+            }
+        };
+
+
+
     
-    const onChangeTime = (event, selectedTime) => {
-        setShowTimepicker(false); 
-        if (selectedTime) {
-            setTime(selectedTime);   
-            const hours = selectedTime.getHours().toString().padStart(2, "0");
-            const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
-            setFormattedTime(`${hours}:${minutes}`);
+   
+    
+    
+    const handleCreateParty = () => {
+        //  Here you would typically send the data to your backend
+        console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
+        if(topic!="" && type!="" && formattedDate!="" && formattedTime!="" && description!=""){
+                api.post("",{
+                    topic:topic,
+                    type:type,
+                    total:total,
+                    formattedDate:formattedDate,
+                    formattedTime:formattedTime,
+                    description:description,
+                })
+                .then((response) => {
+                    console.log(response.data)
+                    if ( response.data.status ){
+                        console.log("Create successfully");
+                        router.push('/home')
+                    }
+                    else{
+                        console.log("Create false");
+                    }
+                })
+                .catch((error) => {
+                console.error("Error fetching data: ", error);
+            });
+            // console.log(username, password)
+            // setUsername("")
+            // setPassword("")
+        }else{
+                if(topic==""){
+
+                    setWrongT("*input Topic");
+                }
+                if(formattedDate ==""){
+                    setWrongDate("*input Date")
+                }
+                if(formattedTime==""){
+                    setWrongTime("*input Time");
+                }
+                if(description==""){
+                    setWrongDes("*input Description");
+                }
+                
+            }
         
         }
-    };
-    
-
-    const handleCreateParty = () => {
-        console.log('Creating party with data:', { topic, type, total, formattedDate, formattedTime, description });
-        //  Here you would typically send the data to your backend
-        
-        // axios.post("http://40.81.22.116:3000/login",{
-        //     username:username,
-        //     password:password,
-        // })
-        // .then((response) => {
-        //     console.log(response.data)
-        //     if ( response.data.status ){
-        //         console.log("Logged in successfully");
-        //         router.push('/home')
-        //     }
-        //     else{
-        //         console.log("login false");
-        //     }
-        // })
-        // .catch((error) => {
-        //   console.error("Error fetching data: ", error);
-        // });
-        // console.log(username, password)
-        // setUsername("")
-        // setPassword("")
-    };
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
@@ -91,7 +130,9 @@ const CreatePartyScreen = () => {
                     style={styles.input} 
                     value={topic} 
                     onChangeText={setTopic} 
+                    placeholderTextColor={"lightgray"}
                 />
+                <Text style={styles.wrong}>{wrongt}</Text> 
 
                 {/* Type sport */}
                 <Text style={styles.label}>Type:</Text>
@@ -148,11 +189,13 @@ const CreatePartyScreen = () => {
                         </View>
                     </View> 
                 </Modal>
+                <Text style={styles.wrong}>{wrongDate}</Text> 
+
                         
                 {/* Time                */}
                 <Text style={styles.label}>Time:</Text>
                 <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
-                    <Text>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                    <Text>Choose Time</Text>
                 </TouchableOpacity>
                 {showTimepicker && (
                     <DateTimePicker
@@ -163,7 +206,8 @@ const CreatePartyScreen = () => {
                         onChange={onChangeTime}
                     />
                 )}
-
+                <Text style={styles.wrong}>{wrongTime}</Text> 
+                
                 {/* Place */}
                 <Text style={styles.label}>Place:</Text>
                 
@@ -177,7 +221,10 @@ const CreatePartyScreen = () => {
                     onChangeText={setDescription}
                     multiline={true}
                     numberOfLines={3} 
+                    placeholderTextColor={"lightgray"}
+
                 />
+                <Text style={styles.wrong}>{wrongDes}</Text> 
 
                 {/* BTN Create */}
                 <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
@@ -316,6 +363,11 @@ const styles = StyleSheet.create({
         alignItems:'center'
         
       },
+      wrong:{
+        fontSize: 15,
+        color:'red',
+        
+      }
       
 
 });
