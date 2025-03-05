@@ -26,57 +26,57 @@ const Slip = () => {
 
         {/* ข้อมูลการจอง */}
         <View style={styles.details}>
-  <View style={styles.row}>
-    <Text style={styles.label}>Type:</Text>
-    <Text style={styles.value}>Individual</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Customer Name:</Text>
-    <Text style={styles.value}>Victor Shoaga</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Place:</Text>
-    <Text style={styles.value}>Ruammitr court</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Court:</Text>
-    <Text style={styles.value}>BADMINTON Zone1</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Date:</Text>
-    <Text style={styles.value}>25/12/2567</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Time:</Text>
-    <Text style={styles.value}>20.00 - 21.00</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Count:</Text>
-    <Text style={styles.value}>1 court</Text>
-  </View>
-</View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Type:</Text>
+            <Text style={styles.value}>Individual</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Customer Name:</Text>
+            <Text style={styles.value}>Victor Shoaga</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Place:</Text>
+            <Text style={styles.value}>Ruammitr court</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Court:</Text>
+            <Text style={styles.value}>BADMINTON Zone1</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Date:</Text>
+            <Text style={styles.value}>25/12/2567</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Time:</Text>
+            <Text style={styles.value}>20.00 - 21.00</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Count:</Text>
+            <Text style={styles.value}>1 court</Text>
+          </View>
+        </View>
 
-{/* สรุปยอดเงิน */}
-<View style={styles.summary}>
-  <View style={styles.row}>
-    <Text style={styles.label}>Amount:</Text>
-    <Text style={styles.value}>150 💎</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Total:</Text>
-    <Text style={styles.value}>150 💎</Text>
-  </View>
-  <View style={styles.row}>
-    <Text style={styles.label}>Remaining Balance:</Text>
-    <Text style={styles.value}>50 💎</Text>
-  </View>
-</View>
+        {/* สรุปยอดเงิน */}
+        <View style={styles.summary}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Amount:</Text>
+            <Text style={styles.value}>150 💎</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Total:</Text>
+            <Text style={styles.value}>150 💎</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Remaining Balance:</Text>
+            <Text style={styles.value}>50 💎</Text>
+          </View>
+        </View>
 
-{/* ผู้ดำเนินการ */}
-<View style={styles.row}>
-  <Text style={styles.label}>Operator:</Text>
-  <Text style={styles.value}>Admin</Text>
-</View>
+        {/* ผู้ดำเนินการ */}
+        <View style={styles.row}>
+          <Text style={styles.label}>Operator:</Text>
+          <Text style={styles.value}>Admin</Text>
+        </View>
 
 
         {/* โลโก้ */}
@@ -150,15 +150,15 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between", // จัดให้ชื่อกับค่าผลลัพธ์อยู่คนละฝั่ง
-    width: "100%", // ให้ขยายเต็มพื้นที่
-    paddingVertical: 5, // เพิ่มระยะห่าง
+    justifyContent: "space-between",
+    width: "100%",
+    paddingVertical: 5,
   },
   label: {
     fontSize: 14,
     fontWeight: "bold",
     color: "black",
-  }, 
+  },
   value: {
     fontSize: 14,
     color: "black",
