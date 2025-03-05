@@ -8,7 +8,6 @@ export default function HomeScreen() {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 
       <Text style={{ fontSize: 24, marginBottom: 20 }}>Welcome to First</Text>
-      <Button title="Go to About" onPress={() => router.push("/about")} />
       <Button title="Go to Profile" onPress={() => router.push("/profile")} />
       <Button title="Go to Login" onPress={() => router.push("/login")} />
       <Button title="Go to Sign up" onPress={() => router.push("/sign-up")} />
