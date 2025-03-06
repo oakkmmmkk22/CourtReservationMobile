@@ -112,8 +112,6 @@ const CreatePartyScreen = () => {
         }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-
             <ScrollView style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
 
                     {/* header */}
@@ -238,7 +236,6 @@ const CreatePartyScreen = () => {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-        </SafeAreaView>
     );
 };
 
