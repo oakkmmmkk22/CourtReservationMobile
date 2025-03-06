@@ -143,7 +143,7 @@ const HomeScreen = () => {
 
                     <View style={styles.cardFooter}>
                       <Text style={styles.t}>Time: </Text>
-                      <Text style={styles.cardTime}>{item.start_time} - {item.end_time}</Text>
+                      <Text style={styles.cardTime}>{item.start_time.slice(0,5)} - {item.end_time.slice(0,5)}</Text>
                     </View>
 
                     <View style={styles.cardFooter}>
