@@ -10,7 +10,7 @@ export default function App() {
     const [rating, setRating] = useState(0); 
     const [comment, setComment] = useState("");
     useEffect(() => {
-        api.get("/")
+        api.get("/reviews/")
     })
     const reviews = [
         {
