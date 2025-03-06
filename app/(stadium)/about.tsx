@@ -24,7 +24,7 @@ export default function App() {
             <Fontisto name="email" size={30} color={"gray"}><Text style={styles.text1}> Email : {stadium.email}</Text></Fontisto>
             <FontAwesome6 name="baht-sign" size={30} color={"gray"}><Text style={styles.text1}> Price : {stadium.price}</Text></FontAwesome6>
             <FontAwesome5 name="map-marker-alt" size={30} color={"gray"}><Text style={styles.text1}> Map : </Text></FontAwesome5>
-            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+            {/* <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
 
                 <MapView
                     style={{
@@ -44,7 +44,7 @@ export default function App() {
                 >
                     <Marker coordinate={{ latitude, longitude }} title={"Eiffel Tower"} />
                 </MapView>
-            </View>
+            </View> */}
         </View>
     );
 }
