@@ -3,6 +3,7 @@ import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWit
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import api from "../axiosinstance";
+import { router } from "expo-router";
 
 interface Stadium {
   id: string;
@@ -138,9 +139,11 @@ const HomeScreen = () => {
             data={filteredStadiums}
             keyExtractor={(item) => item.id}
             renderItem={({ item }: { item: Stadium }) => (
-              <TouchableOpacity>
+              <TouchableOpacity
+              onPress={() => router.push({ pathname: "/booking", params: { message: "Hello from Home!" } })}
+              >
                 <View style={styles.card}>
-                  <Image source={{ uri: item.pictures }} style={styles.cardImage} />
+                  {/* <Image source={{ uri: item.pictures }} style={styles.cardImage} /> */}
                   <View style={styles.cardContent}>
                     <Text style={styles.cardTitle}>{item.name}</Text>
                     <Text style={styles.cardLocation}>{item.location}</Text>
