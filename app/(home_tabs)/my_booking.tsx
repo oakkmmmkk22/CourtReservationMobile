@@ -73,7 +73,7 @@ const HomeScreen = () => {
       api.get("/reservations")
           .then(response => {
 
-            console.log("API Response:", response.data); // ✅ ดูว่า response เป็นอะไร
+            console.log("API Response:", response.data); 
             const data = response.data;
             // // ตรวจสอบว่า response.data มี property 'data' หรือไม่
             // if (!response.data || typeof response.data !== "object") {
