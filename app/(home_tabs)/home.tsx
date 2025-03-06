@@ -4,6 +4,7 @@ import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@
 import axios from "axios";
 import api from "../axiosinstance";
 import { router } from "expo-router";
+import { Phone } from "lucide-react-native";
 
 interface Stadium {
   id: string;
@@ -171,6 +172,8 @@ const HomeScreen = () => {
                   email:item.email,
                   pictures:item.pictures,
                   location:item.location,
+                  phone_number: item.phone_number,
+                  
                 }})}
                 >
                     <View style={styles.card}>
