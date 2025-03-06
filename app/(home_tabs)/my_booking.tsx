@@ -73,7 +73,14 @@ const HomeScreen = () => {
       api.get("/reservations")
           .then(response => {
 
-            const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
+            console.log("API Response:", response.data); // ✅ ดูว่า response เป็นอะไร
+
+            // ตรวจสอบว่า response.data มี property 'data' หรือไม่
+            if (!response.data || typeof response.data !== "object") {
+              console.error("Unexpected API response:", response.data);
+              return;
+            }
+            const data = response.data.data; 
 
             if (!data || !Array.isArray(data)) {
                 console.error("Expected an array but got:", data);
