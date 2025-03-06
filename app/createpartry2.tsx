@@ -237,7 +237,7 @@ const CreatePartyScreen = () => {
                         <Text style={styles.createButtonText}>Create Party</Text>
                     </TouchableOpacity>
                 </View>
-            </Scro>
+            </ScrollView>
         </SafeAreaView>
     );
 };
