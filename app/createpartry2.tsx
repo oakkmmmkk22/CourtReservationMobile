@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
@@ -112,130 +112,133 @@ const CreatePartyScreen = () => {
         }
 
     return (
-        <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 
-                {/* header */}
-            <View style={styles.header}> 
-                <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/find_friend")}/>
-                    <Text style={styles.headerTitle}>Create Party</Text>
-            </View>
+            <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
 
-                {/* username */}
-            <View style={styles.memberItem}> 
-                <View style={styles.memberIcon} />  
-                <Text style={styles.memberName}>{memberName}</Text>
-            </View>
-            
-            {/* Topic */}
-            <View style={styles.inputContainer}>
-                <Text style={styles.label}>Topic:</Text>
-                <TextInput 
-                    placeholder="Topic" 
-                    style={styles.input} 
-                    value={topic} 
-                    onChangeText={setTopic} 
-                    placeholderTextColor={"lightgray"}
-                />
-                <Text style={styles.wrong}>{wrongt}</Text> 
-
-                {/* Type sport */}
-                <Text style={styles.label}>Type:</Text>
-                <View style={styles.pickerContainer}> 
-                    <Picker
-                        selectedValue={type}
-                        onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-                        style={styles.picker} 
-                    >
-                        <Picker.Item label="Badminton" value="badminton" />
-                        <Picker.Item label="Football" value="football" />
-                        <Picker.Item label="Tennis" value="tennis" />
-                        <Picker.Item label="Valleyball" value="valleyball" />
-                        <Picker.Item label="Other" value="other" />
-                    </Picker>
+                    {/* header */}
+                <View style={styles.header}> 
+                    <Ionicons name="chevron-back-outline" size={30} color="black" onPress={() => router.push("/find_friend")}/>
+                        <Text style={styles.headerTitle}>Create Party</Text>
                 </View>
 
-                {/* Total people */}
-                <Text style={styles.label}>Total:</Text>
-                    <TextInput  
-                    style={styles.input} 
-                    value={total.toString()} 
-                    onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" 
-                />
+                    {/* username */}
+                <View style={styles.memberItem}> 
+                    <View style={styles.memberIcon} />  
+                    <Text style={styles.memberName}>{memberName}</Text>
+                </View>
                 
-                {/* /Date */}
-                <Text style={styles.label}>Date:</Text>
-                <TouchableOpacity style={styles.dateButton} onPress={() => setShowModal(true)}>
-                    <Text>{formattedDate ? formattedDate : "Choose Date"}</Text>
-                </TouchableOpacity>
-
-                <Modal visible={showModal} animationType="fade" transparent={true} >
-                    <View style={styles.centerview}> 
-                        <View style={styles.modalview}>
-                            <Calendar style={styles.calendar}
-
-                                onDayPress={ date => {
-                                    //console.log(date);
-                                    let selectedDate = date.dateString;
-                                    // selectedDate.setHours(0, 0, 0, 0);
-                                    // setDate(selectedDate);
-                                    setFormattedDate(selectedDate);
-                                    setShowModal(false);
-                                }} 
-                                minDate={"2025-01-01"}
-                                maxDate={"2025-12-31"}
-                            
-                            />
-                            <TouchableOpacity onPress={() => setShowModal(false) }>    
-                                <View style={styles.close}>
-                                    <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View> 
-                </Modal>
-                <Text style={styles.wrong}>{wrongDate}</Text> 
-
-                        
-                {/* Time                */}
-                <Text style={styles.label}>Time:</Text>
-                <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
-                    <Text>Choose Time</Text>
-                </TouchableOpacity>
-                {showTimepicker && (
-                    <DateTimePicker
-                        value={time}
-                        mode="time"
-                        is24Hour={true}
-                        display="spinner"
-                        onChange={onChangeTime}
+                {/* Topic */}
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Topic:</Text>
+                    <TextInput 
+                        placeholder="Topic" 
+                        style={styles.input} 
+                        value={topic} 
+                        onChangeText={setTopic} 
+                        placeholderTextColor={"lightgray"}
                     />
-                )}
-                <Text style={styles.wrong}>{wrongTime}</Text> 
-                
-                {/* Place */}
-                <Text style={styles.label}>Place:</Text>
-                
-                
-                {/* Description */}
-                <Text style={styles.label}>Description:</Text>
-                <TextInput
-                    placeholder="Description"
-                    style={[styles.input, styles.multilineInput]}
-                    value={description}
-                    onChangeText={setDescription}
-                    multiline={true}
-                    numberOfLines={3} 
-                    placeholderTextColor={"lightgray"}
+                    <Text style={styles.wrong}>{wrongt}</Text> 
 
-                />
-                <Text style={styles.wrong}>{wrongDes}</Text> 
+                    {/* Type sport */}
+                    <Text style={styles.label}>Type:</Text>
+                    <View style={styles.pickerContainer}> 
+                        <Picker
+                            selectedValue={type}
+                            onValueChange={(itemValue, itemIndex) => setType(itemValue)}
+                            style={styles.picker} 
+                        >
+                            <Picker.Item label="Badminton" value="badminton" />
+                            <Picker.Item label="Football" value="football" />
+                            <Picker.Item label="Tennis" value="tennis" />
+                            <Picker.Item label="Valleyball" value="valleyball" />
+                            <Picker.Item label="Other" value="other" />
+                        </Picker>
+                    </View>
 
-                {/* BTN Create */}
-                <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
-                    <Text style={styles.createButtonText}>Create Party</Text>
-                </TouchableOpacity>
+                    {/* Total people */}
+                    <Text style={styles.label}>Total:</Text>
+                        <TextInput  
+                        style={styles.input} 
+                        value={total.toString()} 
+                        onChangeText={(text) => setTotal(parseInt(text) || 0)} keyboardType="numeric" 
+                    />
+                    
+                    {/* /Date */}
+                    <Text style={styles.label}>Date:</Text>
+                    <TouchableOpacity style={styles.dateButton} onPress={() => setShowModal(true)}>
+                        <Text>{formattedDate ? formattedDate : "Choose Date"}</Text>
+                    </TouchableOpacity>
+
+                    <Modal visible={showModal} animationType="fade" transparent={true} >
+                        <View style={styles.centerview}> 
+                            <View style={styles.modalview}>
+                                <Calendar style={styles.calendar}
+
+                                    onDayPress={ date => {
+                                        //console.log(date);
+                                        let selectedDate = date.dateString;
+                                        // selectedDate.setHours(0, 0, 0, 0);
+                                        // setDate(selectedDate);
+                                        setFormattedDate(selectedDate);
+                                        setShowModal(false);
+                                    }} 
+                                    minDate={"2025-01-01"}
+                                    maxDate={"2025-12-31"}
+                                
+                                />
+                                <TouchableOpacity onPress={() => setShowModal(false) }>    
+                                    <View style={styles.close}>
+                                        <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View> 
+                    </Modal>
+                    <Text style={styles.wrong}>{wrongDate}</Text> 
+
+                            
+                    {/* Time                */}
+                    <Text style={styles.label}>Time:</Text>
+                    <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
+                    <Text>{formattedTime || "Choose Time"}</Text>
+                    </TouchableOpacity>
+                    {showTimepicker && (
+                        <DateTimePicker
+                            value={time}
+                            mode="time"
+                            is24Hour={true}
+                            display="spinner"
+                            onChange={onChangeTime}
+                        />
+                    )}
+                    <Text style={styles.wrong}>{wrongTime}</Text> 
+                    
+                    {/* Place */}
+                    <Text style={styles.label}>Place:</Text>
+                    
+                    
+                    {/* Description */}
+                    <Text style={styles.label}>Description:</Text>
+                    <TextInput
+                        placeholder="Description"
+                        style={[styles.input, styles.multilineInput]}
+                        value={description}
+                        onChangeText={setDescription}
+                        multiline={true}
+                        numberOfLines={3} 
+                        placeholderTextColor={"lightgray"}
+
+                    />
+                    <Text style={styles.wrong}>{wrongDes}</Text> 
+
+                    {/* BTN Create */}
+                    <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
+                        <Text style={styles.createButtonText}>Create Party</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
