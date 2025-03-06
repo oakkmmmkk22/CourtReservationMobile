@@ -5,6 +5,7 @@ import api from "../axiosinstance";
 
 
 interface Reservations {
+  id:number;
   court_id:number ;
   date: string;
   start_time: string;
@@ -90,6 +91,7 @@ const HomeScreen = () => {
                 court_number:reser.court_number,
                 type:reser.type,
                 price:reser.price,
+                id:reser.id,
               }));
 
               setMybook(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
@@ -113,7 +115,7 @@ const HomeScreen = () => {
           </View>
           <FlatList
             data={mybook}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }:{ item: Reservations }) =>( 
               <TouchableOpacity>
                 <View style={styles.card}>
