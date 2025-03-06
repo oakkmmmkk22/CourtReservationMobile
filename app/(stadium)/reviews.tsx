@@ -23,7 +23,8 @@ export default function App() {
     const [comment, setComment] = useState("");
     const [reviews, setReviews] = useState<ree[]>([]);
     useEffect(() => {
-        api.get(`/reviews/${idsss}`)
+        // api.get(`/reviews/${idsss}`)
+        api.get('/reviews/1')
             .then(response => {
                 if (Array.isArray(response.data.data)) {
                   const filteredData = response.data.data.map((review: any) => ({
