@@ -1,9 +1,24 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from 'jwt-decode';
 
 export default function AccountPage() {
     const router = useRouter();
+    const [username,setUsername]=useState("");
+    const [email,setEmail]=useState("");
+
+    const getToken = async () => {
+        const token = await AsyncStorage.getItem("token");
+        const decoded = jwtDecode(token); // test decode   
+        setUsername(decoded.userData.username);
+        setEmail(decoded.userData.email);
+    };
+
+    useEffect(() => {
+        getToken();
+    }, []);  
 
     const userData = {
         username: "jaidee",
@@ -14,6 +29,7 @@ export default function AccountPage() {
     const handleEditPress = (screen) => {
         router.push(screen);
     };
+    
 
     return (
         <View style={styles.container}>
@@ -27,7 +43,7 @@ export default function AccountPage() {
             <View style={styles.info}>
                 <View style={styles.row}>
                     <Text style={styles.label}>Username:</Text>
-                    <Text style={styles.value}>{userData.username}</Text>
+                    <Text style={styles.value}>{username}</Text>
                     <TouchableOpacity onPress={() => handleEditPress("/changeusername")}>
                         <Image 
                             source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
@@ -37,7 +53,7 @@ export default function AccountPage() {
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.label}>Email:</Text>
-                    <Text style={styles.value}>{userData.email}</Text>
+                    <Text style={styles.value}>{email}</Text>
                     <TouchableOpacity onPress={() => handleEditPress("/changeemail")}>
                         <Image 
                             source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
