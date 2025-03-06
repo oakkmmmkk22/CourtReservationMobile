@@ -83,6 +83,7 @@ export default function App() {
     }
     return (
         <View style={styles.container} >
+            <Text>{idsss}</Text>
             <Text style={styles.text1} >Rete & Reviews</Text>
             <View style={styles.write}>
                 <Text style={{}}>
