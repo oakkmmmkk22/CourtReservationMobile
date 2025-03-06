@@ -18,22 +18,25 @@ interface ree {
 export default function App() {
 
     const { idsss } = useGlobalSearchParams();
-
     const [ispost, setispost] = useState(false);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [reviews, setReviews] = useState<ree[]>([]);
     useEffect(() => {
+        if (!idsss) {
+            return;
+        }
+    
         api.get(`/reviews/${idsss}`)
             .then(response => {
-                const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
-
-                if (!data || !Array.isArray(data)) {
+                const data = response.data?.data; // ใช้ optional chaining
+    
+                if (!Array.isArray(data)) {
                     console.error("Expected an array but got:", data);
                     return;
                 }
-
-                const filteredData = response.data.data.map((review: any) => ({
+    
+                const filteredData = data.map((review: any) => ({
                     id: review.id,
                     stadium_id: review.stadium_id,
                     user_id: review.user_id,
@@ -43,12 +46,10 @@ export default function App() {
                     username: review.username,
                 }));
                 setReviews(filteredData);
-
             })
-            .catch(error => {
-                console.error("Error fetching reviews:", error);
-            });
-    })
+            .catch();
+    
+    }, [idsss]); 
     // const reviews = [
     //     {
     //         username : "user1",
@@ -191,7 +192,7 @@ export default function App() {
                 data={reviews}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }: { item: ree }) => (
-                    <View style={styles.item}>
+                    <View key={item.id} style={styles.item}>
                         <View style={styles.item2}>
                             <FontAwesome name="user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.username}</Text></FontAwesome>
                             {item.rating == 1 && <Text>
