@@ -170,6 +170,7 @@ const HomeScreen = () => {
                   facility_type:item.facility_type,
                   email:item.email,
                   pictures:item.pictures,
+                  location:item.location,
                 }})}
                 >
                     <View style={styles.card}>
