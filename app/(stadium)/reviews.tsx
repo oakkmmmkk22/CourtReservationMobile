@@ -1,13 +1,17 @@
 import { AntDesign, FontAwesome, Octicons } from "@expo/vector-icons";
 import { Receipt } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TextInput, Button, TouchableOpacity } from "react-native";
+import api from "../axiosinstance";
 
 export default function App() {
 
     const [ispost, setispost] = useState(false);
     const [rating, setRating] = useState(0); 
     const [comment, setComment] = useState("");
+    useEffect(() => {
+        api.get("/")
+    })
     const reviews = [
         {
             username : "user1",
