@@ -84,10 +84,9 @@ const HomeScreen = () => {
           });
   }, []);
 
-  const handleSearchChange = (event) => {
-      
-    
-  };
+  
+  
+
   const handleSearchSubmit = (event) => {
       setSearchText(searchQuery);
       setShowFilter(true);
@@ -150,7 +149,7 @@ const HomeScreen = () => {
               <TouchableOpacity
               onPress={() => router.push({ pathname: "/booking", 
                 params: {  
-                id: item.id ,
+                idsss: item.id ,
                 name:item.name,
                 location_link:item.location_link,
                 rating:item.rating,
