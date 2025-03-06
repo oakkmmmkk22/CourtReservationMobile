@@ -138,7 +138,7 @@ const HomeScreen = () => {
 
                     <View style={styles.cardFooter}>
                       <Text style={styles.t}>Court: </Text>
-                      <Text style={styles.cardCourt}>{item.type} Court {item.court_number}</Text>
+                      <Text style={styles.cardCourt}>{item.Type} Court {item.court_number}</Text>
                     </View>
 
                     <View style={styles.cardFooter}>
