@@ -73,14 +73,14 @@ const HomeScreen = () => {
       api.get("/reservations")
           .then(response => {
 
-            const data = response.data?.data || []; // ใช้ optional chaining เพื่อป้องกัน error
+            const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
 
-            // if (!data || !Array.isArray(data)) {
-            //     console.error("Expected an array but got:", data);
-            //     return;
-            // }
+            if (!data || !Array.isArray(data)) {
+                console.error("Expected an array but got:", data);
+                return;
+            }
           
-              const filteredData = response.data.data.map((reser: any) => ({
+              const filteredData = response.data.map((reser: any) => ({
                 court_id:reser.court_id,
                 date:reser.date ,
                 start_time: reser.start_time,
