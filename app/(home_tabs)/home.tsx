@@ -25,6 +25,7 @@ const HomeScreen = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchText, setSearchText] = useState(""); 
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
+  const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>([]);
     // {
     //   id: "1",
     //   name: "Ruammitr Court",
@@ -90,6 +91,7 @@ const HomeScreen = () => {
   }, []);
 
   
+
   
 
   const handleSearchSubmit = (event) => {
@@ -98,9 +100,22 @@ const HomeScreen = () => {
       // setSearchQuery("");
       
   };
-  const filteredStadiums = stadiums.filter(stadium => 
-    stadium.name.toLowerCase().includes(searchText.toLowerCase()||searchQuery.toLowerCase())
-    
+
+  const handleIconPress = (facilityType: string) => {
+    setSelectedFacilityTypes(prevState => 
+      prevState.some(f => f.toLowerCase() === facilityType.toLowerCase()) 
+        ? [] 
+        : [facilityType]
+    );
+  };
+
+  const filteredStadiums = stadiums.filter(stadium => {
+
+    if (selectedFacilityTypes.length === 0) return true; 
+    const stadiumFacilities = stadium.facility_type.split(',').map(f => f.trim().toLowerCase())
+    return selectedFacilityTypes.map(f => f.toLowerCase()).some(facility => stadiumFacilities.includes(facility));
+
+  }
   );
   
 
@@ -133,13 +148,13 @@ const HomeScreen = () => {
               >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               
-                <FontAwesome5 name="futbol" style={styles.ic}  />
-                <FontAwesome5 name="table-tennis" style={styles.ic} />
-                <FontAwesome5 name="basketball-ball" style={styles.ic} />
-                <Ionicons name="tennisball"  style={styles.ic} />
-                <MaterialCommunityIcons name="badminton"  style={styles.ic} />
-                <FontAwesome5 name="golf-ball" style={styles.ic} />
-                <MaterialCommunityIcons name="rugby"  style={styles.ic} />
+                <FontAwesome5 name="futbol" style={[styles.ic, { color: selectedFacilityTypes.includes('Soccer') ? 'gray' : 'black' }]}  onPress={() => handleIconPress('Soccer')} />
+                <FontAwesome5 name="table-tennis" style={[styles.ic, { color: selectedFacilityTypes.includes('Table Tennis') ? 'gray' : 'black' }]} onPress={() => handleIconPress('Table Tennis')}/>
+                <FontAwesome5 name="basketball-ball" style={[styles.ic, { color: selectedFacilityTypes.includes('Basketball') ? 'gray' : 'black' }]} onPress={() => handleIconPress('Basketball')} />
+                <Ionicons name="tennisball"  style={[styles.ic, { color: selectedFacilityTypes.includes('tennisball') ? 'gray' : 'black' }]} onPress={() => handleIconPress('tennis')} />
+                <MaterialCommunityIcons name="badminton"  style={[styles.ic, { color: selectedFacilityTypes.includes('badminton') ? 'gray' : 'black' }]} onPress={() => handleIconPress('badminton')} />
+                <FontAwesome5 name="golf-ball" style={[styles.ic, { color: selectedFacilityTypes.includes('golf') ? 'gray' : 'black' }]} onPress={() => handleIconPress('golf')} />
+                <MaterialCommunityIcons name="rugby"  style={[styles.ic, { color: selectedFacilityTypes.includes('rugby') ? 'gray' : 'black' }]} onPress={() => handleIconPress('rugby')}/>
                 
               </View>
             </ScrollView>
