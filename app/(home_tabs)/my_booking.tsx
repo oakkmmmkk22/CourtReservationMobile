@@ -80,7 +80,8 @@ const HomeScreen = () => {
                 return;
             }
           
-              const filteredData = response.data.map((reser: any) => ({
+              const filteredData = response.data.data.map((reser: any) => ({
+                id:reser.id,
                 court_id:reser.court_id,
                 date:reser.date ,
                 start_time: reser.start_time,
@@ -91,7 +92,6 @@ const HomeScreen = () => {
                 court_number:reser.court_number,
                 type:reser.type,
                 price:reser.price,
-                id:reser.id,
               }));
 
               setMybook(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
