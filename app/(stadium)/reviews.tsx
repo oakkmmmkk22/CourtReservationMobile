@@ -23,7 +23,7 @@ export default function App() {
     const [comment, setComment] = useState("");
     const [reviews, setReviews] = useState<ree[]>([]);
     useEffect(() => {
-        api.get(`/reviews/${idsss.toLocaleString}`)
+        api.get(`/reviews/${idsss.toString()}`)
         // api.get('/reviews/1')
             .then(response => {
                 if (Array.isArray(response.data.data)) {
