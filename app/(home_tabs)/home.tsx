@@ -60,7 +60,14 @@ const HomeScreen = () => {
       
       api.get("/home")
           .then(response => {
-            if (Array.isArray(response.data.data)) {
+
+            const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
+
+            if (!data || !Array.isArray(data)) {
+                console.error("Expected an array but got:", data);
+                return;
+            }
+           
               const filteredData = response.data.data.map((stadium: any) => ({
                 id: stadium.id,
                 name: stadium.name,
@@ -75,9 +82,7 @@ const HomeScreen = () => {
                 email:stadium.email,
               }));
               setStadiums(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
-            } else {
-              console.error("Expected an array but got:", response.data.data);
-            }
+           
           })
           .catch(error => {
               console.error("Error fetching data:", error);
