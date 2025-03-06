@@ -1,74 +1,105 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import api from "../axiosinstance";
+
+
+interface Reservations {
+  court_id:number ;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  rating: number;
+  stadium_name:string;
+  court_number:number;
+  type:string;
+  price:number;
+  
+}
 
 
 const HomeScreen = () => {
-  
-  const renderCount = useRef(0);
 
-  const [mybook, setMybook] = useState([
-    {
-      id: "1",
-      name: "Ruammitr Court",
-      court: "Basketball Court",
-      time: "12.00 - 13.00 ",
-      price: "50",
-      status: "Paid",
-      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    },
-    {
-      id: "2",
-      name: "Muay STADIUM",
-      court: "Basketball Court",
-      time: "12.00 - 13.00 ",
-      price: "50",
-      status: "Paid",
-      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    },
-    {
-      id: "3",
-      name: "Muay STADIUM",
-      court: "Basketball Court",
-      time: "12.00 - 13.00 ",
-      price: "50",
-      status: "Paid",
-      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    },
-    {
-      id: "4",
-      name: "Muay STADIUM",
-      court: "Basketball Court",
-      time: "12.00 - 13.00 ",
-      price: "50",
-      status: "Paid",
-      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    },
-    {
-      id: "5",
-      name: "Muay STADIUM",
-      court: "Basketball Court",
-      time: "12.00 - 13.00 ",
-      price: "50",
-      status: "Paid",
-      image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    },
+  const [mybook, setMybook] = useState<Reservations[]>([]);
+    // {
+    //   id: "1",
+    //   name: "Ruammitr Court",
+    //   court: "Basketball Court",
+    //   time: "12.00 - 13.00 ",
+    //   price: "50",
+    //   status: "Paid",
+    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    // },
+    // {
+    //   id: "2",
+    //   name: "Muay STADIUM",
+    //   court: "Basketball Court",
+    //   time: "12.00 - 13.00 ",
+    //   price: "50",
+    //   status: "Paid",
+    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    // },
+    // {
+    //   id: "3",
+    //   name: "Muay STADIUM",
+    //   court: "Basketball Court",
+    //   time: "12.00 - 13.00 ",
+    //   price: "50",
+    //   status: "Paid",
+    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    // },
+    // {
+    //   id: "4",
+    //   name: "Muay STADIUM",
+    //   court: "Basketball Court",
+    //   time: "12.00 - 13.00 ",
+    //   price: "50",
+    //   status: "Paid",
+    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    // },
+    // {
+    //   id: "5",
+    //   name: "Muay STADIUM",
+    //   court: "Basketball Court",
+    //   time: "12.00 - 13.00 ",
+    //   price: "50",
+    //   status: "Paid",
+    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
+    // },
 
+    useEffect(() => {      
+      api.get("/reservations")
+          .then(response => {
 
+            const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
 
-    
-    
-  ]);
+            if (!data || !Array.isArray(data)) {
+                console.error("Expected an array but got:", data);
+                return;
+            }
+          
+              const filteredData = response.data.data.map((reser: any) => ({
+                court_id:reser.court_id,
+                date:reser.date ,
+                start_time: reser.start_time,
+                end_time: reser.end_time,
+                status: reser.status,
+                rating: reser.rating,
+                stadium_name:reser.stadium_name,
+                court_number:reser.court_number,
+                type:reser.type,
+                price:reser.price,
+              }));
 
-//   useEffect(() => {
-//     axios.get("")
-//         .then(response => {
-//             setStadiums(response.data);
-//         })
-//         .catch(error => {
-            
-//         });
-// }, []);
+              setMybook(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
+          
+          })
+          .catch(error => {
+              console.error("Error fetching data:", error);
+          });
+      }, []);
+
 
   return (
     
@@ -83,7 +114,7 @@ const HomeScreen = () => {
           <FlatList
             data={mybook}
             keyExtractor={(item) => item.id}
-            renderItem={({ item,index }) =>( 
+            renderItem={({ item }:{ item: Reservations }) =>( 
               <TouchableOpacity>
                 <View style={styles.card}>
                   <View style={{flex:4}}>
@@ -93,17 +124,17 @@ const HomeScreen = () => {
 
                     <View style={styles.cardFooter}>
                       <Text style={styles.t}>Place: </Text>
-                      <Text style={styles.cardTitle}>{item.name}</Text>
+                      <Text style={styles.cardTitle}>{item.stadium_name}</Text>
                     </View>
 
                     <View style={styles.cardFooter}>
                       <Text style={styles.t}>Court: </Text>
-                      <Text style={styles.cardCourt}>{item.court}</Text>
+                      <Text style={styles.cardCourt}>{item.type} Court {item.court_number}</Text>
                     </View>
 
                     <View style={styles.cardFooter}>
                       <Text style={styles.t}>Time: </Text>
-                      <Text style={styles.cardTime}>{item.time}</Text>
+                      <Text style={styles.cardTime}>{item.start_time} - {item.end_time}</Text>
                     </View>
 
                     <View style={styles.cardFooter}>
