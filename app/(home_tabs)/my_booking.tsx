@@ -120,7 +120,7 @@ const HomeScreen = () => {
               <TouchableOpacity>
                 <View style={styles.card}>
                   <View style={{flex:4}}>
-                    <Image source={{ uri: item.image }} style={styles.cardImage} />
+                    {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
                   </View>
                   <View style={styles.cardContent}>
 
