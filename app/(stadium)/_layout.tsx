@@ -36,8 +36,8 @@ export default function App() {
                 <View
                     style={styles.title}
                 >
-                    <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">Ruamimitr court</Text>
-                    <Text style={styles.star} numberOfLines={1} ellipsizeMode="tail"><MaterialIcons name="star" size={20} color="gold" /> 5.0 | <Text style={styles.location}>SRIRACHA, CHONBURI</Text></Text>
+                <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
+                    <Text style={styles.star} numberOfLines={1} ellipsizeMode="tail"><MaterialIcons name="star" size={20} color="gold" /> {rating} | <Text style={styles.location}>{location}</Text></Text>
                     <Text style={styles.type} numberOfLines={1} ellipsizeMode="tail">Sport : <Text style={styles.itype}>BADMINTON</Text></Text>
                 </View>
             </View>

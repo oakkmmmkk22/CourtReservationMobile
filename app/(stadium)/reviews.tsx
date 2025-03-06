@@ -12,6 +12,7 @@ interface ree {
     rating: number;
     comment: string;
     date: string;
+    username: string;
 }
 
 export default function App() {
@@ -22,31 +23,32 @@ export default function App() {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [reviews, setReviews] = useState<ree[]>([]);
-    // useEffect(() => {
-    //     api.get(`/reviews/${idsss.toString()}`)
-    //         .then(response => {
-    //             const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
+    useEffect(() => {
+        api.get(`/reviews/${idsss}`)
+            .then(response => {
+                const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
 
-    //             if (!data || !Array.isArray(data)) {
-    //                 console.error("Expected an array but got:", data);
-    //                 return;
-    //             }
+                if (!data || !Array.isArray(data)) {
+                    console.error("Expected an array but got:", data);
+                    return;
+                }
 
-    //             const filteredData = response.data.data.map((review: any) => ({
-    //                 id: review.id,
-    //                 stadium_id: review.stadium_id,
-    //                 user_id: review.user_id,
-    //                 rating: review.rating,
-    //                 comment: review.comment,
-    //                 date: review.date,
-    //             }));
-    //             setReviews(filteredData);
+                const filteredData = response.data.data.map((review: any) => ({
+                    id: review.id,
+                    stadium_id: review.stadium_id,
+                    user_id: review.user_id,
+                    rating: review.rating,
+                    comment: review.comment,
+                    date: review.date,
+                    username: review.username,
+                }));
+                setReviews(filteredData);
 
-    //         })
-    //         .catch(error => {
-    //             console.error("Error fetching reviews:", error);
-    //         });
-    // })
+            })
+            .catch(error => {
+                console.error("Error fetching reviews:", error);
+            });
+    })
     // const reviews = [
     //     {
     //         username : "user1",
@@ -83,14 +85,25 @@ export default function App() {
         }
         const currentTimeUTC = new Date().toUTCString();
         console.log(currentTimeUTC);  // Example: "Wed, 05 Mar 2025 11:45:30 GMT"
-
-        alert("star : " + rating + " comment : " + comment + " time : " + currentTimeUTC)
-        setRating(0);
-        setComment("");
+        
+        api.post('/add_review/',{
+            rating:rating,
+            stadium_id:idsss,
+            comment:comment,
+            date:currentTimeUTC,
+        })
+        .then(response => {
+            alert("star : " + rating + " comment : " + comment + " time : " + currentTimeUTC + " \n" + response.data.message)
+            setRating(0);
+            setComment(""); 
+            setispost(false);
+        })
+        .catch(error => {
+            console.error("Error fetching reviews:", error);
+        });
     }
     return (
         <View style={styles.container} >
-            <Text>{idsss}</Text>
             <Text style={styles.text1} >Rete & Reviews</Text>
             <View style={styles.write}>
                 <Text style={{}}>
@@ -180,15 +193,7 @@ export default function App() {
                 renderItem={({ item }: { item: ree }) => (
                     <View style={styles.item}>
                         <View style={styles.item2}>
-                            <FontAwesome name="user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.id}</Text></FontAwesome>
-                            {item.rating == 0 && <Text>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Text style={styles.date}> {item.date}</Text>
-                            </Text>}
+                            <FontAwesome name="user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.username}</Text></FontAwesome>
                             {item.rating == 1 && <Text>
                                 <Octicons name="star-fill" size={20} color={"gold"} > </Octicons>
                                 <Octicons name="star" size={20} > </Octicons>

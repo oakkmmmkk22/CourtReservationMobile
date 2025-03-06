@@ -8,7 +8,7 @@ export default function App() {
     // const longitude = 100.9217618257891;
 
     
-    const { name, latitude ,longitude, open, close, phone, email } = useGlobalSearchParams();
+    const { name_stadium, latitude ,longitude, open, close, phone, email } = useGlobalSearchParams();
 
 
     const stadium = {
