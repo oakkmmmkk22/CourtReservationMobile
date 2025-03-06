@@ -74,34 +74,34 @@ const HomeScreen = () => {
           .then(response => {
 
             console.log("API Response:", response.data); // ✅ ดูว่า response เป็นอะไร
+            const data = response.data;
+            // // ตรวจสอบว่า response.data มี property 'data' หรือไม่
+            // if (!response.data || typeof response.data !== "object") {
+            //   console.error("Unexpected API response:", response.data);
+            //   return;
+            // }
+            // const data = response.data.data; 
 
-            // ตรวจสอบว่า response.data มี property 'data' หรือไม่
-            if (!response.data || typeof response.data !== "object") {
-              console.error("Unexpected API response:", response.data);
-              return;
-            }
-            const data = response.data.data; 
-
-            if (!data || !Array.isArray(data)) {
-                console.error("Expected an array but got:", data);
-                return;
-            }
+            // if (!data || !Array.isArray(data)) {
+            //     console.error("Expected an array but got:", data);
+            //     return;
+            // }
           
-              const filteredData = data.map((reser: any) => ({
-                id:reser.id,
-                court_id:reser.court_id,
-                date:reser.date ,
-                start_time: reser.start_time,
-                end_time: reser.end_time,
-                status: reser.status,
-                rating: reser.rating,
-                stadium_name:reser.stadium_name,
-                court_number:reser.court_number,
-                type:reser.type,
-                price:reser.price,
-              }));
+            //   const filteredData = data.map((reser: any) => ({
+            //     id:reser.id,
+            //     court_id:reser.court_id,
+            //     date:reser.date ,
+            //     start_time: reser.start_time,
+            //     end_time: reser.end_time,
+            //     status: reser.status,
+            //     rating: reser.rating,
+            //     stadium_name:reser.stadium_name,
+            //     court_number:reser.court_number,
+            //     type:reser.type,
+            //     price:reser.price,
+            //   }));
 
-              setMybook(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
+              setMybook(data); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
           
           })
           .catch(error => {
