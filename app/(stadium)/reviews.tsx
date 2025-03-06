@@ -81,7 +81,6 @@ export default function App() {
                     }}
                     placeholder="Share you own experience" 
                     placeholderTextColor={"gray"}
-                    underlineColorAndroid={"black"}
                     value={comment}
                     onChangeText={setComment}
                     onTouchStart={() => {
