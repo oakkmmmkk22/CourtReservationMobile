@@ -3,14 +3,17 @@ import { Receipt } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TextInput, Button, TouchableOpacity } from "react-native";
 import api from "../axiosinstance";
+import { useGlobalSearchParams } from "expo-router";
 
 export default function App() {
+
+    const { message } = useGlobalSearchParams();
 
     const [ispost, setispost] = useState(false);
     const [rating, setRating] = useState(0); 
     const [comment, setComment] = useState("");
     useEffect(() => {
-        api.get("/reviews/")
+        api.get("/add_review")
     })
     const reviews = [
         {
@@ -55,6 +58,9 @@ export default function App() {
     }
     return (
         <View style={styles.container} >
+            <View>
+                <Text>{message}</Text>
+            </View>
             <Text style={styles.text1} >Rete & Reviews</Text>
             <View style={styles.write}>
                 <Text style={{}}>
