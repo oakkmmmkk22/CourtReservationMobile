@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
@@ -40,7 +40,11 @@ const CreatePartyScreen = () => {
         const decoded = jwtDecode(token); // test decode   
         setMemberName(decoded.userData.username);
     };
-   
+
+
+    useEffect(() => {
+        getToken();
+    }, []);    
 
         
         const onChangeTime = (event, selectedTime) => {
