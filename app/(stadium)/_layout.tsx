@@ -7,7 +7,7 @@ import { router, withLayoutContext} from 'expo-router';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import React from 'react';
 import { View, Image, StyleSheet , Text, TouchableOpacity} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -34,9 +34,9 @@ export default function App() {
         <View
           style={styles.title}
         >
-          <Text style={styles.name}>Ruamimitr court</Text>
-          <Text style={styles.star}>⭐5.0 | <Text style={styles.location}>SRIRACHA, CHONBURI</Text></Text>
-          <Text style={styles.type}>Type: <Text style={styles.itype}>BADMINTON</Text></Text>
+          <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">Ruamimitr court</Text>
+          <Text style={styles.star} numberOfLines={1} ellipsizeMode="tail"><MaterialIcons name="star" size={20} color="gold" /> 5.0 | <Text style={styles.location}>SRIRACHA, CHONBURI</Text></Text>
+          <Text style={styles.type} numberOfLines={1} ellipsizeMode="tail">Sport : <Text style={styles.itype}>BADMINTON</Text></Text>
         </View>
       </View>
 
@@ -96,6 +96,8 @@ const styles = StyleSheet.create({
     fontSize:15,
     fontWeight:"bold",
     marginTop:10,
+    marginBottom:-100,
+    flex:1,
   },
   itype:{
     backgroundColor:"#1834C0",
