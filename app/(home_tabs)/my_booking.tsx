@@ -80,7 +80,7 @@ const HomeScreen = () => {
                 return;
             }
           
-              const filteredData = response.data.data.map((reser: any) => ({
+              const filteredData = data.map((reser: any) => ({
                 id:reser.id,
                 court_id:reser.court_id,
                 date:reser.date ,
