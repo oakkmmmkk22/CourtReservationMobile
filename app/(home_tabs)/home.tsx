@@ -14,6 +14,9 @@ interface Stadium {
   rating: number;
   phone_number:string;
   pictures:[];
+  facility_type:string;
+  location_link:string;
+  email:string;
 }
 
 
@@ -51,9 +54,11 @@ const HomeScreen = () => {
     // },
     
   // ]);
+  
 
     useEffect(() => {
-      api.get("/test")
+      
+      api.get("/home")
           .then(response => {
             if (Array.isArray(response.data.data)) {
               const filteredData = response.data.data.map((stadium: any) => ({
@@ -65,6 +70,9 @@ const HomeScreen = () => {
                 rating: stadium.rating,
                 phone_number: stadium.phone_number,
                 pictures: stadium.pictures,
+                facility_type:stadium.facility_type,
+                location_link:stadium.location_link,
+                email:stadium.email,
               }));
               setStadiums(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
             } else {
@@ -88,9 +96,9 @@ const HomeScreen = () => {
   };
   const filteredStadiums = stadiums.filter(stadium => 
     stadium.name.toLowerCase().includes(searchText.toLowerCase()||searchQuery.toLowerCase())
-   
     
   );
+  
 
   
 
@@ -140,15 +148,26 @@ const HomeScreen = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }: { item: Stadium }) => (
               <TouchableOpacity
-              onPress={() => router.push({ pathname: "/booking", params: { message: "Hello from Home!" } })}
+              onPress={() => router.push({ pathname: "/booking", 
+                params: {  
+                id: item.id ,
+                name:item.name,
+                location_link:item.location_link,
+                rating:item.rating,
+                open_hour:item.open_hour,
+                close_hour:item.close_hour,
+                facility_type:item.facility_type,
+                email:item.email,
+                pictures:item.pictures,
+              }})}
               >
                 <View style={styles.card}>
                   {/* <Image source={{ uri: item.pictures }} style={styles.cardImage} /> */}
                   <View style={styles.cardContent}>
                     <Text style={styles.cardTitle}>{item.name}</Text>
                     <Text style={styles.cardLocation}>{item.location}</Text>
-                    <Text style={styles.cardHours}>{item.open_hour}</Text>
-                    <Text style={styles.cardHours}>{item.close_hour}</Text>
+                    <Text style={styles.cardHours}>Open: {item.open_hour.slice(0,5)} - {item.close_hour.slice(0,5)}</Text>
+                    
                     <View style={styles.cardFooter}>
                       <Ionicons name="call" size={18} color="green" />
                       <Text style={styles.cardPhone}>{item.phone_number}</Text>

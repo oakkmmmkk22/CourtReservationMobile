@@ -42,18 +42,8 @@ export default function Stadium() {
   );
 
 
-
-
-
-  
-
-
-
-
   return (
    
-
-
     <Tabs
       screenOptions={{
         tabBarStyle: { height: 60 },
@@ -72,7 +62,6 @@ export default function Stadium() {
             <FontAwesome5 name="home" size={size} color={color} />
           ),
           headerRight: () => (
-
 
             <View>
               
@@ -93,20 +82,20 @@ export default function Stadium() {
                               <TouchableWithoutFeedback>
                                   <View style={styles.modalview}>
                                     
-                                      <TouchableOpacity style={styles.btn} onPress={() => router.push('/account')}>
+                                      <TouchableOpacity style={styles.btn} onPress={() => {router.push('/account');  setShowModal(false); }} >
                                         
                                         <Ionicons name="person" size={18} color="black"  />
                                         <Text style={{ marginLeft: 8}}>User</Text>
                                       </TouchableOpacity>
                                       <View style={styles.line}/>
         
-                                      <TouchableOpacity style={styles.btn} onPress={() => router.push('/setting')}>
+                                      <TouchableOpacity style={styles.btn} onPress={() => {router.push('/setting');  setShowModal(false);}}>
                                         <Ionicons name="settings" size={18} color="black" />
                                         <Text style={{ marginLeft: 8 }}>Setting</Text>
                                       </TouchableOpacity>
                                       <View style={styles.line}/>
                                     
-                                      <TouchableOpacity style={styles.btn} onPress={() => router.push('/login')}>
+                                      <TouchableOpacity style={styles.btn} onPress={() => {router.push('/login');  setShowModal(false);}}>
                                         <Ionicons name="log-out" size={18} color="black" />
                                         <Text style={{ marginLeft: 8 }}>Logout</Text>
                                       </TouchableOpacity>
