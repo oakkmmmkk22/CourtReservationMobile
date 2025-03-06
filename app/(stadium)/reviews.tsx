@@ -5,42 +5,67 @@ import { View, Text, StyleSheet, FlatList, TextInput, Button, TouchableOpacity }
 import api from "../axiosinstance";
 import { useGlobalSearchParams } from "expo-router";
 
+interface ree {
+    id: number;
+    stadium_id: number;
+    user_id: number;
+    rating: number;
+    comment: string;
+    date: string;
+  }
+
 export default function App() {
 
-    const { message } = useGlobalSearchParams();
+    const { idsss } = useGlobalSearchParams();
 
     const [ispost, setispost] = useState(false);
     const [rating, setRating] = useState(0); 
     const [comment, setComment] = useState("");
+    const [reviews, setReviews] = useState<ree[]>([]);
     useEffect(() => {
-        api.get("/add_review")
+        api.get(`/reviews/${idsss}`)
+            .then(response => {
+                if (Array.isArray(response.data.data)) {
+                  const filteredData = response.data.data.map((review: any) => ({
+                    id: review.id,
+                    stadium_id: review.stadium_id,
+                    user_id: review.user_id,
+                    rating: review.rating,
+                    comment : review.comment,
+                    date: review.date,
+                  }));
+                  setReviews(filteredData); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
+                } else {
+                  console.error("Expected an array but got:", response.data.data);
+                }
+            })
     })
-    const reviews = [
-        {
-            username : "user1",
-            star : 1,
-            date : "10/2/2568",
-            comment : "goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี good"
-        },
-        {
-            username : "user2",
-            star : 2,
-            date : "10/2/2568",
-            comment : "good good"
-        },
-        {
-            username : "user3",
-            star : 5,
-            date : "10/2/2568",
-            comment : "good สวัสดี good"
-        },
-        {
-            username : "user4",
-            star : 0,
-            date : "10/2/2568",
-            comment : "good สวัสดี good"
-        },
-    ]
+    // const reviews = [
+    //     {
+    //         username : "user1",
+    //         star : 1,
+    //         date : "10/2/2568",
+    //         comment : "goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี good"
+    //     },
+    //     {
+    //         username : "user2",
+    //         star : 2,
+    //         date : "10/2/2568",
+    //         comment : "good good"
+    //     },
+    //     {
+    //         username : "user3",
+    //         star : 5,
+    //         date : "10/2/2568",
+    //         comment : "good สวัสดี good"
+    //     },
+    //     {
+    //         username : "user4",
+    //         star : 0,
+    //         date : "10/2/2568",
+    //         comment : "good สวัสดี good"
+    //     },
+    // ]
     const closeee = () => {
         setispost(false);
     }
@@ -58,9 +83,6 @@ export default function App() {
     }
     return (
         <View style={styles.container} >
-            <View>
-                <Text>{message}</Text>
-            </View>
             <Text style={styles.text1} >Rete & Reviews</Text>
             <View style={styles.write}>
                 <Text style={{}}>
@@ -146,12 +168,12 @@ export default function App() {
             <View style={{backgroundColor:"lightgray", height:5, width:1000}}></View>
             <FlatList
                 data={reviews}
-                keyExtractor={(item) => item.username}
-                renderItem={({ item }) => (
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item } : { item: ree }) => (
                     <View style={styles.item}>
                         <View style={styles.item2}>
-                            <FontAwesome name = "user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.username}</Text></FontAwesome>
-                            {item.star == 0 && <Text>
+                            <FontAwesome name = "user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.id}</Text></FontAwesome>
+                            {item.rating == 0 && <Text>
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Octicons name="star" size={20} > </Octicons>
@@ -159,7 +181,7 @@ export default function App() {
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Text style={styles.date}> {item.date}</Text>
                                 </Text>}
-                            {item.star == 1 && <Text>
+                            {item.rating == 1 && <Text>
                                 <Octicons name="star-fill" size={20} color={"gold"} > </Octicons> 
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Octicons name="star" size={20} > </Octicons>
@@ -167,7 +189,7 @@ export default function App() {
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Text style={styles.date}> {item.date}</Text>
                                 </Text>}
-                            {item.star == 2 && <Text>
+                            {item.rating == 2 && <Text>
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star" size={20} > </Octicons>
@@ -175,7 +197,7 @@ export default function App() {
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Text style={styles.date}> {item.date}</Text>
                                 </Text>}
-                            {item.star == 3 && <Text>
+                            {item.rating == 3 && <Text>
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
@@ -183,7 +205,7 @@ export default function App() {
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Text style={styles.date}> {item.date}</Text>
                                 </Text>}
-                            {item.star == 4 && <Text>
+                            {item.rating == 4 && <Text>
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
@@ -191,7 +213,7 @@ export default function App() {
                                 <Octicons name="star" size={20} > </Octicons>
                                 <Text style={styles.date}> {item.date}</Text>
                                 </Text>}
-                            {item.star == 5 && <Text>
+                            {item.rating == 5 && <Text>
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 
                                 <Octicons name="star-fill" size={20} color={"gold"}> </Octicons> 

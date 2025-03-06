@@ -1,11 +1,14 @@
 import { AntDesign, FontAwesome, FontAwesome5, FontAwesome6, Fontisto } from "@expo/vector-icons";
+import { useGlobalSearchParams } from "expo-router";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 
 export default function App() {
-    const latitude = 13.116563600155295;
-    const longitude = 100.9217618257891;
+    // const latitude = 13.116563600155295;
+    // const longitude = 100.9217618257891;
 
+    
+    const { name, latitude ,longitude, open, close, phone, email } = useGlobalSearchParams();
 
 
     const stadium = {
@@ -19,10 +22,9 @@ export default function App() {
     return (
         <View style={styles.container} >
             <Text style={styles.text1} >Details</Text>
-            <AntDesign name="clockcircle" size={30} color={"gray"}><Text style={styles.text1}> Hour : {stadium.open} - {stadium.close}</Text></AntDesign>
+            <AntDesign name="clockcircle" size={30} color={"gray"}><Text style={styles.text1}> Hour : {stadium.open.slice(0,5)} - {stadium.close.slice(0,5)}</Text></AntDesign>
             <FontAwesome name="phone" size={30} color={"gray"}><Text style={styles.text1}> Phone number : {stadium.phone}</Text></FontAwesome>
             <Fontisto name="email" size={30} color={"gray"}><Text style={styles.text1}> Email : {stadium.email}</Text></Fontisto>
-            <FontAwesome6 name="baht-sign" size={30} color={"gray"}><Text style={styles.text1}> Price : {stadium.price}</Text></FontAwesome6>
             <FontAwesome5 name="map-marker-alt" size={30} color={"gray"}><Text style={styles.text1}> Map : </Text></FontAwesome5>
             {/* <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
 
