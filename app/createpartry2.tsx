@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, SafeAreaView, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For newer React Native versions and Expo
 import DateTimePicker from '@react-native-community/datetimepicker'; // For Date/Time pickers
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
@@ -114,7 +114,7 @@ const CreatePartyScreen = () => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 
-            <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+            <ScrollView style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
 
                     {/* header */}
                 <View style={styles.header}> 
@@ -237,7 +237,7 @@ const CreatePartyScreen = () => {
                         <Text style={styles.createButtonText}>Create Party</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </Scro>
         </SafeAreaView>
     );
 };
