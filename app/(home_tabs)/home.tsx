@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView,Button } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import api from "../axiosinstance";
@@ -27,6 +27,7 @@ const HomeScreen = () => {
   const [searchText, setSearchText] = useState(""); 
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
   const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
     // {
     //   id: "1",
     //   name: "Ruammitr Court",
@@ -130,70 +131,79 @@ const HomeScreen = () => {
                   value={searchQuery} 
                   onChangeText={setSearchQuery} 
                 />
-              <Ionicons name="filter" size={20} color="black" style={styles.searchIcon} />
+              <Ionicons name="filter" size={20} color="black" style={styles.searchIcon}  onPress={() => setModalOpen(true)}/>
+                      <Modal visible={modalOpen} transparent animationType="fade">
+                          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+                              <View style={{ padding: 20, backgroundColor: "white", borderRadius: 10, alignItems: "center" }}>
+                                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>I am modal</Text>
+                                  <Button title="Close" onPress={() => setModalOpen(false)} />
+                              </View>
+                          </View>
+                    </Modal>
             </View>
+
 
           {/* // Category Icons  */}
           <View style={{ margin: 5 }}>
               <ScrollView 
-                  horizontal={true} 
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
-                  >
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <FontAwesome5 name="futbol" style={[styles.ic, { color: selectedFacilityTypes.includes('Soccer') ? 'gray' : 'black' }]}  onPress={() => handleIconPress('Soccer')} />
-                    <FontAwesome5 name="table-tennis" style={[styles.ic, { color: selectedFacilityTypes.includes('Table Tennis') ? 'gray' : 'black' }]} onPress={() => handleIconPress('Table Tennis')}/>
-                    <FontAwesome5 name="basketball-ball" style={[styles.ic, { color: selectedFacilityTypes.includes('Basketball') ? 'gray' : 'black' }]} onPress={() => handleIconPress('Basketball')} />
-                    <Ionicons name="tennisball"  style={[styles.ic, { color: selectedFacilityTypes.includes('tennis') ? 'gray' : 'black' }]} onPress={() => handleIconPress('tennis')} />
-                    <MaterialCommunityIcons name="badminton"  style={[styles.ic, { color: selectedFacilityTypes.includes('badminton') ? 'gray' : 'black' }]} onPress={() => handleIconPress('badminton')} />
-                    <FontAwesome5 name="golf-ball" style={[styles.ic, { color: selectedFacilityTypes.includes('golf') ? 'gray' : 'black' }]} onPress={() => handleIconPress('golf')} />
-                    <MaterialCommunityIcons name="rugby"  style={[styles.ic, { color: selectedFacilityTypes.includes('rugby') ? 'gray' : 'black' }]} onPress={() => handleIconPress('rugby')}/>
-                    
-                  </View>
-              </ScrollView>
-          </View>
+                      horizontal={true} 
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{ paddingHorizontal: 20 }} // เพิ่ม padding ด้านข้าง
+                      >
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <FontAwesome5 name="futbol" style={[styles.ic, { color: selectedFacilityTypes.includes('Soccer') ? 'gray' : 'black' }]}  onPress={() => handleIconPress('Soccer')} />
+                          <FontAwesome5 name="table-tennis" style={[styles.ic, { color: selectedFacilityTypes.includes('Table Tennis') ? 'gray' : 'black' }]} onPress={() => handleIconPress('Table Tennis')}/>
+                          <FontAwesome5 name="basketball-ball" style={[styles.ic, { color: selectedFacilityTypes.includes('Basketball') ? 'gray' : 'black' }]} onPress={() => handleIconPress('Basketball')} />
+                          <Ionicons name="tennisball"  style={[styles.ic, { color: selectedFacilityTypes.includes('tennis') ? 'gray' : 'black' }]} onPress={() => handleIconPress('tennis')} />
+                          <MaterialCommunityIcons name="badminton"  style={[styles.ic, { color: selectedFacilityTypes.includes('badminton') ? 'gray' : 'black' }]} onPress={() => handleIconPress('badminton')} />
+                          <FontAwesome5 name="golf-ball" style={[styles.ic, { color: selectedFacilityTypes.includes('golf') ? 'gray' : 'black' }]} onPress={() => handleIconPress('golf')} />
+                          <MaterialCommunityIcons name="rugby"  style={[styles.ic, { color: selectedFacilityTypes.includes('rugby') ? 'gray' : 'black' }]} onPress={() => handleIconPress('rugby')}/>
+                      </View>
+                  </ScrollView>
+           </View>
+
 
           {/* //all stadiums  */}
           <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
           <FlatList
-              data={filteredStadiums}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }: { item: Stadium }) => (
-                <TouchableOpacity
-                onPress={() => router.push({ pathname: "/booking", 
-                  params: {  
-                  idsss: item.id ,
-                  name:item.name,
-                  location_link:item.location_link,
-                  rating:item.rating,
-                  open_hour:item.open_hour,
-                  close_hour:item.close_hour,
-                  facility_type:item.facility_type,
-                  email:item.email,
-                  pictures:item.pictures,
-                  location:item.location,
-                  phone_number: item.phone_number,
-                  
-                }})}
-                >
-                    <View style={styles.card}>
-                      {/* <Image source={{ uri: item.pictures }} style={styles.cardImage} /> */}
-                        <View style={styles.cardContent}>
-                            <Text style={styles.cardTitle}>{item.name}</Text>
-                            <Text style={styles.cardLocation}>{item.location}</Text>
-                            <Text style={styles.cardHours}>Open: {item.open_hour.slice(0,5)} - {item.close_hour.slice(0,5)}</Text>
-                            
-                            <View style={styles.cardFooter}>
-                                <Ionicons name="call" size={18} color="green" />
-                                <Text style={styles.cardPhone}>{item.phone_number}</Text>
-                                <MaterialIcons name="star" size={20} color="gold" />
-                                <Text style={styles.cardRating}>{item.rating}</Text>
-                            </View>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-              )}
-          />
+                data={filteredStadiums}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }: { item: Stadium }) => (
+                  <TouchableOpacity
+                    onPress={() => router.push({ pathname: "/booking", 
+                      params: {  
+                      idsss: item.id ,
+                      name:item.name,
+                      location_link:item.location_link,
+                      rating:item.rating,
+                      open_hour:item.open_hour,
+                      close_hour:item.close_hour,
+                      facility_type:item.facility_type,
+                      email:item.email,
+                      pictures:item.pictures,
+                      location:item.location,
+                      phone_number: item.phone_number,
+                      
+                    }})}
+                  >
+                      <View style={styles.card}>
+                        {/* <Image source={{ uri: item.pictures }} style={styles.cardImage} /> */}
+                          <View style={styles.cardContent}>
+                              <Text style={styles.cardTitle}>{item.name}</Text>
+                              <Text style={styles.cardLocation}>{item.location}</Text>
+                              <Text style={styles.cardHours}>Open: {item.open_hour.slice(0,5)} - {item.close_hour.slice(0,5)}</Text>
+                              
+                              <View style={styles.cardFooter}>
+                                  <Ionicons name="call" size={18} color="green" />
+                                  <Text style={styles.cardPhone}>{item.phone_number}</Text>
+                                  <MaterialIcons name="star" size={20} color="gold" />
+                                  <Text style={styles.cardRating}>{item.rating}</Text>
+                              </View>
+                          </View>
+                      </View>
+                  </TouchableOpacity>
+                )}
+            />
     </View>
   );
 };
