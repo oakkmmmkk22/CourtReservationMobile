@@ -4,7 +4,6 @@ import { useRouter } from "expo-router";
 import { Bell, Calendar, MapPin, Sliders } from "lucide-react-native";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-
 const FindFriend = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,12 +42,6 @@ const [party, setparty] = useState([
       image: "https://your-image-url.com/image3.jpg",
     },
   ]);
-
-
-
-
-
-
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -103,7 +96,7 @@ const [party, setparty] = useState([
             data={party}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push({ pathname: "/partyjoin", params: item })}>
                 <View style={styles2.card}>
                   <Image source={{ uri: item.image }} style={styles2.cardImage} />
                   <View style={styles2.cardContent}>
@@ -111,30 +104,15 @@ const [party, setparty] = useState([
                     <Text style={styles2.cardLocation}>{item.location}</Text>
                     <Text style={styles2.cardHours}>{item.time}</Text>
                     <View style={styles2.cardFooter}>
-                     
-                      
-                 
                     </View>
                   </View>
                 </View>
               </TouchableOpacity>
             )}
           />
-
-
-
-
-
-
     </View>
-    
-
-
-
-    
   );
 };
-
 const styles = {
   button: {
     flexDirection: "row",
@@ -215,10 +193,5 @@ const styles2 = StyleSheet.create({
     // paddingBottom:'10%'
   }
 });
-
-
-
-
-
 
 export default FindFriend;

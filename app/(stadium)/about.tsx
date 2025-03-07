@@ -8,27 +8,29 @@ export default function App() {
     // const longitude = 100.9217618257891;
 
     
-    const { name_stadium, latitude ,longitude, open, close, phone, email } = useGlobalSearchParams();
+    const { location_link, open_hour, close_hour, phone_number, email } = useGlobalSearchParams();
+    const [latitude, longitude] = location_link?.split(",").map(Number) || [0, 0];
 
-
-    const stadium = {
-        open: "9:00",
-        close: "18:00",
-        phone: "0902968779",
-        email: "ruammitrcourt@gmail.com",
-        price: 150,
-    };
+    // const stadium = {
+    //     open: "9:00",
+    //     close: "18:00",
+    //     phone: "0902968779",
+    //     email: "ruammitrcourt@gmail.com",
+    //     price: 150,
+    // };
     const { width, height } = Dimensions.get('window');
     return (
         <View style={styles.container} >
             <Text style={styles.text1} >Details</Text>
-            <AntDesign name="clockcircle" size={30} color={"gray"}><Text style={styles.text1}> Hour : {stadium.open.slice(0,5)} - {stadium.close.slice(0,5)}</Text></AntDesign>
-            <FontAwesome name="phone" size={30} color={"gray"}><Text style={styles.text1}> Phone number : {stadium.phone}</Text></FontAwesome>
-            <Fontisto name="email" size={30} color={"gray"}><Text style={styles.text1}> Email : {stadium.email}</Text></Fontisto>
+            <AntDesign name="clockcircle" size={30} color={"gray"}><Text style={styles.text1}> Hour : {open_hour} - {close_hour}</Text></AntDesign>
+            <FontAwesome name="phone" size={30} color={"gray"}><Text style={styles.text1}> Phone number : {phone_number}</Text></FontAwesome>
+            <Fontisto name="email" size={30} color={"gray"}><Text style={styles.text1}> Email : {email}</Text></Fontisto>
             <FontAwesome5 name="map-marker-alt" size={30} color={"gray"}><Text style={styles.text1}> Map : </Text></FontAwesome5>
-            {/* <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-
-                <MapView
+            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+                <Text>
+                    {latitude} , {longitude}
+                </Text>
+                {/* <MapView
                     style={{
                         width: 300,    // Set the width of the mini map
                         height: 300,   // Set the height of the mini map
@@ -45,8 +47,8 @@ export default function App() {
                     rotateEnabled={false} // Disable rotation
                 >
                     <Marker coordinate={{ latitude, longitude }} title={"Eiffel Tower"} />
-                </MapView>
-            </View> */}
+                </MapView> */}
+            </View>
         </View>
     );
 }

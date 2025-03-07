@@ -20,8 +20,9 @@ export const MaterialTopTabs = withLayoutContext<
 
 export default function App() {
 
-    const { name, rating ,location, open, close, phone, email } = useGlobalSearchParams();
-    
+    const { name, rating ,location ,facility_type } = useGlobalSearchParams();
+
+    const facilities = facility_type?.split(",") || []; 
     return (
         <View style={styles.container}>
             <View style={{ flex: 4 }}>
@@ -38,7 +39,14 @@ export default function App() {
                 >
                 <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
                     <Text style={styles.star} numberOfLines={1} ellipsizeMode="tail"><MaterialIcons name="star" size={20} color="gold" /> {rating} | <Text style={styles.location}>{location}</Text></Text>
-                    <Text style={styles.type} numberOfLines={1} ellipsizeMode="tail">Sport : <Text style={styles.itype}>BADMINTON</Text></Text>
+                    <Text style={styles.type} numberOfLines={1} ellipsizeMode="tail">Sport : 
+                    
+                    {facilities.map((facility, index) => (
+                        <View key={index}>
+                            <Text style={styles.itype}> {facility} </Text>
+                        </View>
+                    ))}
+                    </Text>
                 </View>
             </View>
 
@@ -111,7 +119,8 @@ const styles = StyleSheet.create({
         borderColor: "black",
         borderWidth: 2,
         fontSize: 12,
-        fontWeight: "500"
+        fontWeight: "500",
+        marginLeft:3,
     },
     location: {
         fontSize: 15
