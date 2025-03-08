@@ -124,7 +124,7 @@ export default function Stadium() {
           ),
           headerRight: () => (
             <TouchableOpacity onPress={() => router.push('/createpartry2')}>
-               <Pencil size={24} color="white" />
+               <Pencil size={24} color="white" style={{  marginRight: 15 }}/>
             </TouchableOpacity>
           )
         }} 
