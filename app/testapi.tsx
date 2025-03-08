@@ -1,32 +1,71 @@
-// TestScreen.tsx
-import React, { useState } from "react";
-import { View, Text, Button, ActivityIndicator, Alert } from "react-native";
-import api from "./axiosinstance"; // Import API Instance
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import api from './axiosinstance';
 
-const TestScreen = () => {
-  const [data, setData] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("/test"); // เรียก API
-      setData(JSON.stringify(response.data)); // เก็บผลลัพธ์ไว้ใน state
-    } catch (error: any) {
-      console.error("Error fetching data:", error);
-      Alert.alert("Error", error.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+type CourtData = {
+  stadium_id: number;
+  court_id: number;
+  stadium: string;
+  Facility_Type: string;
+  Status: string;
+};
+
+const CourtScreen: React.FC = () => {
+  const [courtData, setCourtData] = useState<CourtData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchCourtData = async () => {
+      try {
+        const response = await api.get("getCourtDetailsBooking/1");
+        if (response.status === 200) {
+          console.log("Data:", response.data);
+          setCourtData(response.data.stadiumCourtData);
+        } else {
+          console.log("Unexpected status:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching court data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+  
+    fetchCourtData();
+  }, []);
+  
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="blue" />;
+  }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Button title="เรียก API /test" onPress={fetchData} />
-      {loading ? <ActivityIndicator size="large" color="blue" /> : null}
-      {data && <Text style={{ marginTop: 20 }}>Response: {data}</Text>}
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
+        รายการสนามกีฬา
+      </Text>
+      <FlatList
+  data={courtData}
+  keyExtractor={(item) => item.court_id.toString()}
+  renderItem={({ item }) => (
+    <View
+      style={{
+        padding: 15,
+        marginBottom: 10,
+        backgroundColor: "#f0f0f0",
+        borderRadius: 10,
+      }}
+    >
+      <Text>สนาม: {item.stadium}</Text>
+      <Text>ประเภทกีฬา: {item.Facility_Type}</Text>
+      <Text>สถานะ: {item.Status}</Text>
+    </View>
+  )}
+/>
     </View>
   );
 };
 
-export default TestScreen;
+export default CourtScreen;

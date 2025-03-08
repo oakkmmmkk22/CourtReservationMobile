@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView,Button } from "react-native";
+import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView,Button,ActivityIndicator } from "react-native";
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import api from "../axiosinstance";
-import { router } from "expo-router";
 import { Phone } from "lucide-react-native";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useGlobalSearchParams, useRouter } from "expo-router";
+import { Dropdown } from 'react-native-element-dropdown';
+
 
 interface Stadium {
   id: string;
@@ -30,6 +32,7 @@ const HomeScreen = () => {
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
   const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [location, setLocation] = useState(null);
     // {
     //   id: "1",
     //   name: "Ruammitr Court",
@@ -59,7 +62,6 @@ const HomeScreen = () => {
     // },
     
   // ]);
-    const [location, setLocation] = useState(null);
   
 
       useEffect(() => {     
@@ -109,30 +111,62 @@ const HomeScreen = () => {
         }, []);
 
 
-    const handleSearchSubmit = (event) => {
-        setSearchText(searchQuery);
-        setShowFilter(true);
-        // setSearchQuery("");
-    };
-
-
-    const handleIconPress = (facilityType: string) => {
-        setSelectedFacilityTypes(prevState => 
-          prevState.some(f => f.toLowerCase() === facilityType.toLowerCase()) 
+        
+        const handleSearchSubmit = (event) => {
+          setSearchText(searchQuery);
+          setShowFilter(true);
+          // setSearchQuery("");
+        };
+        
+        
+        const handleIconPress = (facilityType: string) => {
+          setSelectedFacilityTypes(prevState => 
+            prevState.some(f => f.toLowerCase() === facilityType.toLowerCase()) 
             ? [] 
             : [facilityType]
+          );
+        };
+        
+        const filteredStadiums = stadiums.filter(stadium => {
+
+            if (selectedFacilityTypes.length === 0) return true; 
+            const stadiumFacilities = stadium.facility_type.split(',').map(f => f.trim().toLowerCase())
+            return selectedFacilityTypes.map(f => f.toLowerCase()).some(facility => stadiumFacilities.includes(facility));
+
+          }
         );
-    };
 
+        useEffect(() => {
+          const fetchProvinces = async () => {
+            try {
+              const response = await axios.get('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json');
+              const provinceList = response.data.map(province => ({
+                label: province.name_en,  // ชื่อจังหวัด
+                value: province.id,       // id ของจังหวัด
+              }));
+              setProvinces(provinceList);  // ตั้งค่าข้อมูลจังหวัดใน state
+            } catch (error) {
+              console.error('Error fetching provinces:', error);
+            } finally {
+              setLoading(false);  // เมื่อดึงข้อมูลเสร็จ ให้หยุดแสดง loading
+            }
+          };
+      
+          fetchProvinces();
+        }, []);
 
-    const filteredStadiums = stadiums.filter(stadium => {
+        const filteredProvinces = provinces.filter(province =>
+          province.label.toLowerCase().includes(searchText.toLowerCase())
+        );
 
-        if (selectedFacilityTypes.length === 0) return true; 
-        const stadiumFacilities = stadium.facility_type.split(',').map(f => f.trim().toLowerCase())
-        return selectedFacilityTypes.map(f => f.toLowerCase()).some(facility => stadiumFacilities.includes(facility));
+        const filteredProvince = stadiums.filter(stadium => {
 
-      }
-    );
+          if (selectedFacilityTypes.length === 0) return true; 
+          const stadiumFacilities = stadium.facility_type.split(',').map(f => f.trim().toLowerCase())
+          return selectedFacilityTypes.map(f => f.toLowerCase()).some(facility => stadiumFacilities.includes(facility));
+
+        }
+      );
   
 
   return (
@@ -146,15 +180,42 @@ const HomeScreen = () => {
                   value={searchQuery} 
                   onChangeText={setSearchQuery} 
                 />
-              <Ionicons name="filter" size={20} color="black" style={styles.searchIcon}  onPress={() => setModalOpen(true)}/>
-                      <Modal visible={modalOpen} transparent animationType="fade">
-                          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-                              <View style={{ padding: 20, backgroundColor: "white", borderRadius: 10, alignItems: "center" }}>
-                                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>I am modal</Text>
-                                  <Button title="Close" onPress={() => setModalOpen(false)} />
-                              </View>
-                          </View>
-                    </Modal>
+                <Ionicons name="filter" size={20} color="black" style={styles.searchIcon}  onPress={() => setModalOpen(true)}/>
+                        <Modal visible={modalOpen} transparent animationType="fade">
+                            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+                                <View style={{ padding: 20, backgroundColor: "white", borderRadius: 10, alignItems: "center" }}>
+                                      <View style={styles.containerdrop}>
+                                            <Text style={styles.label}>Choose Province</Text>
+                                            {loading ? (
+                                              <ActivityIndicator size="large" color="blue" />
+                                            ) : (
+                                              <Dropdown
+                                                style={styles.dropdown}
+                                                data={filteredProvinces}  // ใช้ข้อมูลที่กรองแล้ว
+                                                labelField="label"  // ค่าที่จะแสดงใน dropdown
+                                                valueField="value"  // ค่าที่จะถูกส่งเมื่อเลือก
+                                                placeholder={selectedProvince ? selectedProvince : "Please choose province..."}
+                                                value={selectedProvince}
+                                                onChange={filteredProvince}  // เมื่อเลือกจังหวัดจะเก็บค่า id
+                                                search
+                                                searchText={searchText}  // ตั้งค่าข้อความค้นหา
+                                                onSearch={(text) => setSearchText(text)}  // อัพเดทข้อความค้นหาตามที่ผู้ใช้พิมพ์
+                                                searchPlaceholder="ค้นหาจังหวัด..." 
+                                              />
+                                            )}
+                                            {/* {selectedProvince && (
+                                              <Text style={styles.result}>คุณเลือกจังหวัด ID: {selectedProvince}</Text>
+                                            )} */}
+                                            
+                                          </View>
+                                          <View style={styles.buttonContainer}>
+                                          <TouchableOpacity onPress={() => setModalOpen(false)}>Done</TouchableOpacity>
+                                          <TouchableOpacity onPress={() => setModalOpen(false)}>close</TouchableOpacity>
+                                          </View>
+
+                                </View>
+                            </View>
+                          </Modal>
             </View>
 
 
@@ -176,7 +237,6 @@ const HomeScreen = () => {
                       </View>
                   </ScrollView>
            </View>
-
 
           {/* //all stadiums  */}
           <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
@@ -225,31 +285,104 @@ const HomeScreen = () => {
 
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F5F5" },
-  header: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "black", padding: 15 },
-  logo: { color: "white", fontSize: 20, fontWeight: "bold" },
-  pointsContainer: { flexDirection: "row", alignItems: "center" },
-  points: { color: "white", marginHorizontal: 5 },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#F5F5F5" 
+  },
+  header: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    backgroundColor: "black", 
+    padding: 15 
+  },
+  logo: { 
+    color: "white", 
+    fontSize: 20, 
+    fontWeight: "bold" 
+  },
+  pointsContainer: {
+    flexDirection: "row", 
+    alignItems: "center" 
+  },
+  points: { 
+    color: "white",
+     marginHorizontal: 5 
+    },
 
-  searchContainer: { flexDirection: "row", backgroundColor: "white", margin: 10, padding: 10, borderRadius: 10 },
-  searchIcon: { padding: 10 },
-  searchInput: { flex: 1,padding:10 },
+  searchContainer: { 
+    flexDirection: "row", 
+    backgroundColor: "white", 
+    margin: 10, 
+    padding: 10,
+    borderRadius: 10 
+    },
+  searchIcon: {
+    padding: 10 
+    },
+  searchInput: { 
+    flex: 1,
+    padding:10 },
 
-  categoryContainer: { flexDirection: "row", justifyContent: "space-around", paddingVertical: 10 },
+  categoryContainer: { 
+    flexDirection: "row", 
+    justifyContent: "space-around", 
+    paddingVertical: 10 
+  },
 
-  sectionTitle: { fontSize: 16, fontWeight: "bold", padding: 10 },
+  sectionTitle: { 
+    fontSize: 16, 
+    fontWeight: "bold", 
+    padding: 10 
+  },
 
-  card: { flexDirection: "row", backgroundColor: "white", margin: 10, borderRadius: 10, overflow: "hidden" },
-  cardImage: { flex:1 },
-  cardContent: { flex: 1, padding: 30 },
-  cardTitle: { fontSize: 18, fontWeight: "bold" },
-  cardLocation: { fontSize: 15, color: "gray" },
-  cardHours: { fontSize: 15, color: "gray" },
-  cardFooter: { flexDirection: "row", alignItems: "center", marginTop: 5 },
-  cardPhone: { marginLeft: 5, marginRight: 10,fontSize: 15 },
-  cardRating: { marginLeft: 5,fontSize: 15 },
+  card: { 
+    flexDirection: "row", 
+    backgroundColor: "white", 
+    margin: 10, 
+    borderRadius: 10, 
+    overflow: "hidden" 
+  },
+  cardImage: { 
+    flex:1 
+  },
+  cardContent: { 
+    flex: 1, 
+    padding: 30 
+  },
+  cardTitle: { 
+    fontSize: 18, 
+    fontWeight: "bold" 
+  },
+  cardLocation: { 
+    fontSize: 15, 
+    color: "gray" 
+  },
+  cardHours: { 
+    fontSize: 15, 
+    color: "gray" 
+  },
+  cardFooter: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    marginTop: 5 
+  },
+  cardPhone: { 
+    marginLeft: 5, 
+    marginRight: 10,
+    fontSize: 15 
+  },
+  cardRating: { 
+    marginLeft: 5,
+    fontSize: 15 
+  },
 
-  bottomNav: { flexDirection: "row", justifyContent: "space-around", padding: 10, backgroundColor: "white" },
+  bottomNav: { 
+    flexDirection: "row", 
+    justifyContent: "space-around", 
+    padding: 10, 
+    backgroundColor: "white" 
+  },
+
   centerview:{
     flex:1,
     backgroundColor:'rgba(0, 0, 0, 0.5)',
@@ -285,7 +418,36 @@ const styles = StyleSheet.create({
     color:'black',
     marginRight: 40,
     // paddingBottom:'10%'
-  }
+  },
+  containerdrop: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  dropdown: {
+    width: 250,
+    height: 50,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+  },
+  result: {
+    marginTop: 20,
+    fontSize: 16,
+    color: 'blue',
+  },
+  buttonContainer: {
+    flexDirection: 'row',  // ตั้งให้ปุ่มอยู่ในแนวนอน
+    justifyContent: 'space-between',  // จัดระยะห่างระหว่างปุ่ม
+    width: '60%',  // กำหนดความกว้างให้พอดีกับปุ่ม
+  },
 });
 
 export default HomeScreen;
