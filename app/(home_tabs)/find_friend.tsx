@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal, Button , FlatList, Image, StyleSheet,TouchableWithoutFeedback, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { Bell, Calendar, MapPin, Sliders } from "lucide-react-native";
-import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Bell, MapPin, Sliders } from "lucide-react-native";
+import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { Calendar } from 'react-native-calendars';
+
 
 const FindFriend = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-const [party, setparty] = useState([
+  const [showModal,setShowModal] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("");
+  
+  const [party, setparty] = useState([
     {
       id: "1",
       name: "หาเพื่อนเตะครับ",
@@ -62,10 +67,41 @@ const [party, setparty] = useState([
       {/* Filter Buttons */}
       <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 16 }}>
         {/* Date Button */}
-        <TouchableOpacity style={styles.button}>
-          <Calendar size={18} color="white" />
-          <Text style={styles.buttonText}>28/12/2567</Text>
+        <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
+          <AntDesign name="calendar" size={18} color="white" />
+          {/* <Text style={styles.buttonText}>28/12/2567</Text> */}
+          <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
         </TouchableOpacity>
+
+        <Modal visible={showModal} animationType="fade" transparent={true} >
+                                <View style={styles.centerview1}> 
+                                    <View style={styles.modalview1}>
+                                        <Calendar style={styles.calendar}
+
+                                            onDayPress={ date => {
+                                                //console.log(date);
+                                                let selectedDate = date.dateString;
+                                                // selectedDate.setHours(0, 0, 0, 0);
+                                                // setDate(selectedDate);
+                                                setFormattedDate(selectedDate);
+                                                setShowModal(false);
+                                            }} 
+                                            minDate={"2025-01-01"}
+                                            maxDate={"2025-12-31"}
+                                        
+                                        />
+
+                                        <TouchableOpacity onPress={() => setShowModal(false) }>    
+                                            <View style={styles.close}>
+                                                <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
+                                            </View>
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View> 
+                </Modal>
+
+
 
         {/* Location Button */}
         <TouchableOpacity style={styles.button}>
@@ -91,19 +127,19 @@ const [party, setparty] = useState([
       </Modal>
 
       {/* //all stadiums  */}
-      <Text style={styles2.sectionTitle}>FIND PARTY</Text>
+      <Text style={styles.sectionTitle}>FIND PARTY</Text>
           <FlatList
             data={party}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => router.push({ pathname: "/partyjoin", params: item })}>
-                <View style={styles2.card}>
-                  <Image source={{ uri: item.image }} style={styles2.cardImage} />
-                  <View style={styles2.cardContent}>
-                    <Text style={styles2.cardTitle}>{item.name}</Text>
-                    <Text style={styles2.cardLocation}>{item.location}</Text>
-                    <Text style={styles2.cardHours}>{item.time}</Text>
-                    <View style={styles2.cardFooter}>
+                <View style={styles.card}>
+                  <Image source={{ uri: item.image }} style={styles.cardImage} />
+                  <View style={styles.cardContent}>
+                    <Text style={styles.cardTitle}>{item.name}</Text>
+                    <Text style={styles.cardLocation}>{item.location}</Text>
+                    <Text style={styles.cardHours}>{item.time}</Text>
+                    <View style={styles.cardFooter}>
                     </View>
                   </View>
                 </View>
@@ -113,24 +149,24 @@ const [party, setparty] = useState([
     </View>
   );
 };
-const styles = {
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 14,
-    marginLeft: 6,
-  },
-};
+// const styles = {
+//   button: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
+//     paddingVertical: 10,
+//     paddingHorizontal: 15,
+//     borderRadius: 8,
+//   },
+//   buttonText: {
+//     color: "white",
+//     fontSize: 14,
+//     marginLeft: 6,
+//   },
+// };
 
 
-const styles2 = StyleSheet.create({
+const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F5F5F5" },
   header: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "black", padding: 15 },
   logo: { color: "white", fontSize: 20, fontWeight: "bold" },
@@ -191,7 +227,48 @@ const styles2 = StyleSheet.create({
     color:'black',
     marginRight: 40,
     // paddingBottom:'10%'
-  }
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    marginLeft: 6,
+  },
+  calendar:{
+    width:280,
+    height:350,
+  },
+  centerview1:{
+    flex:1,
+    backgroundColor:'rgba(0, 0, 0, 0.5)',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  modalview1:{
+    borderRadius:20,
+    padding:5,
+    alignItems:'center',
+    shadowColor: '#000',
+    width:300,
+    height:420,
+    backgroundColor:'white',
+    
+  },
+  close:{
+    margin:30,
+    fontSize:15,
+    backgroundColor:'black',
+    width:100,
+    alignItems:'center',
+    
+  },
 });
 
 export default FindFriend;

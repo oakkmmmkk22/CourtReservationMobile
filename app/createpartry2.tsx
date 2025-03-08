@@ -369,10 +369,10 @@ const styles = StyleSheet.create({
       },
       calendar:{
         width:280,
-        height:300,
+        height:350,
       },
       close:{
-        margin:70,
+        margin:30,
         fontSize:15,
         backgroundColor:'black',
         width:100,
