@@ -5,6 +5,8 @@ import axios from "axios";
 import api from "../axiosinstance";
 import { router } from "expo-router";
 import { Phone } from "lucide-react-native";
+import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Stadium {
   id: string;
@@ -57,9 +59,23 @@ const HomeScreen = () => {
     // },
     
   // ]);
+    const [location, setLocation] = useState(null);
   
 
-      useEffect(() => {      
+      useEffect(() => {     
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            console.error("Permission to access location was denied");
+            return;
+          }
+    
+          let currentLocation = await Location.getCurrentPositionAsync({});
+          setLocation(currentLocation.coords);
+          await AsyncStorage.setItem("latitude", location?.latitude ?? 0);
+          await AsyncStorage.setItem("longitude", location?.longitude ?? 0);
+        })();
+        
         api.get("/home")
             .then(response => {
 
@@ -121,7 +137,6 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-   
           {/* //search bar */}
           <View style={styles.searchContainer}>
               <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} onPress={handleSearchSubmit}  />  

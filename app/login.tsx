@@ -66,9 +66,6 @@ export default function LoginScreen() {
             <View style={myStyleSheet.buttoninput1}>
                 <Button title='Log in' color="black" onPress={() => submitLogin()} />
             </View>
-            <View style={myStyleSheet.buttoninput2}>
-                <Button color="#000" title='Sign In with Google' />
-            </View>
             <Text style={{ color: "#0007", fontSize: 16, fontWeight: 500 }}>Don't have an account? 
                 <Text style={{ textDecorationLine: "underline", color: "black" }} onPress={()=>router.push('/sign-up')}>Sign up</Text>
             </Text>
