@@ -181,39 +181,6 @@ export default function BookingScreen() {
                                     </View> 
                                 </Modal>
 
-                                {/* <Modal visible={showTimepicker} animationType="fade" transparent={true} >
-                                    <View style={styles.centerview1}> 
-                                        <View style={styles.modalview1}>
-
-                                            <RNPickerSelect
-                                                    onValueChange={(value) => console.log(value)} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
-                                                    items={timeSlots}
-                                                    placeholder={{ label: "เลือกช่วงเวลา", value: null }}
-                                                    style={{
-                                                    inputAndroid: {
-                                                        paddingHorizontal: 10,
-                                                        height: 40,
-                                                        borderWidth: 1,
-                                                        borderRadius: 5,
-                                                    },
-                                                    iconContainer: {
-                                                        position: "absolute",
-                                                        right: 10, // ย้ายลูกศรไปทางขวา
-                                                        top: 12,
-                                                    },
-                                                    }}
-                                                />
-
-                                            <TouchableOpacity onPress={() => setShowModal(false) }>    
-                                                <View style={styles.close}>
-                                                    <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
-                                                </View>
-                                            </TouchableOpacity>
-
-                                        </View>
-                                    </View> 
-                                </Modal> */}
-
                     </View>
                 </View>   
 
