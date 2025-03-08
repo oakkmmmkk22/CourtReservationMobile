@@ -3,16 +3,27 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView }
 import { Picker } from '@react-native-picker/picker';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
+import { Calendar } from 'react-native-calendars';
+
 
 export default function BookingScreen() {
     const [selectedSport, setSelectedSport] = useState("BADMINTON");
     const [cartVisible, setCartVisible] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const [type, setType] = useState('badminton');
+    const [formattedDate, setFormattedDate] = useState("");
+    const [showModal,setShowModal] = useState(false);
+    const [formattedTime, setFormattedTime] = useState("");
+    const [showTimepicker, setShowTimepicker] = useState(false);
+
+    
+    
+    
     const router = useRouter();
-    // const { facility_names } = useGlobalSearchParams();
-    // const facilities = facility_names?.split(",") || []; 
-    const facility_names = "Swimming Pool,Gym,Parking,WiFi,Restaurant";
-    const facilities = facility_names.split(","); 
+    const { facility_names } = useGlobalSearchParams();
+    const facilities = facility_names?.split(",") || []; 
+    // const facility_names = "Swimming Pool,Gym,Parking,WiFi,Restaurant";
+    // const facilities = facility_names.split(","); 
     const courts = [
         { id: "1", name: "BADMINTON", zone: "Zone 1", price: 150, available: true },
         { id: "2", name: "BADMINTON", zone: "Zone 2", price: 150, available: false },
@@ -41,15 +52,76 @@ export default function BookingScreen() {
                     </Text>
                 </View>
             </View>
+
             <View>
                 <Text style={styles.per}>
                     Period:
                 </Text>
-                <View style={styles.choose}>
-                <Text>for phone</Text>
+                <View style={{paddingRight:10,paddingLeft:10,backgroundColor:'white'}}>
+                    <View style={styles.choose}>
+                        <View style={styles.pickerContainer}> 
+                                <Picker
+                                    selectedValue={type}
+                                    onValueChange={(itemValue, itemIndex) => setType(itemValue)}
+                                    style={styles.picker} 
+                                >
+                                    <Picker.Item label="Badminton" value="badminton" />
+                                    <Picker.Item label="Football" value="football" />
+                                    <Picker.Item label="Tennis" value="tennis" />
+                                    <Picker.Item label="Valleyball" value="valleyball" />
+                                    <Picker.Item label="Other" value="other" />
+                                </Picker>
+                        </View>
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
+                                    <AntDesign name="calendar" size={18} color="white" />
+                                    <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
+                                </TouchableOpacity>
 
-                </View>
+                                <TouchableOpacity style={styles.button} onPress={() => setShowTimepicker(true)}>
+                                    <Ionicons name="time-outline" size={18} color="white" />
+                                    <Text style={styles.buttonText}>{formattedTime || "Choose Time"}</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.button} >
+                                    <AntDesign name="search1" size={18} color="white" />
+                                    
+                                </TouchableOpacity>
+                            </View>
+
+                                <Modal visible={showModal} animationType="fade" transparent={true} >
+                                    <View style={styles.centerview1}> 
+                                        <View style={styles.modalview1}>
+                                            <Calendar style={styles.calendar}
+
+                                                onDayPress={ date => {
+                                                    //console.log(date);
+                                                    let selectedDate = date.dateString;
+                                                    // selectedDate.setHours(0, 0, 0, 0);
+                                                    // setDate(selectedDate);
+                                                    setFormattedDate(selectedDate);
+                                                    setShowModal(false);
+                                                }} 
+                                                minDate={"2025-01-01"}
+                                                maxDate={"2025-12-31"}
+                                            
+                                            />
+
+                                            <TouchableOpacity onPress={() => setShowModal(false) }>    
+                                                <View style={styles.close}>
+                                                    <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
+                                                </View>
+                                            </TouchableOpacity>
+
+                                        </View>
+                                    </View> 
+                                </Modal>
+
+                    </View>
+                </View>   
+
             </View>
+
             <View style={styles.container}>
                 {/* Cart Button */}
                 <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/cart')}>
@@ -193,15 +265,83 @@ const styles = StyleSheet.create({
         marginBottom:0,
         backgroundColor:"white",
         padding:15,
+        fontWeight:'bold',
+        fontSize:16,
 
     },
     choose:{
         borderWidth:2,
         borderColor:"lightgray",
         borderRadius:20,
-        backgroundColor:"white"
+        backgroundColor:"white",
+        padding:20,
+        alignItems:'center',
+        
     },
     itype:{
 
-    }
+    },
+    pickerContainer: { 
+        
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginBottom: 10, 
+        width:300,        
+        
+    },
+    picker: { 
+        fontSize:20,
+        backgroundColor:'#3B82F6',
+        color:'white',
+        borderRadius:5,
+        height:40,
+        paddingLeft:5,
+    },
+    button: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 8,
+        margin:5,
+      },
+      buttonText: {
+        color: "white",
+        fontSize: 14,
+        marginLeft: 6,
+      },
+      calendar:{
+        width:280,
+        height:350,
+      },
+      centerview1:{
+        flex:1,
+        backgroundColor:'rgba(0, 0, 0, 0.5)',
+        alignItems:'center',
+        justifyContent:'center'
+      },
+      modalview1:{
+        borderRadius:20,
+        padding:5,
+        alignItems:'center',
+        shadowColor: '#000',
+        width:300,
+        height:420,
+        backgroundColor:'white',
+        
+      },
+      close:{
+        margin:30,
+        fontSize:15,
+        backgroundColor:'#3B82F6',
+        width:100,
+        alignItems:'center',
+        
+      },
+      buttonContainer: {
+        flexDirection: "row", 
+        justifyContent: "space-between", 
+        
+      },
 });
