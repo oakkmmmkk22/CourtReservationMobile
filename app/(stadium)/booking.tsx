@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
+import RNPickerSelect from "react-native-picker-select";
 
 
 export default function BookingScreen() {
@@ -15,10 +16,10 @@ export default function BookingScreen() {
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [showTimepicker, setShowTimepicker] = useState(false);
+    
 
     
-    
-    
+  
     const router = useRouter();
     const { facility_names } = useGlobalSearchParams();
     const facilities = facility_names?.split(",") || []; 
@@ -33,6 +34,42 @@ export default function BookingScreen() {
         setCartItems([...cartItems, item]);
         setCartVisible(true);
     };
+
+        const fakeOpenTime = "08:00"; // เวลาเปิด
+        const fakeCloseTime = "18:00"; // เวลาเปิด
+      
+        const [timeSlots, setTimeSlots] = useState([]);
+      
+        useEffect(() => {
+          if (fakeOpenTime && fakeCloseTime) {
+            generateTimeSlots(fakeOpenTime, fakeCloseTime, 1); // 1 ชั่วโมงเป็น gap time
+          }
+    }, [fakeOpenTime, fakeCloseTime]);
+
+    const generateTimeSlots = (open, close, gap) => {
+        const times = [];
+        let [hour, minute] = open.split(":").map(Number);
+        const [closeHour, closeMinute] = close.split(":").map(Number);
+    
+        while (hour < closeHour || (hour === closeHour && minute < closeMinute)) {
+            let startTime = `${hour.toString().padStart(2, "0")}:${minute
+                .toString()
+                .padStart(2, "0")}`;
+            let endHour = hour + gap;
+            if (endHour === 24) endHour = 0; // Reset to 00:00 if time reaches 24 hours
+        
+            let endTime = `${endHour.toString().padStart(2, "0")}:${minute
+                .toString()
+                .padStart(2, "0")}`;
+        
+            times.push({ label: `${startTime} - ${endTime}`, value: `${startTime}-${endTime}` });
+        
+            hour += gap;
+        }
+        
+        setTimeSlots(times);
+    };
+        
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -79,8 +116,35 @@ export default function BookingScreen() {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity style={styles.button} onPress={() => setShowTimepicker(true)}>
-                                    <Ionicons name="time-outline" size={18} color="white" />
-                                    <Text style={styles.buttonText}>{formattedTime || "Choose Time"}</Text>
+                                    <Ionicons name="time-outline" size={18} color="white" style={{paddingRight:5}} />
+                                    <RNPickerSelect
+                                                    onValueChange={(value) => console.log(value)} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
+                                                    items={timeSlots}
+                                                    placeholder={{ label: "Choose time", value: null }}
+                                                    style={{
+                                                    inputAndroid: {
+                                                        paddingHorizontal: 10,
+                                                        height: 40,
+                                                        borderWidth: 1,
+                                                        borderRadius: 5,    
+                                                        backgroundColor:'#3B82F6',
+                                                    },
+                                                    iconContainer: {
+                                                        position: "absolute",
+                                                        right: 10, // ย้ายลูกศรไปทางขวา
+                                                        top: 12,
+                                                    
+                                                    },
+                                                    inputIOS:{
+                                                        paddingHorizontal: 10,
+                                                        height: 40,
+                                                        borderWidth: 1,
+                                                        borderRadius: 5,    
+                                                        backgroundColor:'#3B82F6',
+                                                    },
+                                                    
+                                                    }}
+                                                />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity style={styles.button} >
@@ -116,6 +180,39 @@ export default function BookingScreen() {
                                         </View>
                                     </View> 
                                 </Modal>
+
+                                {/* <Modal visible={showTimepicker} animationType="fade" transparent={true} >
+                                    <View style={styles.centerview1}> 
+                                        <View style={styles.modalview1}>
+
+                                            <RNPickerSelect
+                                                    onValueChange={(value) => console.log(value)} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
+                                                    items={timeSlots}
+                                                    placeholder={{ label: "เลือกช่วงเวลา", value: null }}
+                                                    style={{
+                                                    inputAndroid: {
+                                                        paddingHorizontal: 10,
+                                                        height: 40,
+                                                        borderWidth: 1,
+                                                        borderRadius: 5,
+                                                    },
+                                                    iconContainer: {
+                                                        position: "absolute",
+                                                        right: 10, // ย้ายลูกศรไปทางขวา
+                                                        top: 12,
+                                                    },
+                                                    }}
+                                                />
+
+                                            <TouchableOpacity onPress={() => setShowModal(false) }>    
+                                                <View style={styles.close}>
+                                                    <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
+                                                </View>
+                                            </TouchableOpacity>
+
+                                        </View>
+                                    </View> 
+                                </Modal> */}
 
                     </View>
                 </View>   
