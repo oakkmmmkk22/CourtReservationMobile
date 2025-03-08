@@ -23,6 +23,8 @@ import axios from "axios";
 import api from "../axiosinstance";
 import { router, useGlobalSearchParams, useRouter } from "expo-router";
 import { Dropdown } from "react-native-element-dropdown";
+import * as Location from "expo-location";
+ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Stadium {
   id: string;
@@ -52,6 +54,7 @@ const HomeScreen = () => {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTextp, setSearchTextp] = useState("");
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     api
@@ -110,6 +113,18 @@ const HomeScreen = () => {
   });
 
   useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
+        return;
+      }
+
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation.coords);
+      await AsyncStorage.setItem("latitude", location?.latitude ?? 0);
+      await AsyncStorage.setItem("longitude", location?.longitude ?? 0);
+    })();
     const fetchProvinces = async () => {
       try {
         const response = await axios.get(
