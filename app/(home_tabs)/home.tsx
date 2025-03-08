@@ -36,6 +36,7 @@ interface Stadium {
   phone_number: string;
   pictures: [];
   facility_type: string;
+  facility_names: string;
   location_link: string;
   email: string;
 }
@@ -77,6 +78,7 @@ const HomeScreen = () => {
           phone_number: stadium.phone_number,
           pictures: stadium.pictures,
           facility_type: stadium.facility_type,
+          facility_names: stadium.facility_names,
           location_link: stadium.location_link,
           email: stadium.email,
         }));
@@ -354,6 +356,7 @@ const HomeScreen = () => {
                   open_hour: item.open_hour,
                   close_hour: item.close_hour,
                   facility_type: item.facility_type,
+                  facility_names: item.facility_names,
                   email: item.email,
                   pictures: item.pictures,
                   location: item.location,

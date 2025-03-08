@@ -1,7 +1,7 @@
 import { AntDesign, FontAwesome, Octicons } from "@expo/vector-icons";
 import { Receipt } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TextInput, Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, FlatList, TextInput, Button, TouchableOpacity, ScrollView } from "react-native";
 import api from "../axiosinstance";
 import { useGlobalSearchParams } from "expo-router";
 
@@ -104,147 +104,146 @@ export default function App() {
         });
     }
     return (
-        <View style={styles.container} >
-            <Text style={styles.text1} >Rete & Reviews</Text>
-            <View style={styles.write}>
-                <Text style={{}}>
-                    <FontAwesome name="user-circle" size={37} style={styles.profile}> </FontAwesome>
-                    <View style={styles.container1}>
-                        <View style={styles.starContainer1}>
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <TouchableOpacity key={star} onPress={() => { setRating(star); }}>
-                                    <AntDesign
-                                        name={star <= rating ? "star" : "staro"} // Filled if selected
-                                        size={40}
-                                        color={star <= rating ? "gold" : "gray"} // Gold for selected, gray for unselected
-                                        style={styles.star1}
-                                    />
-                                </TouchableOpacity>
-                            ))}
+        <ScrollView>
+            <View style={styles.container} >
+                <Text style={styles.text1} >Rete & Reviews</Text>
+                <View style={styles.write}>
+                    <Text style={{}}>
+                        <FontAwesome name="user-circle" size={37} style={styles.profile}> </FontAwesome>
+                        <View style={styles.container1}>
+                            <View style={styles.starContainer1}>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <TouchableOpacity key={star} onPress={() => { setRating(star); }}>
+                                        <AntDesign
+                                            name={star <= rating ? "star" : "staro"} // Filled if selected
+                                            size={40}
+                                            color={star <= rating ? "gold" : "gray"} // Gold for selected, gray for unselected
+                                            style={styles.star1}
+                                        />
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
                         </View>
-                    </View>
-                </Text>
-                <TextInput
-                    style={{
-                        borderBottomWidth: 2,
-                        borderBottomColor: 'gray',
-                        padding: 10,
-                        fontSize: 18,
-                        width: 350,
-                        marginTop: 10,
-                    }}
-                    placeholder="Share you own experience"
-                    placeholderTextColor={"gray"}
-                    value={comment}
-                    onChangeText={setComment}
-                    onTouchStart={() => {
-                        setispost(true)
-                    }}
-                />
-                {ispost ? (<View style={{ alignItems: "center", marginTop: 10 }}>
-                    <Text >
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: "black",
-                                padding: 10,
-                                borderColor: "black",
-                                borderWidth: 2,
-                                borderRadius: 10,
-                                width: 100,
-                                alignItems: "center"
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: "white",
-                                    fontWeight: "bold"
-                                }}
-                                onPress={postreview}
-                            >POST</Text>
-                        </TouchableOpacity>
-                        <View style={{ width: 20 }}></View>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: "white",
-                                padding: 10,
-                                borderColor: "black",
-                                borderWidth: 2,
-                                borderRadius: 10,
-                                width: 100,
-                                alignItems: "center"
-                            }}
-                            onPress={closeee}
-                        >
-                            <Text
-                                style={{
-                                    fontWeight: "bold"
-                                }}
-                            >CANCEL</Text>
-                        </TouchableOpacity>
                     </Text>
-                </View>) : (<></>)
-                }
+                    <TextInput
+                        style={{
+                            borderBottomWidth: 2,
+                            borderBottomColor: 'gray',
+                            padding: 10,
+                            fontSize: 18,
+                            width: 350,
+                            marginTop: 10,
+                        }}
+                        placeholder="Share you own experience"
+                        placeholderTextColor={"gray"}
+                        value={comment}
+                        onChangeText={setComment}
+                        onTouchStart={() => {
+                            setispost(true)
+                        }}
+                    />
+                    {ispost ? (<View style={{ alignItems: "center", marginTop: 10 }}>
+                        <Text >
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: "black",
+                                    padding: 10,
+                                    borderColor: "black",
+                                    borderWidth: 2,
+                                    borderRadius: 10,
+                                    width: 100,
+                                    alignItems: "center"
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "bold"
+                                    }}
+                                    onPress={postreview}
+                                >POST</Text>
+                            </TouchableOpacity>
+                            <View style={{ width: 20 }}></View>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: "white",
+                                    padding: 10,
+                                    borderColor: "black",
+                                    borderWidth: 2,
+                                    borderRadius: 10,
+                                    width: 100,
+                                    alignItems: "center"
+                                }}
+                                onPress={closeee}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: "bold"
+                                    }}
+                                >CANCEL</Text>
+                            </TouchableOpacity>
+                        </Text>
+                    </View>) : (<></>)
+                    }
 
 
-            </View>
-            <View style={{ backgroundColor: "lightgray", height: 5, width: 1000 }}></View>
-            <FlatList
-                data={reviews}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }: { item: ree }) => (
-                    <View key={item.id} style={styles.item}>
-                        <View style={styles.item2}>
-                            <FontAwesome name="user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.username}</Text></FontAwesome>
-                            {item.rating == 1 && <Text>
-                                <Octicons name="star-fill" size={20} color={"gold"} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Text style={styles.date}> {item.date}</Text>
-                            </Text>}
-                            {item.rating == 2 && <Text>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Text style={styles.date}> {item.date}</Text>
-                            </Text>}
-                            {item.rating == 3 && <Text>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Text style={styles.date}> {item.date}</Text>
-                            </Text>}
-                            {item.rating == 4 && <Text>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star" size={20} > </Octicons>
-                                <Text style={styles.date}> {item.date}</Text>
-                            </Text>}
-                            {item.rating == 5 && <Text>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                <Text style={styles.date}> {item.date}</Text>
-                            </Text>}
-                            <Text style={styles.comment}>{item.comment}</Text>
+                </View>
+                <View style={{ backgroundColor: "lightgray", height: 5, width: 1000 }}></View>
+                <FlatList
+                    data={reviews}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }: { item: ree }) => (
+                        <View key={item.id} style={styles.item}>
+                            <View style={styles.item2}>
+                                <FontAwesome name="user-circle" size={37} style={styles.profile}> <Text style={styles.user}>{item.username}</Text></FontAwesome>
+                                {item.rating == 1 && <Text>
+                                    <Octicons name="star-fill" size={20} color={"gold"} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Text style={styles.date}> {item.date}</Text>
+                                </Text>}
+                                {item.rating == 2 && <Text>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Text style={styles.date}> {item.date}</Text>
+                                </Text>}
+                                {item.rating == 3 && <Text>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Text style={styles.date}> {item.date}</Text>
+                                </Text>}
+                                {item.rating == 4 && <Text>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star" size={20} > </Octicons>
+                                    <Text style={styles.date}> {item.date}</Text>
+                                </Text>}
+                                {item.rating == 5 && <Text>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
+                                    <Text style={styles.date}> {item.date}</Text>
+                                </Text>}
+                                <Text style={styles.comment}>{item.comment}</Text>
+                            </View>
+                            <View style={{ backgroundColor: "lightgray", height: 5, width: 1000 }}></View>
                         </View>
-                        <View style={{ backgroundColor: "lightgray", height: 5, width: 1000 }}></View>
-                    </View>
-                )}
-            >
-
-            </FlatList>
-
-        </View>
+                    )}
+                />
+            </View>
+        </ScrollView>
     );
 }
 
