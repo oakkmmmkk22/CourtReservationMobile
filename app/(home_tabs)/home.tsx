@@ -7,7 +7,6 @@ import {
   Image,
   StyleSheet,
   Modal,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   ScrollView,
   Button,
@@ -21,7 +20,7 @@ import {
 } from "@expo/vector-icons";
 import axios from "axios";
 import api from "../axiosinstance";
-import { router, useGlobalSearchParams, useRouter } from "expo-router";
+import { router, } from "expo-router";
 import { Dropdown } from "react-native-element-dropdown";
 import * as Location from "expo-location";
  import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,16 +44,16 @@ const HomeScreen = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
-  const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>(
-    []
-  );
+  const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
   const [provinces, setProvinces] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [loading, setLoading] = useState(true);
-  // const [searchTextp, setSearchTextp] = useState("");
+  const [searchTextprovince, setSearchTextprovince] = useState("");
   const [location, setLocation] = useState(null);
+  const [tempSelectedProvince, setTempSelectedProvince] = useState("");
+
 
   useEffect(() => {
     api
@@ -89,9 +88,9 @@ const HomeScreen = () => {
   }, []);
 
   const handleSearchSubmit = (event) => {
-    setSearchText(searchQuery);
-    setShowFilter(true);
-    // setSearchQuery("");
+    if (searchText.trim() === "") {
+      setSelectedProvince(""); // ล้างจังหวัด
+    }
   };
 
   const handleIconPress = (facilityType: string) => {
@@ -120,10 +119,22 @@ const HomeScreen = () => {
     const matchesSearchQuery =
       stadium.name.toLowerCase().includes(searchText) ||
       stadium.location.toLowerCase().includes(searchText);
+
+    //กรอง province
+    const matchesProvince =
+    selectedProvince === "" ||
+    stadium.location.toLowerCase().includes(selectedProvince.toLowerCase());
+
+    //กรองall
+    const matchesSearch =
+    searchText.trim() === "" || stadium.name.includes(searchText);
   
-    // รวมเงื่อนไขทั้งสอง
-    return matchesFacilityType && matchesSearchQuery;
+    // รวมเงื่อนไขการกรองทั้งหมด
+    return matchesFacilityType && matchesSearchQuery && matchesProvince;
   });
+  
+  
+  
   
 
   useEffect(() => {
@@ -159,9 +170,9 @@ const HomeScreen = () => {
     fetchProvinces();
   }, []);
 
-  // const filteredProvinces = provinces.filter((province) =>
-  //   province.label.toLowerCase().includes(searchTextp.toLowerCase())
-  // );
+  const filteredProvinces = provinces.filter((province) =>
+    province.label.toLowerCase().includes(searchTextprovince.toLowerCase())
+  );
 
   
 
@@ -208,7 +219,7 @@ const HomeScreen = () => {
             >
               <View style={styles.containerdrop}>
                 <Text style={styles.label}>Choose Province</Text>
-                {/* {loading ? (
+                {loading ? (
                   <ActivityIndicator size="large" color="blue" />
                 ) : (
                   <Dropdown
@@ -217,24 +228,28 @@ const HomeScreen = () => {
                     labelField="label" // ค่าที่จะแสดงใน dropdown
                     valueField="value" // ค่าที่จะถูกส่งเมื่อเลือก
                     placeholder={
-                      selectedProvince
-                        ? selectedProvince
+                      tempSelectedProvince
+                        ? tempSelectedProvince
                         : "Please choose province..."
                     }
-                    value={selectedProvince}
-                    onChange={(item) => setSelectedProvince(item)} // เมื่อเลือกจังหวัดจะเก็บค่า id
+                    value={tempSelectedProvince}
+                    onChange={(item) => setTempSelectedProvince(item.label)} // เมื่อเลือกจังหวัดจะเก็บค่า id
                     search
-                    searchText={searchTextp} // ตั้งค่าข้อความค้นหา
-                    onSearch={(text) => setSearchTextp(text)} // อัพเดทข้อความค้นหาตามที่ผู้ใช้พิมพ์
+                    searchText={searchTextprovince} // ตั้งค่าข้อความค้นหา
+                    onSearch={(text) => setTempSelectedProvince(text)} // อัพเดทข้อความค้นหาตามที่ผู้ใช้พิมพ์
                     searchPlaceholder="ค้นหาจังหวัด..."
                   />
-                )} */}
+                )}
                 {/* {selectedProvince && (
                                               <Text style={styles.result}>คุณเลือกจังหวัด ID: {selectedProvince}</Text>
                                             )} */}
               </View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={() => setModalOpen(false)}>
+                <TouchableOpacity onPress={() => {
+                  setSelectedProvince(tempSelectedProvince); // อัปเดตตัวกรองจังหวัดจริง
+                  setTempSelectedProvince("");
+                  setModalOpen(false);
+                }}>
                   Done
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setModalOpen(false)}>
