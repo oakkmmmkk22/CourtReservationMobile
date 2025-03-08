@@ -3,9 +3,6 @@ import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWit
 import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import api from "../axiosinstance";
-import { Phone } from "lucide-react-native";
-import * as Location from "expo-location";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams, useRouter } from "expo-router";
 import { Dropdown } from 'react-native-element-dropdown';
 
@@ -32,52 +29,14 @@ const HomeScreen = () => {
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
   const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [location, setLocation] = useState(null);
-    // {
-    //   id: "1",
-    //   name: "Ruammitr Court",
-    //   location: "SRIRACHA, CHONBURI",
-    //   openHours: "OPEN 12.00 AM - 08.00 PM",
-    //   phone: "089-404-2414",
-    //   rating: 5.0,
-    //   image: "https://your-image-url.com/image1.jpg",
-    // },
-    // {
-    //   id: "2",
-    //   name: "Muay STADIUM",
-    //   location: "SRIRACHA, CHONBURI",
-    //   openHours: "OPEN 12.00 AM - 08.00 PM",
-    //   phone: "089-404-2414",
-    //   rating: 5.0,
-    //   image: "https://your-image-url.com/image2.jpg",
-    // },
-    // {
-    //   id: "3",
-    //   name: "Muay STADIUM",
-    //   location: "SRIRACHA, CHONBURI",
-    //   openHours: "OPEN 12.00 AM - 08.00 PM",
-    //   phone: "089-404-2414",
-    //   rating: 5.0,
-    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    // },
-    
-  // ]);
+  
+  const [provinces, setProvinces] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTextp, setSearchTextp] = useState('');
   
 
-      useEffect(() => {     
-        (async () => {
-          let { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== "granted") {
-            console.error("Permission to access location was denied");
-            return;
-          }
-    
-          let currentLocation = await Location.getCurrentPositionAsync({});
-          setLocation(currentLocation.coords);
-          await AsyncStorage.setItem("latitude", location?.latitude ?? 0);
-          await AsyncStorage.setItem("longitude", location?.longitude ?? 0);
-        })();
-        
+      useEffect(() => {      
         api.get("/home")
             .then(response => {
 
@@ -171,6 +130,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+
           {/* //search bar */}
           <View style={styles.searchContainer}>
               <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} onPress={handleSearchSubmit}  />  
