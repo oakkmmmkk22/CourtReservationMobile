@@ -53,7 +53,7 @@ const HomeScreen = () => {
   const [provinces, setProvinces] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchTextp, setSearchTextp] = useState("");
+  // const [searchTextp, setSearchTextp] = useState("");
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
@@ -103,14 +103,28 @@ const HomeScreen = () => {
   };
 
   const filteredStadiums = stadiums.filter((stadium) => {
-    if (selectedFacilityTypes.length === 0) return true;
-    const stadiumFacilities = stadium.facility_type
-      .split(",")
-      .map((f) => f.trim().toLowerCase());
-    return selectedFacilityTypes
-      .map((f) => f.toLowerCase())
-      .some((facility) => stadiumFacilities.includes(facility));
+    // การกรองตามประเภทของสนามกีฬา
+    const matchesFacilityType =
+      selectedFacilityTypes.length === 0 ||
+      selectedFacilityTypes
+        .map((f) => f.toLowerCase())
+        .some((facility) =>
+          stadium.facility_type
+            .split(",")
+            .map((f) => f.trim().toLowerCase())
+            .includes(facility)
+        );
+  
+    // การกรองตามคำค้นหาของผู้ใช้
+    const searchText = searchQuery.toLowerCase();
+    const matchesSearchQuery =
+      stadium.name.toLowerCase().includes(searchText) ||
+      stadium.location.toLowerCase().includes(searchText);
+  
+    // รวมเงื่อนไขทั้งสอง
+    return matchesFacilityType && matchesSearchQuery;
   });
+  
 
   useEffect(() => {
     (async () => {
@@ -145,19 +159,11 @@ const HomeScreen = () => {
     fetchProvinces();
   }, []);
 
-  const filteredProvinces = provinces.filter((province) =>
-    province.label.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const filteredProvinces = provinces.filter((province) =>
+  //   province.label.toLowerCase().includes(searchTextp.toLowerCase())
+  // );
 
-  const filteredProvince = stadiums.filter((stadium) => {
-    if (selectedFacilityTypes.length === 0) return true;
-    const stadiumFacilities = stadium.facility_type
-      .split(",")
-      .map((f) => f.trim().toLowerCase());
-    return selectedFacilityTypes
-      .map((f) => f.toLowerCase())
-      .some((facility) => stadiumFacilities.includes(facility));
-  });
+  
 
   return (
     <View style={styles.container}>
@@ -202,7 +208,7 @@ const HomeScreen = () => {
             >
               <View style={styles.containerdrop}>
                 <Text style={styles.label}>Choose Province</Text>
-                {loading ? (
+                {/* {loading ? (
                   <ActivityIndicator size="large" color="blue" />
                 ) : (
                   <Dropdown
@@ -216,13 +222,13 @@ const HomeScreen = () => {
                         : "Please choose province..."
                     }
                     value={selectedProvince}
-                    onChange={filteredProvince} // เมื่อเลือกจังหวัดจะเก็บค่า id
+                    onChange={(item) => setSelectedProvince(item)} // เมื่อเลือกจังหวัดจะเก็บค่า id
                     search
-                    searchText={searchText} // ตั้งค่าข้อความค้นหา
-                    onSearch={(text) => setSearchText(text)} // อัพเดทข้อความค้นหาตามที่ผู้ใช้พิมพ์
+                    searchText={searchTextp} // ตั้งค่าข้อความค้นหา
+                    onSearch={(text) => setSearchTextp(text)} // อัพเดทข้อความค้นหาตามที่ผู้ใช้พิมพ์
                     searchPlaceholder="ค้นหาจังหวัด..."
                   />
-                )}
+                )} */}
                 {/* {selectedProvince && (
                                               <Text style={styles.result}>คุณเลือกจังหวัด ID: {selectedProvince}</Text>
                                             )} */}
