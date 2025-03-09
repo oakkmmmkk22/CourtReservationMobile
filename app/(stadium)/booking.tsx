@@ -16,7 +16,7 @@ export default function BookingScreen() {
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [showTimepicker, setShowTimepicker] = useState(false);
-    
+    const [selectedTime, setSelectedTime] = useState(null);
 
     
   
@@ -101,6 +101,9 @@ export default function BookingScreen() {
                                     selectedValue={type}
                                     onValueChange={(itemValue, itemIndex) => setType(itemValue)}
                                     style={styles.picker} 
+                                    itemStyle={styles.pickerItem}
+                                    mode="dropdown"
+                                    
                                 >
                                     <Picker.Item label="Badminton" value="badminton" />
                                     <Picker.Item label="Football" value="football" />
@@ -118,16 +121,18 @@ export default function BookingScreen() {
                                 <TouchableOpacity style={styles.button} onPress={() => setShowTimepicker(true)}>
                                     <Ionicons name="time-outline" size={18} color="white" style={{paddingRight:5}} />
                                     <RNPickerSelect
-                                                    onValueChange={(value) => console.log(value)} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
+                                                    onValueChange={(value) => setSelectedTime(value)} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
                                                     items={timeSlots}
-                                                    placeholder={{ label: "Choose time", value: null }}
+                                                    value={selectedTime} 
+                                                    placeholder={selectedTime ? {} : { label: "Choose time", value: null }}
                                                     style={{
                                                     inputAndroid: {
                                                         paddingHorizontal: 10,
-                                                        height: 40,
+                                                        height: 20,
                                                         borderWidth: 1,
                                                         borderRadius: 5,    
                                                         backgroundColor:'#3B82F6',
+                                                        width:100
                                                     },
                                                     iconContainer: {
                                                         position: "absolute",
@@ -137,10 +142,11 @@ export default function BookingScreen() {
                                                     },
                                                     inputIOS:{
                                                         paddingHorizontal: 10,
-                                                        height: 40,
+                                                        height: 20,
                                                         borderWidth: 1,
                                                         borderRadius: 5,    
                                                         backgroundColor:'#3B82F6',
+                                                        width:100
                                                     },
                                                     
                                                     }}
@@ -153,6 +159,8 @@ export default function BookingScreen() {
                                 </TouchableOpacity>
                             </View>
 
+
+                    </View>
                                 <Modal visible={showModal} animationType="fade" transparent={true} >
                                     <View style={styles.centerview1}> 
                                         <View style={styles.modalview1}>
@@ -180,8 +188,6 @@ export default function BookingScreen() {
                                         </View>
                                     </View> 
                                 </Modal>
-
-                    </View>
                 </View>   
 
             </View>
@@ -354,21 +360,23 @@ const styles = StyleSheet.create({
         
     },
     picker: { 
-        fontSize:20,
         backgroundColor:'#3B82F6',
         color:'white',
-        borderRadius:5,
-        height:40,
-        paddingLeft:5,
+        borderRadius:10,
+        height:50,
+        fontWeight:'bold',
+        width: "100%",
+     
+
+        // paddingLeft:,
     },
     button: {
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
-        paddingVertical: 10,
-        paddingHorizontal: 15,
         borderRadius: 8,
         margin:5,
+        padding:10,
       },
       buttonText: {
         color: "white",
@@ -405,7 +413,14 @@ const styles = StyleSheet.create({
       },
       buttonContainer: {
         flexDirection: "row", 
-        justifyContent: "space-between", 
+        alignItems:'center'
         
       },
+      pickerItem: {
+        fontSize: 18, // ปรับขนาดฟอนต์ของ iOS
+        fontWeight: "bold",
+        color: "white",
+        backgroundColor: "#3B82F6",
+      },
+      
 });
