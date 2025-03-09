@@ -6,7 +6,7 @@ import {
 import { router, useGlobalSearchParams, withLayoutContext } from 'expo-router';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import React from 'react';
-import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const { Navigator } = createMaterialTopTabNavigator();
@@ -18,19 +18,34 @@ export const MaterialTopTabs = withLayoutContext<
     MaterialTopTabNavigationEventMap
 >(Navigator);
 
+const { width, height } = Dimensions.get("window");
+
 export default function App() {
 
     const { name, rating ,location ,facility_type } = useGlobalSearchParams();
-
+    const images = [
+        "https://picsum.photos/600/400?random=1",
+        "https://picsum.photos/600/400?random=2",
+        "https://picsum.photos/600/400?random=3",
+        "https://picsum.photos/600/400?random=4",
+        "https://picsum.photos/600/400?random=5",
+      ];
     const facilities = facility_type?.split(",") || []; 
     return (
         <View style={styles.container}>
             <View style={{ flex: 4 }}>
-                <Image
-                    source={{ uri: 'https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=1645179151' }}
-                    style={styles.image}
-                    resizeMode="cover"
-                />
+                <View style={styles.image1}>
+                    <FlatList
+                        data={images}
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(_, index) => index.toString()}
+                        renderItem={({ item }) => (
+                            <Image source={{ uri: item }} style={styles.image2} />
+                        )}
+                    />
+                </View>
                 <TouchableOpacity style={styles.backButton} onPress={() => router.push('/home')}>
                     <Ionicons name="chevron-back-outline" size={30} color="white" />
                 </TouchableOpacity>
@@ -81,11 +96,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    image: {
+    image1: {
         width: '100%',
         flex: 6,
         marginBottom: -15,
         // marginTop:-20,
+    },
+    image2: {
+        // width: '100%',
+        marginBottom: -15,
+        width: width,
+        height:200,
+        resizeMode: "cover",
     },
     title: {
         flex: 4,
