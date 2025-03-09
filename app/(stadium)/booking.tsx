@@ -27,6 +27,9 @@ export default function BookingScreen() {
     const [stadiumCourtData, setStadiumCourtData] = useState<
       { stadium_id: number; court_id: number; court_number: number; stadium: string; Facility_Type: string; Status: string; price: number }[]
     >([]);
+    const [startTimeState, setStartTimeState] = useState<string | null>(null);
+    const [endTimeState, setEndTimeState] = useState<string | null>(null);
+    const [utcDateState, setUtcDateState] = useState<string | null>(null);
 
 
     const router = useRouter();
@@ -130,6 +133,9 @@ export default function BookingScreen() {
         setStadiumData(response.data.stadiumData);
         setStadiumCourtData(response.data.stadiumCourtData);
 
+        setStartTimeState(startTime);
+        setEndTimeState(endTime);
+        setUtcDateState(utcDate);
 
         console.log(reservationData);
         console.log(stadiumData);
@@ -283,9 +289,7 @@ export default function BookingScreen() {
                     </View>
                 </Modal>
 
-                <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/cart')}>
-                    <Ionicons name="cart" size={30} color="blue" />
-                </TouchableOpacity>
+
                 {/* Court List */}
                 <FlatList
                     data={stadiumCourtData}
@@ -293,7 +297,7 @@ export default function BookingScreen() {
                     renderItem={({ item }) => (
                         <View style={styles.card}>
                             <Text style={styles.courtName}>{item.Facility_Type}</Text>
-                            <Text style={styles.zone}>{item.court_number}</Text>
+                            <Text style={styles.zone}>Zone {item.court_number}</Text>
                             <Text style={styles.price}>💎 {item.price} /Hr</Text>
                             
                             {/* เช็คเงื่อนไขการแสดงปุ่ม */}
@@ -302,9 +306,25 @@ export default function BookingScreen() {
                                     <Text style={styles.fullButtonText}>Full</Text>
                                 </View>
                             ) : item.Status === "available" ? (
-                                <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item)}>
-                                    <Text style={styles.addButtonText}>Add</Text>
-                                </TouchableOpacity>
+                                <View>
+                                    <TouchableOpacity style={styles.cartButton} 
+                                        onPress={() =>
+                                            router.push({
+                                            pathname: "/createpartry2",
+                                            params: {
+                                                type_for_party: item.Facility_Type,
+                                                start_time_for_party: startTimeState,
+                                                end_time_for_party: endTimeState,
+                                                date_for_party: utcDateState
+                                            },
+                                            })
+                                        }>
+                                        <AntDesign name="form" size={30} color="blue" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item)}>
+                                        <Text style={styles.addButtonText}>Add</Text>
+                                    </TouchableOpacity>
+                                </View>
                             ) : (
                                 <View style={styles.fullButton}>
                                     <Text style={styles.fullButtonText}>Full</Text>
@@ -350,8 +370,8 @@ const styles = StyleSheet.create({
     },
     cartButton: {
         position: "absolute",
-        top: 20,
-        right: 20,
+        top: -80,
+        right: 0,
         zIndex: 10,
     },
     modalContainer: {
