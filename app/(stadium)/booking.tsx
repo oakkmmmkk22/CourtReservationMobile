@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView,Platform} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView} from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
-import RNPickerSelect from "react-native-picker-select";
 import { Dropdown } from "react-native-element-dropdown";
+
 
 
 export default function BookingScreen() {
@@ -167,6 +166,7 @@ export default function BookingScreen() {
                                             // borderRadius: 5,
                                             // marginTop: 5,
                                             // }}
+                                            
                                         />
                                 </View>
 
