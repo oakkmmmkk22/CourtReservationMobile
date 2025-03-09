@@ -5,6 +5,7 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import RNPickerSelect from "react-native-picker-select";
+import { Dropdown } from "react-native-element-dropdown";
 
 
 export default function BookingScreen() {
@@ -107,17 +108,28 @@ export default function BookingScreen() {
                 <View style={{paddingRight:10,paddingLeft:10,backgroundColor:'white'}}>
                     <View style={styles.choose}>
                         <View style={styles.pickerContainer}> 
-                            <Picker
-                                selectedValue={type}
-                                onValueChange={(itemValue) => setType(itemValue)} // ใช้ค่าที่เลือก
-                                style={pickerStyles} // ใส่ style ที่เหมาะสม
-                                mode={Platform.OS === 'ios' ? 'dropdown' : 'dialog'} // ใช้ dropdown สำหรับ iOS และ dialog สำหรับ Android
-                            >
-                                <Picker.Item label="Select Sport" value={null} />
-                                {sports.map((sport) => (
-                                    <Picker.Item key={sport.value} label={sport.label} value={sport.value} />
-                                ))}
-                            </Picker>
+                        <Dropdown
+                                data={sports}
+                                labelField="label"
+                                valueField="value"
+                                value={type}
+                                onChange={(item) => setType(item.value)}
+                                placeholder="Select Sport"
+                                style={{
+                                height: 50,
+                                borderColor: '#3B82F6',
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                paddingHorizontal: 10,
+                                }}
+                                placeholderStyle={{ color: '#3B82F6' }}
+                                selectedTextStyle={{ color: '#3B82F6' }}
+                                // dropdownStyle={{
+                                // backgroundColor: '#3B82F6',
+                                // borderRadius: 5,
+                                // marginTop: 5,
+                                // }}
+                            />
                                     
                         </View>
                             <View style={styles.buttonContainer}>
