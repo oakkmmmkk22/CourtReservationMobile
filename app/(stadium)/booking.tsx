@@ -133,6 +133,7 @@ export default function BookingScreen() {
                                                     value={selectedTime} 
                                                     placeholder={ { label: "Choose time", value: null }}
                                                     useNativeAndroidPickerStyle={false}
+                                                    textInputProps={{ underlineColorAndroid: "transparent" }}
                                                     style={{
                                                     inputAndroid: {
                                                         paddingHorizontal: 10,
