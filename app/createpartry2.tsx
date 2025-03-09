@@ -101,12 +101,6 @@ const CreatePartyScreen = () => {
       if (topic == "") {
         setWrongT("*input Topic");
       }
-      // if (formattedDate == "") {
-      //   setWrongDate("*input Date");
-      // }
-      // if (formattedTime == "") {
-      //   setSelectedTime("*input Time");
-      // }
       if (description == "") {
         setWrongDes("*input Description");
       }
@@ -160,17 +154,6 @@ const CreatePartyScreen = () => {
           {/* Type sport */}
           <Text style={styles.label}>Type:</Text>
           <View style={styles.pickerContainer}>
-            {/* <Picker
-              selectedValue={type}
-              onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Badminton" value="badminton" />
-              <Picker.Item label="Football" value="football" />
-              <Picker.Item label="Tennis" value="tennis" />
-              <Picker.Item label="Valleyball" value="valleyball" />
-              <Picker.Item label="Other" value="other" />
-            </Picker> */}
             <Text style={{padding:10,fontSize:16,fontWeight:'bold',color:'gray'}}>{type_for_party}</Text>
           </View>
 
@@ -188,41 +171,7 @@ const CreatePartyScreen = () => {
           <View style={{ borderWidth: 1, borderColor: "lightgray",borderRadius:5,alignItems:'center' }}>
             <Text style={{padding:10,fontSize:16,fontWeight:'bold',color:'gray'}}>{formattedDate}</Text>
           </View>
-          {/* <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowModal(true)}
-          >
-            <Text>{formattedDate ? formattedDate : "Choose Date"}</Text>
-          </TouchableOpacity>
-
-          <Modal visible={showModal} animationType="fade" transparent={true}>
-            <View style={styles.centerview}>
-              <View style={styles.modalview}>
-                <Calendar
-                  style={styles.calendar}
-                  onDayPress={(date) => {
-                    //console.log(date);
-                    let selectedDate = date.dateString;
-                    // selectedDate.setHours(0, 0, 0, 0);
-                    // setDate(selectedDate);
-                    setFormattedDate(selectedDate);
-                    setShowModal(false);
-                  }}
-                  minDate={"2025-01-01"}
-                  maxDate={"2025-12-31"}
-                />
-
-                <TouchableOpacity onPress={() => setShowModal(false)}>
-                  <View style={styles.close}>
-                    <Text style={{ color: "white", fontWeight: "bold" }}>
-                      Close
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-          <Text style={styles.wrong}>{wrongDate}</Text> */}
+         
 
           {/* Time*/}
           <Text style={styles.label}>Time:</Text>
