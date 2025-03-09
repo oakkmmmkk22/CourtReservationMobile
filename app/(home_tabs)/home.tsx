@@ -209,6 +209,7 @@ const HomeScreen = () => {
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: "rgba(0, 0, 0, 0.5)",
+              
             }}
           >
             <View
@@ -217,6 +218,8 @@ const HomeScreen = () => {
                 backgroundColor: "white",
                 borderRadius: 10,
                 alignItems: "center",
+                height:200
+                
               }}
             >
               <View style={styles.containerdrop}>
@@ -239,7 +242,7 @@ const HomeScreen = () => {
                     search
                     searchText={searchTextprovince} // ตั้งค่าข้อความค้นหา
                     onSearch={(text) => setTempSelectedProvince(text)} // อัพเดทข้อความค้นหาตามที่ผู้ใช้พิมพ์
-                    searchPlaceholder="ค้นหาจังหวัด..."
+                    searchPlaceholder="Find Province..."
                   />
                 )}
                 {/* {selectedProvince && (
@@ -247,16 +250,11 @@ const HomeScreen = () => {
                                             )} */}
               </View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={() => {
+                <Button title="Done" onPress={() => {
                   setSelectedProvince(tempSelectedProvince); // อัปเดตตัวกรองจังหวัดจริง
                   setTempSelectedProvince("");
-                  setModalOpen(false);
-                }}>
-                  Done
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setModalOpen(false)}>
-                  close
-                </TouchableOpacity>
+                  setModalOpen(false);}}/>
+                <Button title="Close" onPress={() => setModalOpen(false)}/>
               </View>
             </View>
           </View>
@@ -571,7 +569,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row", // ตั้งให้ปุ่มอยู่ในแนวนอน
     justifyContent: "space-between", // จัดระยะห่างระหว่างปุ่ม
-    width: "60%", // กำหนดความกว้างให้พอดีกับปุ่ม
+    width: "40%", // กำหนดความกว้างให้พอดีกับปุ่ม
   },
 });
 
