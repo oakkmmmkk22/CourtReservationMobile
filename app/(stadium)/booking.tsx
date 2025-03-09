@@ -113,8 +113,8 @@ export default function BookingScreen() {
                                      placeholder={{ label: "Select Sport", value: null }}
                                      value={type}
                                      style={pickerStyles}
-                                     useNativeAndroidPickerStyle={false} // ปิดสไตล์เริ่มต้นของ Android
-                                     textInputProps={{ underlineColorAndroid: "transparent" }} // ป้องกันเส้นขีดใต้
+                                    //  useNativeAndroidPickerStyle={false} // ปิดสไตล์เริ่มต้นของ Android
+                                    //  textInputProps={{ underlineColorAndroid: "transparent" }} // ป้องกันเส้นขีดใต้
                                     
                                 />
                                     
@@ -132,8 +132,8 @@ export default function BookingScreen() {
                                                     items={timeSlots}
                                                     value={selectedTime} 
                                                     placeholder={ { label: "Choose time", value: null }}
-                                                    useNativeAndroidPickerStyle={false}
-                                                    textInputProps={{ underlineColorAndroid: "transparent" }}
+                                                    // useNativeAndroidPickerStyle={false}
+                                                    // textInputProps={{ underlineColorAndroid: "transparent" }}
                                                     style={{
                                                     inputAndroid: {
                                                         paddingHorizontal: 10,
