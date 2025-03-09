@@ -156,12 +156,14 @@ export default function BookingScreen() {
                                                     },
                                                     inputIOS:{
                                                         paddingHorizontal: 10,
-                                                        height: 50,
+                                                        height: 50, // เพิ่มความสูง
                                                         borderWidth: 1,
-                                                        borderRadius: 5,    
-                                                        backgroundColor:'#3B82F6',
-                                                        width:200,
+                                                        borderRadius: 5,
+                                                        backgroundColor: "#3B82F6",
+                                                        width: 200,
                                                         color: "#fff",
+                                                        justifyContent: "center", // แนวตั้งกลาง
+                                                        paddingVertical: 10, // เพิ่ม padding เพื่อให้คลิกได้ง่ายขึ้น
                                                         
                                                     },
                                                     
@@ -266,12 +268,15 @@ const pickerStyles = StyleSheet.create({
       width: 300,
     },
     inputIOS: {
-      backgroundColor: "#3B82F6",
-      color: "#fff",
-      paddingHorizontal: 10,
-      height: 40,
-      borderRadius: 5,
-      width: 300,
+        paddingHorizontal: 10,
+        height: 50, // เพิ่มความสูง
+        borderWidth: 1,
+        borderRadius: 5,
+        backgroundColor: "#3B82F6",
+        width: 200,
+        color: "#fff",
+        justifyContent: "center", // แนวตั้งกลาง
+        paddingVertical: 10, // เพิ่ม padding เพื่อให้คลิกได้ง่ายขึ้น
     },
 });
 
