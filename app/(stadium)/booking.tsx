@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView,Platform} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
@@ -111,6 +111,7 @@ export default function BookingScreen() {
                                 selectedValue={type}
                                 onValueChange={(itemValue) => setType(itemValue)} // ใช้ค่าที่เลือก
                                 style={pickerStyles} // ใส่ style ที่เหมาะสม
+                                mode={Platform.OS === 'ios' ? 'dropdown' : 'dialog'} // ใช้ dropdown สำหรับ iOS และ dialog สำหรับ Android
                             >
                                 <Picker.Item label="Select Sport" value={null} />
                                 {sports.map((sport) => (
