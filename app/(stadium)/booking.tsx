@@ -132,7 +132,7 @@ export default function BookingScreen() {
                                                     items={timeSlots}
                                                     value={selectedTime} 
                                                     placeholder={ { label: "Choose time", value: null }}
-                                                   
+                                                    useNativeAndroidPickerStyle={false}
                                                     style={{
                                                     inputAndroid: {
                                                         paddingHorizontal: 10,
@@ -155,11 +155,11 @@ export default function BookingScreen() {
                                                     },
                                                     inputIOS:{
                                                         paddingHorizontal: 10,
-                                                        height: 40,
+                                                        height: 50,
                                                         borderWidth: 1,
                                                         borderRadius: 5,    
                                                         backgroundColor:'#3B82F6',
-                                                        width:100,
+                                                        width:200,
                                                         color: "#fff",
                                                         
                                                     },
