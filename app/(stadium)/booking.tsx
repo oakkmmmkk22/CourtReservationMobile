@@ -92,6 +92,7 @@ export default function BookingScreen() {
         { label: "🏊‍♂️ Swimming", value: "swimming" },
         { label: "🏓 Table Tennis", value: "table_tennis" }, 
         { label: "🏉 Rugby", value: "rugby" },  
+        { label: "⚽ Soccer", value: "soccer" },
         
     ];
     const availableSports = sports.filter(sport =>
