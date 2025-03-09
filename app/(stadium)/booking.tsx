@@ -35,8 +35,6 @@ export default function BookingScreen() {
     const router = useRouter();
     const { facility_names, facility_type, idsss, open_hour, close_hour, location } = useGlobalSearchParams();
 
-    console.log(location);
-
     const facilities = facility_names?.split(",") || [];
     const facilitiesType = facility_type?.split(",") || [];
 
@@ -116,13 +114,8 @@ export default function BookingScreen() {
     );
 
     const filter_court = async () => {
-        console.log("at on press")
         const utcDate = new Date(formattedDate + "T00:00:00Z").toISOString();
-        console.log(utcDate); 
         const [startTime, endTime] = selectedTime ? selectedTime.split("-") : [null, null];
-        console.log(startTime)
-        console.log(endTime)
-        console.log(type)
         const response = await api.post("/getCourtDetailsBooking", {
             date:utcDate,
             start:startTime,
@@ -130,7 +123,6 @@ export default function BookingScreen() {
             type:type,
             id_stadium:idsss,
         });
-        // console.log(response.data)
 
         setReservationData(response.data.reservationData);
         setStadiumData(response.data.stadiumData);
@@ -140,9 +132,6 @@ export default function BookingScreen() {
         setEndTimeState(endTime);
         setUtcDateState(utcDate);
 
-        console.log(reservationData);
-        console.log(stadiumData);
-        console.log(stadiumCourtData); 
     }
 
     return (
@@ -210,7 +199,6 @@ export default function BookingScreen() {
                                     value={selectedTime}
                                     onChange={(item) => {
                                         setSelectedTime(item.value);
-                                        console.log("Selected time:", item.value);
                                     }}
                                     placeholder={selectedTime ? `Selected time: ${selectedTime}` : "Choose time"}
                                     style={{
@@ -248,12 +236,8 @@ export default function BookingScreen() {
                                 <Calendar style={styles.calendar}
 
                                     onDayPress={date => {
-                                        //console.log(date);
                                         let selectedDate = date.dateString;
-                                        // selectedDate.setHours(0, 0, 0, 0);
-                                        // setDate(selectedDate);
                                         setFormattedDate(selectedDate);
-                                        console.log(selectedDate);
                                         setShowModal(false);
                                     }}
                                     minDate={"2025-01-01"}
