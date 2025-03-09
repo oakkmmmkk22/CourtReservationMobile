@@ -140,48 +140,34 @@ export default function BookingScreen() {
 
                                 <TouchableOpacity style={styles.buttontime} onPress={() => setShowTimepicker(true)}>
                                     <Ionicons name="time-outline" size={18} color="white" style={{paddingRight:5}} />
-                                    <RNPickerSelect
-                                                    onValueChange={(value) =>{ setSelectedTime(value); console.log("Selected value:", value);}} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
-                                                    items={timeSlots}
-                                                    value={selectedTime} 
-                                                    placeholder={ { label: "Choose time", value: null }}
-                                                    // useNativeAndroidPickerStyle={false}
-                                                    // textInputProps={{ underlineColorAndroid: "transparent" }}
-                                                    style={{
-                                                    inputAndroid: {
-                                                       paddingHorizontal: 10,
-                                                        height: 50, // เพิ่มความสูง
-                                                        borderWidth: 1,
-                                                        borderRadius: 5,
-                                                        backgroundColor: "#3B82F6",
-                                                        width: 200,
-                                                        color: "#fff",
-                                                        justifyContent: "center", // แนวตั้งกลาง
-                                                        paddingVertical: 10, // เพิ่ม padding เพื่อให้คลิกได้ง่ายขึ้น
-                                                        
-                                                        
-                                                    },
-                                                    iconContainer: {
-                                                        position: "absolute",
-                                                        right: 10, // ย้ายลูกศรไปทางขวา
-                                                        top: 12,
-                                                    
-                                                    },
-                                                    inputIOS:{
-                                                        paddingHorizontal: 10,
-                                                        height: 50, // เพิ่มความสูง
-                                                        borderWidth: 1,
-                                                        borderRadius: 5,
-                                                        backgroundColor: "#3B82F6",
-                                                        width: 200,
-                                                        color: "#fff",
-                                                        justifyContent: "center", // แนวตั้งกลาง
-                                                        paddingVertical: 10, // เพิ่ม padding เพื่อให้คลิกได้ง่ายขึ้น
-                                                        
-                                                    },
-                                                    
-                                                    }}
-                                                />
+                                    <Dropdown
+                                            data={timeSlots}
+                                            labelField="label"
+                                            valueField="value"
+                                            value={selectedTime}
+                                            onChange={(item) => {
+                                            setSelectedTime(item.value);
+                                            console.log("Selected time:", item.value);
+                                            }}
+                                            placeholder={selectedTime ? `Selected time: ${selectedTime}` : "Choose time"} 
+                                            style={{
+                                            height: 50,
+                                            borderWidth: 1,
+                                            borderColor: '#3B82F6',
+                                            borderRadius: 5,
+                                            // paddingHorizontal: 10,
+                                            backgroundColor: '#3B82F6',
+                                            color: '#fff',
+                                            width:150
+                                            }}
+                                            placeholderStyle={{ color: '#fff' }}
+                                            selectedTextStyle={{ color: '#fff' }}
+                                            // dropdownStyle={{
+                                            // backgroundColor: '#fafafa',
+                                            // borderRadius: 5,
+                                            // marginTop: 5,
+                                            // }}
+                                        />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity style={styles.button} >
