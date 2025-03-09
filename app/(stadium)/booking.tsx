@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useGlobalSearchParams, useRouter } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import { Dropdown } from "react-native-element-dropdown";
+import api from '../axiosinstance';
 
 
 
@@ -11,19 +12,18 @@ export default function BookingScreen() {
     const [selectedSport, setSelectedSport] = useState("BADMINTON");
     const [cartVisible, setCartVisible] = useState(false);
     const [cartItems, setCartItems] = useState([]);
-    // const [type, setType] = useState('badminton');
     const [formattedDate, setFormattedDate] = useState("");
-    const [showModal,setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [showTimepicker, setShowTimepicker] = useState(false);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-    
-  
+
+
     const router = useRouter();
-    const { facility_names,facility_type } = useGlobalSearchParams();
-    const facilities = facility_names?.split(",") || []; 
-    const facilitiesType = facility_type?.split(",") || []; 
+    const { facility_names, facility_type } = useGlobalSearchParams();
+    const facilities = facility_names?.split(",") || [];
+    const facilitiesType = facility_type?.split(",") || [];
 
     // const facility_names = "Swimming Pool,Gym,Parking,WiFi,Restaurant";
     // const facilities = facility_names.split(","); 
@@ -37,43 +37,43 @@ export default function BookingScreen() {
         setCartVisible(true);
     };
 
-        const fakeOpenTime = "08:00"; // เวลาเปิด
-        const fakeCloseTime = "18:00"; // เวลาเปิด
-      
-        const [timeSlots, setTimeSlots] = useState<{ label: string; value: string }[]>([]);
-      
-        useEffect(() => {
-          if (fakeOpenTime && fakeCloseTime) {
+    const fakeOpenTime = "08:00"; // เวลาเปิด
+    const fakeCloseTime = "18:00"; // เวลาเปิด
+
+    const [timeSlots, setTimeSlots] = useState<{ label: string; value: string }[]>([]);
+
+    useEffect(() => {
+        if (fakeOpenTime && fakeCloseTime) {
             setTimeSlots(generateTimeSlots(fakeOpenTime, fakeCloseTime, 1)); // 1 ชั่วโมงเป็น gap time
-          }
+        }
     }, [fakeOpenTime, fakeCloseTime]);
 
     const generateTimeSlots = (open: string, close: string, gap: number) => {
         const times: { label: string; value: string }[] = [];
         let [hour, minute] = open.split(":").map(Number);
         const [closeHour, closeMinute] = close.split(":").map(Number);
-    
+
         while (hour < closeHour || (hour === closeHour && minute < closeMinute)) {
             let startTime = `${hour.toString().padStart(2, "0")}:${minute
                 .toString()
                 .padStart(2, "0")}`;
             let endHour = hour + gap;
             if (endHour === 24) endHour = 0; // Reset to 00:00 if time reaches 24 hours
-        
+
             let endTime = `${endHour.toString().padStart(2, "0")}:${minute
                 .toString()
                 .padStart(2, "0")}`;
-        
+
             times.push({ label: `${startTime} - ${endTime}`, value: `${startTime}-${endTime}` });
-        
+
             hour += gap;
         }
-        
+
         return times;
     };
 
     const [type, setType] = useState(null);
-    
+
     const sports = [
         { label: "🏸 Badminton", value: "badminton" },
         { label: "⚽ Football", value: "football" },
@@ -90,31 +90,41 @@ export default function BookingScreen() {
         { label: "🏌️‍♂️ Golf", value: "golf" },
         { label: "🏄‍♀️ Surfing", value: "surfing" },
         { label: "🏊‍♂️ Swimming", value: "swimming" },
-        { label: "🏓 Table Tennis", value: "table_tennis" }, 
-        { label: "🏉 Rugby", value: "rugby" },  
+        { label: "🏓 Table Tennis", value: "table_tennis" },
+        { label: "🏉 Rugby", value: "rugby" },
         { label: "⚽ Soccer", value: "soccer" },
-        
+
     ];
     const availableSports = sports.filter(sport =>
         facilitiesType.some(facility => facility.toLowerCase() === sport.value.toLowerCase()) // ตรวจสอบแบบ case-insensitive
-    );    
-        
+    );
+
+    const filter_court = () => {
+        console.log("at on press")
+        const utcDate = new Date(formattedDate + "T00:00:00Z").toISOString();
+        console.log(utcDate); 
+        const [startTime, endTime] = selectedTime ? selectedTime.split("-") : [null, null];
+        console.log(startTime)
+        console.log(endTime)
+        console.log(type)
+
+    }
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.fac}>
-                <Text style={{fontWeight:"bold",fontSize:16}}>
+                <Text style={{ fontWeight: "bold", fontSize: 16 }}>
                     Facilities :
                 </Text>
                 <View style={styles.ifac}>
                     <Text>
-                    {facilities.map((facility, index) => (
-                        <View key={index}>
-                            <Text style={styles.itype}>
-                                <AntDesign name={"checkcircle"} color={"green"} size={18} style={{marginLeft:10}}></AntDesign> {facility} 
-                            </Text>
-                        </View>
-                    ))}
+                        {facilities.map((facility, index) => (
+                            <View key={index}>
+                                <Text style={styles.itype}>
+                                    <AntDesign name={"checkcircle"} color={"green"} size={18} style={{ marginLeft: 10 }}></AntDesign> {facility}
+                                </Text>
+                            </View>
+                        ))}
                     </Text>
                 </View>
             </View>
@@ -123,108 +133,109 @@ export default function BookingScreen() {
                 <Text style={styles.per}>
                     Period:
                 </Text>
-                <View style={{paddingRight:10,paddingLeft:10,backgroundColor:'white'}}>
+                <View style={{ paddingRight: 10, paddingLeft: 10, backgroundColor: 'white' }}>
                     <View style={styles.choose}>
-                        <View style={styles.pickerContainer}> 
-                        <Dropdown
+                        <View style={styles.pickerContainer}>
+                            <Dropdown
                                 data={availableSports}
                                 labelField="label"
                                 valueField="value"
                                 value={type}
-                                onChange={(item) => setType(item.value)}
+                                onChange={(item) => { setType(item.value); }}
                                 placeholder="Select Sport"
                                 style={{
-                                height: 50,
-                                borderColor: '#3B82F6',
-                                borderWidth: 1,
-                                borderRadius: 5,
-                                paddingHorizontal: 10,
+                                    height: 50,
+                                    borderColor: '#3B82F6',
+                                    borderWidth: 1,
+                                    borderRadius: 5,
+                                    paddingHorizontal: 10,
                                 }}
                                 placeholderStyle={{ color: '#3B82F6' }}
                                 selectedTextStyle={{ color: '#3B82F6' }}
+                            // dropdownStyle={{
+                            // backgroundColor: '#3B82F6',
+                            // borderRadius: 5,
+                            // marginTop: 5,
+                            // }}
+                            />
+
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
+                                <AntDesign name="calendar" size={18} color="white" />
+                                <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
+                            </TouchableOpacity>
+
+                            <View style={styles.buttontime}>
+                                <Ionicons name="time-outline" size={18} color="white" style={{ paddingRight: 5 }} />
+                                <Dropdown
+                                    data={timeSlots}
+                                    labelField="label"
+                                    valueField="value"
+                                    value={selectedTime}
+                                    onChange={(item) => {
+                                        setSelectedTime(item.value);
+                                        console.log("Selected time:", item.value);
+                                    }}
+                                    placeholder={selectedTime ? `Selected time: ${selectedTime}` : "Choose time"}
+                                    style={{
+                                        height: 50,
+                                        borderWidth: 1,
+                                        borderColor: '#3B82F6',
+                                        borderRadius: 5,
+                                        // paddingHorizontal: 10,
+                                        backgroundColor: '#3B82F6',
+                                        color: '#fff',
+                                        width: 150
+                                    }}
+                                    placeholderStyle={{ color: '#fff' }}
+                                    selectedTextStyle={{ color: '#fff' }}
                                 // dropdownStyle={{
-                                // backgroundColor: '#3B82F6',
+                                // backgroundColor: '#fafafa',
                                 // borderRadius: 5,
                                 // marginTop: 5,
                                 // }}
-                            />
-                                    
-                        </View>
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
-                                    <AntDesign name="calendar" size={18} color="white" />
-                                    <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
-                                </TouchableOpacity>
 
-                                <View style={styles.buttontime}>
-                                    <Ionicons name="time-outline" size={18} color="white" style={{paddingRight:5}} />
-                                    <Dropdown
-                                            data={timeSlots}
-                                            labelField="label"
-                                            valueField="value"
-                                            value={selectedTime}
-                                            onChange={(item) => {
-                                            setSelectedTime(item.value);
-                                            console.log("Selected time:", item.value);
-                                            }}
-                                            placeholder={selectedTime ? `Selected time: ${selectedTime}` : "Choose time"} 
-                                            style={{
-                                            height: 50,
-                                            borderWidth: 1,
-                                            borderColor: '#3B82F6',
-                                            borderRadius: 5,
-                                            // paddingHorizontal: 10,
-                                            backgroundColor: '#3B82F6',
-                                            color: '#fff',
-                                            width:150
-                                            }}
-                                            placeholderStyle={{ color: '#fff' }}
-                                            selectedTextStyle={{ color: '#fff' }}
-                                            // dropdownStyle={{
-                                            // backgroundColor: '#fafafa',
-                                            // borderRadius: 5,
-                                            // marginTop: 5,
-                                            // }}
-                                            
-                                        />
-                                </View>
-
-                                <TouchableOpacity style={styles.button} >
-                                    <AntDesign name="search1" size={18} color="white" />
-                                    
-                                </TouchableOpacity>
+                                />
                             </View>
+
+                            <TouchableOpacity style={styles.button} >
+                                <AntDesign name="search1" size={18} color="white" onPress={filter_court}/>
+
+                            </TouchableOpacity>
+                        </View>
 
 
                     </View>
-                                <Modal visible={showModal} animationType="fade" transparent={true} >
-                                    <View style={styles.centerview1}> 
-                                        <View style={styles.modalview1}>
-                                            <Calendar style={styles.calendar}
+                    <Modal visible={showModal} animationType="fade" transparent={true} >
+                        <View style={styles.centerview1}>
+                            <View style={styles.modalview1}>
+                                <Calendar style={styles.calendar}
 
-                                                onDayPress={ date => {
-                                                    //console.log(date);
-                                                    let selectedDate = date.dateString;
-                                                    // selectedDate.setHours(0, 0, 0, 0);
-                                                    // setDate(selectedDate);
-                                                    setFormattedDate(selectedDate);
-                                                    setShowModal(false);
-                                                }} 
-                                                minDate={"2025-01-01"}
-                                                maxDate={"2025-12-31"}
-                                            
-                                            />
+                                    onDayPress={date => {
+                                        //console.log(date);
+                                        let selectedDate = date.dateString;
+                                        // selectedDate.setHours(0, 0, 0, 0);
+                                        // setDate(selectedDate);
+                                        setFormattedDate(selectedDate);
+                                        console.log(selectedDate);
+                                        setShowModal(false);
+                                    }}
+                                    minDate={"2025-01-01"}
+                                    maxDate={"2025-12-31"}
 
-                                            <TouchableOpacity onPress={() => setShowModal(false) }>    
-                                                <View style={styles.close}>
-                                                    <Text style={{color:'white',fontWeight:'bold'}} >Close</Text>     
-                                                </View>
-                                            </TouchableOpacity>
+                                />
 
-                                        </View>
-                                    </View> 
-                                </Modal>
-                </View>   
+                                <TouchableOpacity onPress={() => setShowModal(false)}>
+                                    <View style={styles.close}>
+                                        <Text style={{ color: 'white', fontWeight: 'bold' }} >Close</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View>
+                    </Modal>
+                </View>
 
             </View>
 
@@ -278,12 +289,12 @@ export default function BookingScreen() {
 
 const pickerStyles = StyleSheet.create({
     inputAndroid: {
-      backgroundColor: "#3B82F6",
-      color: "#fff",
-      paddingHorizontal: 10,
-      height: 40,
-      borderRadius: 5,
-      width: 300,
+        backgroundColor: "#3B82F6",
+        color: "#fff",
+        paddingHorizontal: 10,
+        height: 40,
+        borderRadius: 5,
+        width: 300,
     },
     inputIOS: {
         paddingHorizontal: 10,
@@ -378,54 +389,54 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 16,
     },
-    fac:{
-        backgroundColor:"white",
-        marginBottom:5,
-        padding:15,
+    fac: {
+        backgroundColor: "white",
+        marginBottom: 5,
+        padding: 15,
     },
-    ifac:{
-        backgroundColor:"#0001",
-        borderColor:"lightgray",
-        borderWidth:2,
-        borderRadius:10,
-        padding:5,
+    ifac: {
+        backgroundColor: "#0001",
+        borderColor: "lightgray",
+        borderWidth: 2,
+        borderRadius: 10,
+        padding: 5,
     },
-    per:{
-        marginBottom:0,
-        backgroundColor:"white",
-        padding:15,
-        fontWeight:'bold',
-        fontSize:16,
+    per: {
+        marginBottom: 0,
+        backgroundColor: "white",
+        padding: 15,
+        fontWeight: 'bold',
+        fontSize: 16,
 
     },
-    choose:{
-        borderWidth:2,
-        borderColor:"lightgray",
-        borderRadius:20,
-        backgroundColor:"white",
-        padding:20,
-        alignItems:'center',
-        
-    },
-    itype:{
+    choose: {
+        borderWidth: 2,
+        borderColor: "lightgray",
+        borderRadius: 20,
+        backgroundColor: "white",
+        padding: 20,
+        alignItems: 'center',
 
     },
-    pickerContainer: { 
-        
+    itype: {
+
+    },
+    pickerContainer: {
+
         borderColor: '#ccc',
         borderRadius: 5,
-        marginBottom: 10, 
-        width:300,        
-        
+        marginBottom: 10,
+        width: 300,
+
     },
-    picker: { 
-        backgroundColor:'#3B82F6',
-        color:'white',
-        borderRadius:10,
-        height:50,
-        fontWeight:'bold',
+    picker: {
+        backgroundColor: '#3B82F6',
+        color: 'white',
+        borderRadius: 10,
+        height: 50,
+        fontWeight: 'bold',
         width: "100%",
-     
+
 
         // paddingLeft:,
     },
@@ -434,64 +445,64 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
         borderRadius: 8,
-        margin:5,
-        padding:10,
-        height:50
-      },
-      buttonText: {
+        margin: 5,
+        padding: 10,
+        height: 50
+    },
+    buttonText: {
         color: "white",
         fontSize: 14,
         marginLeft: 6,
-      },
-      calendar:{
-        width:280,
-        height:350,
-      },
-      centerview1:{
-        flex:1,
-        backgroundColor:'rgba(0, 0, 0, 0.5)',
-        alignItems:'center',
-        justifyContent:'center'
-      },
-      modalview1:{
-        borderRadius:20,
-        padding:5,
-        alignItems:'center',
+    },
+    calendar: {
+        width: 280,
+        height: 350,
+    },
+    centerview1: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    modalview1: {
+        borderRadius: 20,
+        padding: 5,
+        alignItems: 'center',
         shadowColor: '#000',
-        width:300,
-        height:420,
-        backgroundColor:'white',
-        
-      },
-      close:{
-        margin:30,
-        fontSize:15,
-        backgroundColor:'#3B82F6',
-        width:100,
-        alignItems:'center',
-        
-      },
-      buttonContainer: {
-        flexDirection: "row", 
-        alignItems:'center',
-        paddingLeft:10,
-        paddingRight:10,
-        
-      },
-      pickerItem: {
+        width: 300,
+        height: 420,
+        backgroundColor: 'white',
+
+    },
+    close: {
+        margin: 30,
+        fontSize: 15,
+        backgroundColor: '#3B82F6',
+        width: 100,
+        alignItems: 'center',
+
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+
+    },
+    pickerItem: {
         fontSize: 18, // ปรับขนาดฟอนต์ของ iOS
         fontWeight: "bold",
         color: "white",
         backgroundColor: "#3B82F6",
-      },
-      buttontime: {
+    },
+    buttontime: {
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
         borderRadius: 8,
-        margin:5,
-        paddingLeft:10,
-       //borderWidth:10
-      },
-      
+        margin: 5,
+        paddingLeft: 10,
+        //borderWidth:10
+    },
+
 });
