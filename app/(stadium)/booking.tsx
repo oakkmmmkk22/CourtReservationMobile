@@ -17,11 +17,20 @@ export default function BookingScreen() {
     const [formattedTime, setFormattedTime] = useState("");
     const [showTimepicker, setShowTimepicker] = useState(false);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
+    const [reservationData, setReservationData] = useState<number[]>([]);
+    const [stadiumData, setStadiumData] = useState<{
+      id: number;
+      stadium: string;
+      openHour: string;
+      closeHour: string;
+    } | null>(null);
+    const [stadiumCourtData, setStadiumCourtData] = useState<
+      { stadium_id: number; court_id: number; court_number: number; stadium: string; Facility_Type: string; Status: string; price: number }[]
+    >([]);
 
 
     const router = useRouter();
-    const { facility_names, facility_type } = useGlobalSearchParams();
+    const { facility_names, facility_type, idsss, open_hour, close_hour } = useGlobalSearchParams();
     const facilities = facility_names?.split(",") || [];
     const facilitiesType = facility_type?.split(",") || [];
 
@@ -37,16 +46,17 @@ export default function BookingScreen() {
         setCartVisible(true);
     };
 
-    const fakeOpenTime = "08:00"; // เวลาเปิด
-    const fakeCloseTime = "18:00"; // เวลาเปิด
+    
+    const OpenTime = open_hour || "00:00"; // เวลาเปิด
+    const CloseTime = close_hour || "18:00"; // เวลาเปิด
 
     const [timeSlots, setTimeSlots] = useState<{ label: string; value: string }[]>([]);
 
     useEffect(() => {
-        if (fakeOpenTime && fakeCloseTime) {
-            setTimeSlots(generateTimeSlots(fakeOpenTime, fakeCloseTime, 1)); // 1 ชั่วโมงเป็น gap time
+        if (OpenTime && CloseTime) {
+            setTimeSlots(generateTimeSlots(OpenTime, CloseTime, 1)); // 1 ชั่วโมงเป็น gap time
         }
-    }, [fakeOpenTime, fakeCloseTime]);
+    }, [OpenTime, CloseTime]);
 
     const generateTimeSlots = (open: string, close: string, gap: number) => {
         const times: { label: string; value: string }[] = [];
@@ -99,7 +109,7 @@ export default function BookingScreen() {
         facilitiesType.some(facility => facility.toLowerCase() === sport.value.toLowerCase()) // ตรวจสอบแบบ case-insensitive
     );
 
-    const filter_court = () => {
+    const filter_court = async () => {
         console.log("at on press")
         const utcDate = new Date(formattedDate + "T00:00:00Z").toISOString();
         console.log(utcDate); 
@@ -107,7 +117,23 @@ export default function BookingScreen() {
         console.log(startTime)
         console.log(endTime)
         console.log(type)
+        const response = await api.post("/getCourtDetailsBooking", {
+            date:utcDate,
+            start:startTime,
+            end:endTime,
+            type:type,
+            id_stadium:idsss,
+        });
+        // console.log(response.data)
 
+        setReservationData(response.data.reservationData);
+        setStadiumData(response.data.stadiumData);
+        setStadiumCourtData(response.data.stadiumCourtData);
+
+
+        console.log(reservationData);
+        console.log(stadiumData);
+        console.log(stadiumCourtData); 
     }
 
     return (
@@ -241,9 +267,6 @@ export default function BookingScreen() {
 
             <View style={styles.container}>
                 {/* Cart Button */}
-                <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/cart')}>
-                    <Ionicons name="cart" size={30} color="blue" />
-                </TouchableOpacity>
 
                 {/* Cart Modal */}
                 <Modal visible={cartVisible} transparent animationType="slide">
@@ -260,16 +283,25 @@ export default function BookingScreen() {
                     </View>
                 </Modal>
 
+                <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/cart')}>
+                    <Ionicons name="cart" size={30} color="blue" />
+                </TouchableOpacity>
                 {/* Court List */}
                 <FlatList
-                    data={courts}
-                    keyExtractor={(item) => item.id}
+                    data={stadiumCourtData}
+                    keyExtractor={(item) => item.court_id.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.card}>
-                            <Text style={styles.courtName}>{item.name}</Text>
-                            <Text style={styles.zone}>{item.zone}</Text>
+                            <Text style={styles.courtName}>{item.Facility_Type}</Text>
+                            <Text style={styles.zone}>{item.court_number}</Text>
                             <Text style={styles.price}>💎 {item.price} /Hr</Text>
-                            {item.available ? (
+                            
+                            {/* เช็คเงื่อนไขการแสดงปุ่ม */}
+                            {reservationData.includes(item.court_number) ? (
+                                <View style={styles.fullButton}>
+                                    <Text style={styles.fullButtonText}>Full</Text>
+                                </View>
+                            ) : item.Status === "available" ? (
                                 <TouchableOpacity style={styles.addButton} onPress={() => addToCart(item)}>
                                     <Text style={styles.addButtonText}>Add</Text>
                                 </TouchableOpacity>
@@ -281,6 +313,7 @@ export default function BookingScreen() {
                         </View>
                     )}
                 />
+
             </View>
         </ScrollView>
     );
