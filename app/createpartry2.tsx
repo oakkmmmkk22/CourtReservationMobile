@@ -5,10 +5,12 @@ import DateTimePicker from '@react-native-community/datetimepicker'; // For Date
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // For handling safe areas
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
-import { useRouter } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import api from './axiosinstance';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from 'jwt-decode';
+import { Dropdown } from "react-native-element-dropdown";
+
 // import axios from "axios";
 
 const CreatePartyScreen = () => {
@@ -20,7 +22,7 @@ const CreatePartyScreen = () => {
     // const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
     const [description, setDescription] = useState(""); // Initial value
-    const [showTimepicker, setShowTimepicker] = useState(false);
+    // const [showTimepicker, setShowTimepicker] = useState(false);
     const [memberName, setMemberName] = useState("");
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
@@ -29,12 +31,11 @@ const CreatePartyScreen = () => {
     const [wrongTime,setWrongTime] = useState("");
     const [wrongDate,setWrongDate] = useState("");
     const [wrongDes,setWrongDes] = useState("");
-
-    // const onChangeTime = (event, selectedTime) => {
-    //     const currentTime = selectedTime || time;
-    //     setShowTimepicker(Platform.OS === 'ios'); // Hide picker on iOS after selection
-    //     setTime(currentTime);
-    // };
+    const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    
+    const {location} = useGlobalSearchParams();
+    
+    
     const getToken = async () => {
         const token = await AsyncStorage.getItem("token");
         const decoded = jwtDecode(token); // test decode   
@@ -95,7 +96,7 @@ const CreatePartyScreen = () => {
                     setWrongDate("*input Date")
                 }
                 if(formattedTime==""){
-                    setWrongTime("*input Time");
+                    setSelectedTime("*input Time");
                 }
                 if(description==""){
                     setWrongDes("*input Description");
@@ -104,6 +105,43 @@ const CreatePartyScreen = () => {
             }
         
         }
+
+
+         const fakeOpenTime = "08:00"; // เวลาเปิด
+                const fakeCloseTime = "18:00"; // เวลาเปิด
+              
+                const [timeSlots, setTimeSlots] = useState<{ label: string; value: string }[]>([]);
+              
+                useEffect(() => {
+                  if (fakeOpenTime && fakeCloseTime) {
+                    setTimeSlots(generateTimeSlots(fakeOpenTime, fakeCloseTime, 1)); // 1 ชั่วโมงเป็น gap time
+                  }
+            }, [fakeOpenTime, fakeCloseTime]);
+        
+            const generateTimeSlots = (open: string, close: string, gap: number) => {
+                const times: { label: string; value: string }[] = [];
+                let [hour, minute] = open.split(":").map(Number);
+                const [closeHour, closeMinute] = close.split(":").map(Number);
+            
+                while (hour < closeHour || (hour === closeHour && minute < closeMinute)) {
+                    let startTime = `${hour.toString().padStart(2, "0")}:${minute
+                        .toString()
+                        .padStart(2, "0")}`;
+                    let endHour = hour + gap;
+                    if (endHour === 24) endHour = 0; // Reset to 00:00 if time reaches 24 hours
+                
+                    let endTime = `${endHour.toString().padStart(2, "0")}:${minute
+                        .toString()
+                        .padStart(2, "0")}`;
+                
+                    times.push({ label: `${startTime} - ${endTime}`, value: `${startTime}-${endTime}` });
+                
+                    hour += gap;
+                }
+                
+                return times;
+            };
+
 
     return (
 
@@ -201,23 +239,43 @@ const CreatePartyScreen = () => {
                             {/* Time*/}
                             <Text style={styles.label}>Time:</Text>
 
-                            <TouchableOpacity style={styles.timeButton} onPress={() => setShowTimepicker(true)}>
-                                <Text>{formattedTime || "Choose Time"}</Text>
-                            </TouchableOpacity>
+                    
+                                <Dropdown
+                                            data={timeSlots}
+                                            labelField="label"
+                                            valueField="value"
+                                            value={selectedTime}
+                                            onChange={(item) => {
+                                            setSelectedTime(item.value);
+                                            console.log("Selected time:", item.value);
+                                            }}
+                                            placeholder={selectedTime ? `Selected time: ${selectedTime}` : "Choose time"} 
+                                            style={{
+                                            height: 50,
+                                            borderWidth: 1,
+                                            borderColor: 'lightgray',
+                                            borderRadius: 5,
+                                            // paddingHorizontal: 10,
+                                            backgroundColor: 'white',
+                                            color: 'black',
+                                            // width:150
+                                            alignItems:'center'
+                                            }}
+                                            placeholderStyle={{ color: 'black' }}
+                                            selectedTextStyle={{ color: 'black' }}
+            
+                                            
+                                        />
+                           
 
-                            {showTimepicker && (
-                                <DateTimePicker
-                                    value={time}
-                                    mode="time"
-                                    is24Hour={true}
-                                    display="spinner"
-                                    onChange={onChangeTime}
-                                />
-                            )}
+                           
                             <Text style={styles.wrong}>{wrongTime}</Text> 
                             
                             {/* Place */}
                             <Text style={styles.label}>Place:</Text>
+                            <View style={{borderWidth:1,borderColor:'lightgray'}}>
+                                <Text style={styles.location}>{location}</Text>
+                            </View>
                             
                             
                             {/* Description */}
