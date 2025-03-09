@@ -107,16 +107,16 @@ export default function BookingScreen() {
                 <View style={{paddingRight:10,paddingLeft:10,backgroundColor:'white'}}>
                     <View style={styles.choose}>
                         <View style={styles.pickerContainer}> 
-                                <RNPickerSelect
-                                     onValueChange={(value) => setType(value)}
-                                     items={sports}
-                                     placeholder={{ label: "Select Sport", value: null }}
-                                     value={type}
-                                     style={pickerStyles}
-                                    //  useNativeAndroidPickerStyle={false} // ปิดสไตล์เริ่มต้นของ Android
-                                    //  textInputProps={{ underlineColorAndroid: "transparent" }} // ป้องกันเส้นขีดใต้
-                                    
-                                />
+                            <Picker
+                                selectedValue={type}
+                                onValueChange={(itemValue) => setType(itemValue)} // ใช้ค่าที่เลือก
+                                style={pickerStyles} // ใส่ style ที่เหมาะสม
+                            >
+                                <Picker.Item label="Select Sport" value={null} />
+                                {sports.map((sport) => (
+                                    <Picker.Item key={sport.value} label={sport.label} value={sport.value} />
+                                ))}
+                            </Picker>
                                     
                         </View>
                             <View style={styles.buttonContainer}>
@@ -136,7 +136,7 @@ export default function BookingScreen() {
                                                     // textInputProps={{ underlineColorAndroid: "transparent" }}
                                                     style={{
                                                     inputAndroid: {
-                                                        paddingHorizontal: 10,
+                                                       paddingHorizontal: 10,
                                                         height: 50, // เพิ่มความสูง
                                                         borderWidth: 1,
                                                         borderRadius: 5,
