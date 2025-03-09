@@ -84,8 +84,8 @@ export default function App() {
             alert("Error Please select a star before submitting!");
             return;
         }
-        const currentTimeUTC = new Date().toUTCString();
-        console.log(currentTimeUTC);  // Example: "Wed, 05 Mar 2025 11:45:30 GMT"
+        const currentTimeUTC = new Date().toISOString();
+        console.log(currentTimeUTC);
         
         api.post('/add_review/',{
             rating:rating,
@@ -102,6 +102,31 @@ export default function App() {
         .catch(error => {
             console.error("Error fetching reviews:", error);
         });
+        if (!idsss) {
+            return;
+        }
+    
+        api.get(`/reviews/${idsss}`)
+            .then(response => {
+                const data = response.data?.data; // ใช้ optional chaining
+    
+                if (!Array.isArray(data)) {
+                    console.error("Expected an array but got:", data);
+                    return;
+                }
+    
+                const filteredData = data.map((review: any) => ({
+                    id: review.id,
+                    stadium_id: review.stadium_id,
+                    user_id: review.user_id,
+                    rating: review.rating,
+                    comment: review.comment,
+                    date: review.date,
+                    username: review.username,
+                }));
+                setReviews(filteredData);
+            })
+            .catch();
     }
     return (
         <ScrollView>
@@ -202,7 +227,7 @@ export default function App() {
                                     <Octicons name="star" size={20} > </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
-                                    <Text style={styles.date}> {item.date}</Text>
+                                    <Text style={styles.date}> {item.date ? item.date.slice(0, 10) : "N/A"}</Text>
                                 </Text>}
                                 {item.rating == 2 && <Text>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
@@ -210,7 +235,7 @@ export default function App() {
                                     <Octicons name="star" size={20} > </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
-                                    <Text style={styles.date}> {item.date}</Text>
+                                    <Text style={styles.date}> {item.date ? item.date.slice(0, 10) : "N/A"}</Text>
                                 </Text>}
                                 {item.rating == 3 && <Text>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
@@ -218,7 +243,7 @@ export default function App() {
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
-                                    <Text style={styles.date}> {item.date}</Text>
+                                    <Text style={styles.date}> {item.date ? item.date.slice(0, 10) : "N/A"}</Text>
                                 </Text>}
                                 {item.rating == 4 && <Text>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
@@ -226,7 +251,7 @@ export default function App() {
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
                                     <Octicons name="star" size={20} > </Octicons>
-                                    <Text style={styles.date}> {item.date}</Text>
+                                    <Text style={styles.date}> {item.date ? item.date.slice(0, 10) : "N/A"}</Text>
                                 </Text>}
                                 {item.rating == 5 && <Text>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
@@ -234,7 +259,7 @@ export default function App() {
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
                                     <Octicons name="star-fill" size={20} color={"gold"}> </Octicons>
-                                    <Text style={styles.date}> {item.date}</Text>
+                                    <Text style={styles.date}> {item.date ? item.date.slice(0, 10) : "N/A"}</Text>
                                 </Text>}
                                 <Text style={styles.comment}>{item.comment}</Text>
                             </View>
