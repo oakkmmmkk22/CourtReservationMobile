@@ -209,12 +209,13 @@ const HomeScreen = () => {
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: "rgba(0, 0, 0, 0.5)",
+              paddingBottom:200
               
             }}
           >
             <View
               style={{
-                padding: 20,
+                padding: 25,
                 backgroundColor: "white",
                 borderRadius: 10,
                 alignItems: "center",
@@ -250,11 +251,11 @@ const HomeScreen = () => {
                                             )} */}
               </View>
               <View style={styles.buttonContainer}>
-                <Button title="Done" onPress={() => {
+                <Button title="Done" color={"black"} onPress={() => {
                   setSelectedProvince(tempSelectedProvince); // อัปเดตตัวกรองจังหวัดจริง
                   setTempSelectedProvince("");
                   setModalOpen(false);}}/>
-                <Button title="Close" onPress={() => setModalOpen(false)}/>
+                <Button title="Close" color={"black"} onPress={() => setModalOpen(false)}/>
               </View>
             </View>
           </View>
