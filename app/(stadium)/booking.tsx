@@ -152,7 +152,7 @@ export default function BookingScreen() {
                                             style={{
                                             height: 50,
                                             borderWidth: 1,
-                                            // borderColor: 'black',
+                                            borderColor: '#3B82F6',
                                             borderRadius: 5,
                                             // paddingHorizontal: 10,
                                             backgroundColor: '#3B82F6',
