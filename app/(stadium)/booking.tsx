@@ -138,7 +138,7 @@ export default function BookingScreen() {
                                     <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.buttontime} onPress={() => setShowTimepicker(true)}>
+                                <View style={styles.buttontime}>
                                     <Ionicons name="time-outline" size={18} color="white" style={{paddingRight:5}} />
                                     <Dropdown
                                             data={timeSlots}
@@ -153,7 +153,7 @@ export default function BookingScreen() {
                                             style={{
                                             height: 50,
                                             borderWidth: 1,
-                                            borderColor: '#3B82F6',
+                                            // borderColor: 'black',
                                             borderRadius: 5,
                                             // paddingHorizontal: 10,
                                             backgroundColor: '#3B82F6',
@@ -168,7 +168,7 @@ export default function BookingScreen() {
                                             // marginTop: 5,
                                             // }}
                                         />
-                                </TouchableOpacity>
+                                </View>
 
                                 <TouchableOpacity style={styles.button} >
                                     <AntDesign name="search1" size={18} color="white" />
@@ -454,7 +454,9 @@ const styles = StyleSheet.create({
       },
       buttonContainer: {
         flexDirection: "row", 
-        alignItems:'center'
+        alignItems:'center',
+        paddingLeft:10,
+        paddingRight:10,
         
       },
       pickerItem: {
