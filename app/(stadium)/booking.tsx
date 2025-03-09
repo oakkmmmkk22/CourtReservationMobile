@@ -33,7 +33,10 @@ export default function BookingScreen() {
 
 
     const router = useRouter();
-    const { facility_names, facility_type, idsss, open_hour, close_hour } = useGlobalSearchParams();
+    const { facility_names, facility_type, idsss, open_hour, close_hour, location } = useGlobalSearchParams();
+
+    console.log(location);
+
     const facilities = facility_names?.split(",") || [];
     const facilitiesType = facility_type?.split(",") || [];
 
@@ -315,7 +318,8 @@ export default function BookingScreen() {
                                                 type_for_party: item.Facility_Type,
                                                 start_time_for_party: startTimeState,
                                                 end_time_for_party: endTimeState,
-                                                date_for_party: utcDateState
+                                                date_for_party: utcDateState,
+                                                location_for_party: location,
                                             },
                                             })
                                         }>
