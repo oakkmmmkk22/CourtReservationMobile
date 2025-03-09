@@ -11,12 +11,12 @@ export default function BookingScreen() {
     const [selectedSport, setSelectedSport] = useState("BADMINTON");
     const [cartVisible, setCartVisible] = useState(false);
     const [cartItems, setCartItems] = useState([]);
-    const [type, setType] = useState('badminton');
+    // const [type, setType] = useState('badminton');
     const [formattedDate, setFormattedDate] = useState("");
     const [showModal,setShowModal] = useState(false);
     const [formattedTime, setFormattedTime] = useState("");
     const [showTimepicker, setShowTimepicker] = useState(false);
-    const [selectedTime, setSelectedTime] = useState(null);
+    const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
     
   
@@ -38,16 +38,16 @@ export default function BookingScreen() {
         const fakeOpenTime = "08:00"; // เวลาเปิด
         const fakeCloseTime = "18:00"; // เวลาเปิด
       
-        const [timeSlots, setTimeSlots] = useState([]);
+        const [timeSlots, setTimeSlots] = useState<{ label: string; value: string }[]>([]);
       
         useEffect(() => {
           if (fakeOpenTime && fakeCloseTime) {
-            generateTimeSlots(fakeOpenTime, fakeCloseTime, 1); // 1 ชั่วโมงเป็น gap time
+            setTimeSlots(generateTimeSlots(fakeOpenTime, fakeCloseTime, 1)); // 1 ชั่วโมงเป็น gap time
           }
     }, [fakeOpenTime, fakeCloseTime]);
 
-    const generateTimeSlots = (open, close, gap) => {
-        const times = [];
+    const generateTimeSlots = (open: string, close: string, gap: number) => {
+        const times: { label: string; value: string }[] = [];
         let [hour, minute] = open.split(":").map(Number);
         const [closeHour, closeMinute] = close.split(":").map(Number);
     
@@ -67,8 +67,18 @@ export default function BookingScreen() {
             hour += gap;
         }
         
-        setTimeSlots(times);
+        return times;
     };
+
+    const [type, setType] = useState(null);
+
+    const sports = [
+        { label: "🏸 Badminton", value: "badminton" },
+        { label: "⚽ Football", value: "football" },
+        { label: "🎾 Tennis", value: "tennis" },
+        { label: "🏐 Volleyball", value: "volleyball" },
+        { label: "➕ Other", value: "other" },
+    ];
         
 
     return (
@@ -97,20 +107,17 @@ export default function BookingScreen() {
                 <View style={{paddingRight:10,paddingLeft:10,backgroundColor:'white'}}>
                     <View style={styles.choose}>
                         <View style={styles.pickerContainer}> 
-                                <Picker
-                                    selectedValue={type}
-                                    onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-                                    style={styles.picker} 
-                                    itemStyle={styles.pickerItem}
-                                    mode="dropdown"
+                                <RNPickerSelect
+                                     onValueChange={(value) => setType(value)}
+                                     items={sports}
+                                     placeholder={{ label: "Select Sport", value: null }}
+                                     value={type}
+                                     style={pickerStyles}
+                                     useNativeAndroidPickerStyle={false} // ปิดสไตล์เริ่มต้นของ Android
+                                     textInputProps={{ underlineColorAndroid: "transparent" }} // ป้องกันเส้นขีดใต้
                                     
-                                >
-                                    <Picker.Item label="Badminton" value="badminton" />
-                                    <Picker.Item label="Football" value="football" />
-                                    <Picker.Item label="Tennis" value="tennis" />
-                                    <Picker.Item label="Valleyball" value="valleyball" />
-                                    <Picker.Item label="Other" value="other" />
-                                </Picker>
+                                />
+                                    
                         </View>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
@@ -118,21 +125,27 @@ export default function BookingScreen() {
                                     <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.button} onPress={() => setShowTimepicker(true)}>
+                                <TouchableOpacity style={styles.buttontime} onPress={() => setShowTimepicker(true)}>
                                     <Ionicons name="time-outline" size={18} color="white" style={{paddingRight:5}} />
                                     <RNPickerSelect
-                                                    onValueChange={(value) => setSelectedTime(value)} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
+                                                    onValueChange={(value) =>{ setSelectedTime(value); console.log("Selected value:", value);}} // ใช้ค่านี้เมื่อเลือกช่วงเวลา
                                                     items={timeSlots}
                                                     value={selectedTime} 
-                                                    placeholder={selectedTime ? {} : { label: "Choose time", value: null }}
+                                                    placeholder={ { label: "Choose time", value: null }}
+                                                   
                                                     style={{
                                                     inputAndroid: {
                                                         paddingHorizontal: 10,
-                                                        height: 20,
+                                                        height: 50,
                                                         borderWidth: 1,
                                                         borderRadius: 5,    
                                                         backgroundColor:'#3B82F6',
-                                                        width:100
+                                                        width:200,
+                                                        color: "#fff",
+                                                        alignItems:'center',
+                                                        margin:1,
+                                                        
+                                                        
                                                     },
                                                     iconContainer: {
                                                         position: "absolute",
@@ -142,11 +155,13 @@ export default function BookingScreen() {
                                                     },
                                                     inputIOS:{
                                                         paddingHorizontal: 10,
-                                                        height: 20,
+                                                        height: 40,
                                                         borderWidth: 1,
                                                         borderRadius: 5,    
                                                         backgroundColor:'#3B82F6',
-                                                        width:100
+                                                        width:100,
+                                                        color: "#fff",
+                                                        
                                                     },
                                                     
                                                     }}
@@ -238,6 +253,26 @@ export default function BookingScreen() {
         </ScrollView>
     );
 }
+
+
+const pickerStyles = StyleSheet.create({
+    inputAndroid: {
+      backgroundColor: "#3B82F6",
+      color: "#fff",
+      paddingHorizontal: 10,
+      height: 40,
+      borderRadius: 5,
+      width: 300,
+    },
+    inputIOS: {
+      backgroundColor: "#3B82F6",
+      color: "#fff",
+      paddingHorizontal: 10,
+      height: 40,
+      borderRadius: 5,
+      width: 300,
+    },
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -377,6 +412,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         margin:5,
         padding:10,
+        height:50
       },
       buttonText: {
         color: "white",
@@ -421,6 +457,15 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "white",
         backgroundColor: "#3B82F6",
+      },
+      buttontime: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
+        borderRadius: 8,
+        margin:5,
+        paddingLeft:10,
+       //borderWidth:10
       },
       
 });
