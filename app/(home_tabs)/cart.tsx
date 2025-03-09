@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Dimensions } from "react-native";
+import api from '../axiosinstance';
 
 interface BookingItem {
   id: string;
@@ -16,10 +17,28 @@ interface BookingItem {
   peopleCount?: number;
   quantity: number;
 }
+
+interface caa {
+  id: number;
+  stadium_id: number;
+  court_id: number;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  stadium_name: string;
+  court_type: string;
+  court_number: number;
+  selected: boolean;
+  point: number;
+}
+
 const screenWidth = Dimensions.get("window").width;
 const BookingSelection = () => {
   const [balance, setBalance] = useState(200);
   const router = useRouter();
+  const [cart, setCart] = useState<caa[]>([]);
+  const [cart_id_selected,set_cart_id_selected] = useState(0);
   const [bookings, setBookings] = useState<BookingItem[]>([
     {
       id: "1",
@@ -46,6 +65,36 @@ const BookingSelection = () => {
     },
   ]);
 
+  useEffect(() => {
+
+    api.get('/getcart')
+        .then(response => {
+            const data = response.data?.cartItems;
+            
+            if (!Array.isArray(data)) {
+                console.error("Expected an array but got:", data);
+                return;
+            }
+
+            const filteredData = data.map((cart: any) => ({
+                id: cart.id,
+                stadium_id: cart.stadium_id,
+                court_id: cart.court_id,
+                date: cart.date.slice(0,10),
+                start_time: cart.start_time.slice(0,5),
+                end_time: cart.end_time.slice(0,5),
+                status: cart.status,
+                stadium_name: cart.stadium_name,
+                court_type: cart.court_type,
+                court_numebr: cart.court_number,
+                selected: false,
+                point: cart.point,
+            }));
+            setCart(filteredData);
+        })
+        .catch();
+
+}, []); 
   // คำนวณ totalAmount จากรายการที่ถูกเลือก
   const totalAmount = bookings
     .filter((item) => item.selected)
@@ -56,13 +105,64 @@ const BookingSelection = () => {
   // คำนวณ Remaining Balance
   const remainingBalance = balance - totalAmount;
   // Toggle Checkbox และอัปเดต Amount + Remaining Balance
-  const toggleSelection = (id: string) => {
-    setBookings((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected, quantity: item.selected ? 1 : (item.quantity || 1) } : item
-      )
+  // const toggleSelection = (item: caa) => {
+  //   setBookings((prev) =>
+  //     prev.map((item) =>
+  //       item.id === id ? { ...item, selected: !item.selected, quantity: item.selected ? 1 : (item.quantity || 1) } : item
+  //     )
+  //   );
+
+  // };
+  const toggleSelection = (id: number) => {
+    setCart((prev) =>
+        prev.map((item) =>
+            item.id === id
+                ? { ...item, selected: !item.selected }
+                : item
+        )
     );
-  };
+    set_cart_id_selected(id)
+};  
+const pay_court = () => {
+  try{
+    const response = api.post("/checkout", {
+      cart_id:cart_id_selected, 
+    });
+    console.log(response)
+    router.push('/my_booking')
+    
+    api.get('/getcart')
+        .then(response => {
+            const data = response.data?.cartItems;
+            
+            if (!Array.isArray(data)) {
+                console.error("Expected an array but got:", data);
+                return;
+            }
+
+            const filteredData = data.map((cart: any) => ({
+                id: cart.id,
+                stadium_id: cart.stadium_id,
+                court_id: cart.court_id,
+                date: cart.date.slice(0,10),
+                start_time: cart.start_time.slice(0,5),
+                end_time: cart.end_time.slice(0,5),
+                status: cart.status,
+                stadium_name: cart.stadium_name,
+                court_type: cart.court_type,
+                court_numebr: cart.court_number,
+                selected: false,
+                point: cart.point,
+            }));
+            setCart(filteredData);
+        })
+  }
+  catch(error){
+    console.log("error na jaa")
+  }
+
+};
+
   // อัปเดต Quantity และ Amount ตามการเปลี่ยนแปลง
   const updateQuantity = (id: string, change: number) => {
     setBookings((prev) =>
@@ -80,11 +180,10 @@ const BookingSelection = () => {
       <Text style={styles.header}>Booking</Text>
       {/* List of bookings */}
       <FlatList
-        data={bookings}
-        keyExtractor={(item) => item.id}
+        data={cart}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-
             {/* Checkbox */}
             <TouchableOpacity onPress={() => toggleSelection(item.id)}>
               <Ionicons
@@ -96,26 +195,12 @@ const BookingSelection = () => {
 
             {/* Booking Info */}
             <View style={styles.info}>
-              <Text style={styles.place}>Place: <Text style={styles.bold}>{item.place}</Text></Text>
-              <Text style={styles.detail}>Court: {item.court}</Text>
+              <Text style={styles.place}>Place: <Text style={styles.bold}>{item.stadium_name}</Text></Text>
+              <Text style={styles.detail}>Court: {item.court_type} {item.court_number}</Text>
               <Text style={styles.detail}>Date: {item.date}</Text>
-              <Text style={styles.detail}>Time: {item.time}</Text>
-              <Text style={styles.detail}>Type: {item.type}</Text>
-              <Text style={styles.price}>Price: 💎 {item.price}</Text>
+              <Text style={styles.detail}>Time: {item.start_time} {item.end_time}</Text>
+              <Text style={styles.price}>Price: 💎 {item.point}</Text>
             </View>
-
-            {/* Quantity Control */}
-            {item.selected && (
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity onPress={() => updateQuantity(item.id, -1)}>
-                  <Ionicons name="remove-circle-outline" size={24} color="gray" />
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{item.quantity}</Text>
-                <TouchableOpacity onPress={() => updateQuantity(item.id, 1)}>
-                  <Ionicons name="add-circle-outline" size={24} color="gray" />
-                </TouchableOpacity>
-              </View>
-            )}
           </View>
         )}
       />
@@ -150,11 +235,7 @@ const BookingSelection = () => {
           remainingBalance < 0 && styles.disabledButton,
         ]}
         disabled={remainingBalance < 0}
-        onPress={() => {
-          if (remainingBalance >= 0) {
-            router.push('/pay-slip') // ✅ ใช้ router.push() ได้แล้ว
-          }
-        }}
+        onPress={pay_court}
       >
         <Text style={styles.confirmText}>Confirm</Text>
       </TouchableOpacity>

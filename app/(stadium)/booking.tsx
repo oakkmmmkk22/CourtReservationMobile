@@ -45,9 +45,22 @@ export default function BookingScreen() {
         { id: "2", name: "BADMINTON", zone: "Zone 2", price: 150, available: false },
     ];
 
-    const addToCart = (item) => {
+    const addToCart = async (item) => {
         setCartItems([...cartItems, item]);
         setCartVisible(true);
+        try{
+            const response = await api.post("/addcart", {
+                stadium_id: idsss,
+                court_id: item.court_id,
+                date: formattedDate,
+                start_time: startTimeState,
+                end_time: endTimeState,
+            });
+            console.log(response.data.message);
+        }
+        catch(error){
+            console.log("error na jaa");
+        }
     };
 
     
@@ -116,6 +129,7 @@ export default function BookingScreen() {
     const filter_court = async () => {
         const utcDate = new Date(formattedDate + "T00:00:00Z").toISOString();
         const [startTime, endTime] = selectedTime ? selectedTime.split("-") : [null, null];
+        console.log(utcDate);
         const response = await api.post("/getCourtDetailsBooking", {
             date:utcDate,
             start:startTime,
@@ -302,7 +316,7 @@ export default function BookingScreen() {
                                                 type_for_party: item.Facility_Type,
                                                 start_time_for_party: startTimeState,
                                                 end_time_for_party: endTimeState,
-                                                date_for_party: utcDateState,
+                                                date_for_party: formattedDate,
                                                 location_for_party: location,
                                             },
                                             })
