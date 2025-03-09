@@ -137,14 +137,14 @@ export default function BookingScreen() {
                                                     style={{
                                                     inputAndroid: {
                                                         paddingHorizontal: 10,
-                                                        height: 50,
+                                                        height: 50, // เพิ่มความสูง
                                                         borderWidth: 1,
-                                                        borderRadius: 5,    
-                                                        backgroundColor:'#3B82F6',
-                                                        width:200,
+                                                        borderRadius: 5,
+                                                        backgroundColor: "#3B82F6",
+                                                        width: 200,
                                                         color: "#fff",
-                                                        alignItems:'center',
-                                                        margin:1,
+                                                        justifyContent: "center", // แนวตั้งกลาง
+                                                        paddingVertical: 10, // เพิ่ม padding เพื่อให้คลิกได้ง่ายขึ้น
                                                         
                                                         
                                                     },
