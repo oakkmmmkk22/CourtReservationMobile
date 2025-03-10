@@ -254,7 +254,7 @@ export default function BookingScreen() {
                                         setFormattedDate(selectedDate);
                                         setShowModal(false);
                                     }}
-                                    minDate={"2025-01-01"}
+                                    minDate={new Date().toISOString().split("T")[0]} // กำหนดให้เลือกได้ตั้งแต่วันนี้
                                     maxDate={"2025-12-31"}
 
                                 />
