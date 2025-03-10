@@ -249,12 +249,12 @@ export default function BookingScreen() {
                             <View style={styles.modalview1}>
                                 <Calendar style={styles.calendar}
 
-                                    onDayPress={date => {
+                                    onDayPress={(date) => {
                                         let selectedDate = date.dateString;
                                         setFormattedDate(selectedDate);
                                         setShowModal(false);
                                     }}
-                                    minDate={"2025-01-01"}
+                                    minDate={new Date().toISOString().split("T")[0]} // กำหนดให้เลือกได้ตั้งแต่วันนี้
                                     maxDate={"2025-12-31"}
 
                                 />

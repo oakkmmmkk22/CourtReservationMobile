@@ -122,11 +122,7 @@ export default function Stadium() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-friends" size={size} color={color} />
           ),
-          headerRight: () => (
-            <TouchableOpacity onPress={() => router.push('/createpartry2')}>
-               <Pencil size={24} color="white" style={{  marginRight: 15 }}/>
-            </TouchableOpacity>
-          )
+          
         }} 
       />
       <Tabs.Screen 

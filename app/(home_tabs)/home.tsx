@@ -363,6 +363,7 @@ const HomeScreen = () => {
       <FlatList
         data={filteredStadiums}
         keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }: { item: Stadium }) => (
           <TouchableOpacity
             onPress={() =>

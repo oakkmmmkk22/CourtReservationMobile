@@ -78,7 +78,7 @@ const FindFriend = () => {
                                     <View style={styles.modalview1}>
                                         <Calendar style={styles.calendar}
 
-                                            onDayPress={ date => {
+                                            onDayPress={ (date) => {
                                                 //console.log(date);
                                                 let selectedDate = date.dateString;
                                                 // selectedDate.setHours(0, 0, 0, 0);
@@ -86,7 +86,7 @@ const FindFriend = () => {
                                                 setFormattedDate(selectedDate);
                                                 setShowModal(false);
                                             }} 
-                                            minDate={"2025-01-01"}
+                                            minDate={new Date().toISOString().split("T")[0]} // กำหนดให้เลือกได้ตั้งแต่วันนี้
                                             maxDate={"2025-12-31"}
                                         
                                         />
@@ -131,6 +131,7 @@ const FindFriend = () => {
           <FlatList
             data={party}
             keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => router.push({ pathname: "/partyjoin", params: item })}>
                 <View style={styles.card}>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useCallback } from "react";
 import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
-import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import api from "../axiosinstance";
-
+import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
 
 interface Reservations {
   id:number;
@@ -23,91 +23,22 @@ interface Reservations {
 const HomeScreen = () => {
 
   const [mybook, setMybook] = useState<Reservations[]>([]);
-    // {
-    //   id: "1",
-    //   name: "Ruammitr Court",
-    //   court: "Basketball Court",
-    //   time: "12.00 - 13.00 ",
-    //   price: "50",
-    //   status: "Paid",
-    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    // },
-    // {
-    //   id: "2",
-    //   name: "Muay STADIUM",
-    //   court: "Basketball Court",
-    //   time: "12.00 - 13.00 ",
-    //   price: "50",
-    //   status: "Paid",
-    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    // },
-    // {
-    //   id: "3",
-    //   name: "Muay STADIUM",
-    //   court: "Basketball Court",
-    //   time: "12.00 - 13.00 ",
-    //   price: "50",
-    //   status: "Paid",
-    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    // },
-    // {
-    //   id: "4",
-    //   name: "Muay STADIUM",
-    //   court: "Basketball Court",
-    //   time: "12.00 - 13.00 ",
-    //   price: "50",
-    //   status: "Paid",
-    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    // },
-    // {
-    //   id: "5",
-    //   name: "Muay STADIUM",
-    //   court: "Basketball Court",
-    //   time: "12.00 - 13.00 ",
-    //   price: "50",
-    //   status: "Paid",
-    //   image: "https://cdn.shopify.com/s/files/1/0086/0795/7054/files/Labrador.jpg?v=164517915",
-    // },
-
-    useEffect(() => {      
+   
+  useFocusEffect(
+    useCallback(() => {      
       api.get("/reservations")
           .then(response => {
 
             console.log("API Response:", response.data); 
             const data = response.data;
-            // // ตรวจสอบว่า response.data มี property 'data' หรือไม่
-            // if (!response.data || typeof response.data !== "object") {
-            //   console.error("Unexpected API response:", response.data);
-            //   return;
-            // }
-            // const data = response.data.data; 
-
-            // if (!data || !Array.isArray(data)) {
-            //     console.error("Expected an array but got:", data);
-            //     return;
-            // }
-          
-            //   const filteredData = data.map((reser: any) => ({
-            //     id:reser.id,
-            //     court_id:reser.court_id,
-            //     date:reser.date ,
-            //     start_time: reser.start_time,
-            //     end_time: reser.end_time,
-            //     status: reser.status,
-            //     rating: reser.rating,
-            //     stadium_name:reser.stadium_name,
-            //     court_number:reser.court_number,
-            //     type:reser.type,
-            //     price:reser.price,
-            //   }));
-
-              setMybook(data); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
+            setMybook(data); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
           
           })
           .catch(error => {
               console.error("Error fetching data:", error);
           });
-      }, []);
+      }, [])
+  );
 
 
   return (
@@ -123,8 +54,9 @@ const HomeScreen = () => {
           <FlatList
             data={mybook}
             keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }:{ item: Reservations }) =>( 
-              <TouchableOpacity>
+              <TouchableOpacity  onPress={() => router.push("/pay-slip")}>
                 <View style={styles.card}>
                   <View style={{flex:4}}>
                     {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
