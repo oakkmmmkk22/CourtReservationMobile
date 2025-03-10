@@ -131,6 +131,7 @@ const FindFriend = () => {
           <FlatList
             data={party}
             keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => router.push({ pathname: "/partyjoin", params: item })}>
                 <View style={styles.card}>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef,useCallback } from "react";
 import { View, Text, TextInput, FlatList, Image, StyleSheet, Modal, TouchableWithoutFeedback,TouchableOpacity, ScrollView } from "react-native";
-import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import api from "../axiosinstance";
 import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
 
 interface Reservations {
   id:number;
@@ -54,8 +54,9 @@ const HomeScreen = () => {
           <FlatList
             data={mybook}
             keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }:{ item: Reservations }) =>( 
-              <TouchableOpacity>
+              <TouchableOpacity  onPress={() => router.push("/pay-slip")}>
                 <View style={styles.card}>
                   <View style={{flex:4}}>
                     {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
