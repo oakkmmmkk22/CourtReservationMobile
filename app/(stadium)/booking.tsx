@@ -249,7 +249,7 @@ export default function BookingScreen() {
                             <View style={styles.modalview1}>
                                 <Calendar style={styles.calendar}
 
-                                    onDayPress={date => {
+                                    onDayPress={(date) => {
                                         let selectedDate = date.dateString;
                                         setFormattedDate(selectedDate);
                                         setShowModal(false);
