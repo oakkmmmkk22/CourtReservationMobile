@@ -36,8 +36,13 @@ const screenWidth = Dimensions.get("window").width;
 const BookingSelection = () => {
   const [balance, setBalance] = useState(200);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false); // เพิ่ม isLoading state
   const [cart, setCart] = useState<caa[]>([]);
   const [cart_id_selected,set_cart_id_selected] = useState(0);
+  
+
+
+
   const fetchData = async () => {
     try {
       const response = await api.get("/getcart");
@@ -95,6 +100,20 @@ const BookingSelection = () => {
   //   );
 
   // };
+// คำนวณ totalAmount จากรายการที่ถูกเลือก
+const totalAmount = cart
+    .filter(item => item.selected)
+    .reduce((sum, item) => sum + item.point, 0);
+
+// คำนวณ Remaining Balance
+const remainingBalance = balance - totalAmount;
+
+
+
+
+
+
+
   const toggleSelection = (id: number) => {
     setCart((prev) =>
         prev.map((item) =>
@@ -105,17 +124,30 @@ const BookingSelection = () => {
     );
     set_cart_id_selected(id)
 };  
-const pay_court = () => {
-  try{
-    const response = api.post("/checkout", {
-      cart_id:cart_id_selected, 
-    });
-    router.push('/my_booking')
-  }
-  catch(error){
-    console.log("error na jaa")
-  }
+const pay_court = async () => {
+  try {
+    setIsLoading(true);
 
+    // ดึง cart_ids ที่ถูกเลือก
+    const selectedCartIds = cart.filter(item => item.selected).map(item => item.id);
+
+    const response = await api.post("/checkout", {
+      cart_ids: selectedCartIds,
+      user_id: 1, // ตัวอย่าง user_id
+    });
+
+    if (response.data.success) {
+      alert("การจองสำเร็จ");
+      router.push('/my_booking');
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    alert("เกิดข้อผิดพลาดในการจอง");
+  } finally {
+    setIsLoading(false);
+  }
 };
 
   // อัปเดต Quantity และ Amount ตามการเปลี่ยนแปลง
@@ -161,23 +193,22 @@ const pay_court = () => {
         <Text style={styles.addMore}>Add more</Text>
       </TouchableOpacity>
 
-      {/* Summary Section */}
       <View style={styles.summary}>
-        <View style={styles.row}>
-          <Text style={styles.label}>Balance</Text>
-          <Text style={styles.amount}>💎 {balance}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Amount</Text>
-          <Text style={styles.amount}>💎 {22}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Remaining Balance</Text>
-          {/* <Text style={[styles.amount, remainingBalance < 0 && styles.error]}>
+    <View style={styles.row}>
+        <Text style={styles.label}>Balance</Text>
+        <Text style={styles.amount}>💎 {balance}</Text>
+    </View>
+    <View style={styles.row}>
+        <Text style={styles.label}>Amount</Text>
+        <Text style={styles.amount}>💎 {totalAmount}</Text>
+    </View>
+    <View style={styles.row}>
+        <Text style={styles.label}>Remaining Balance</Text>
+        <Text style={[styles.amount, remainingBalance < 0 && styles.error]}>
             💎 {remainingBalance}
-          </Text> */}
-        </View>
-      </View>
+        </Text>
+    </View>
+</View>
 
       {/* Confirm Button */}
       <TouchableOpacity
