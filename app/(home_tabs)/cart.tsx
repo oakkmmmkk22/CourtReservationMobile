@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Dimensions } from "react-native";
 import api from '../axiosinstance';
 
@@ -32,78 +32,60 @@ interface caa {
   selected: boolean;
   point: number;
 }
-
 const screenWidth = Dimensions.get("window").width;
 const BookingSelection = () => {
   const [balance, setBalance] = useState(200);
   const router = useRouter();
   const [cart, setCart] = useState<caa[]>([]);
   const [cart_id_selected,set_cart_id_selected] = useState(0);
-  const [bookings, setBookings] = useState<BookingItem[]>([
-    {
-      id: "1",
-      place: "Ruammitr court",
-      court: "BADMINTON Zone 1",
-      date: "25/12/2567",
-      time: "20.00 - 21.00",
-      price: 150,
-      selected: true,
-      type: "Individual",
-      quantity: 1,
-    },
-    {
-      id: "2",
-      place: "Ruammitr court",
-      court: "BADMINTON Zone 1",
-      date: "25/12/2567",
-      time: "21.00 - 22.00",
-      price: 150,
-      selected: false,
-      quantity: 1,
-      type: "Group",
-      peopleCount: 2,
-    },
-  ]);
+  const fetchData = async () => {
+    try {
+      const response = await api.get("/getcart");
+      const data = response.data?.cartItems;
 
-  useEffect(() => {
+      if (!Array.isArray(data)) {
+        console.error("Expected an array but got:", data);
+        return;
+      }
 
-    api.get('/getcart')
-        .then(response => {
-            const data = response.data?.cartItems;
-            
-            if (!Array.isArray(data)) {
-                console.error("Expected an array but got:", data);
-                return;
-            }
+      setCart((prevCart) => {
+        return data.map((cartItem) => {
+          const existingItem = prevCart.find((item) => item.id === cartItem.id);
 
-            const filteredData = data.map((cart: any) => ({
-                id: cart.id,
-                stadium_id: cart.stadium_id,
-                court_id: cart.court_id,
-                date: cart.date.slice(0,10),
-                start_time: cart.start_time.slice(0,5),
-                end_time: cart.end_time.slice(0,5),
-                status: cart.status,
-                stadium_name: cart.stadium_name,
-                court_type: cart.court_type,
-                court_numebr: cart.court_number,
-                selected: false,
-                point: cart.point,
-            }));
-            setCart(filteredData);
-        })
-        .catch();
-
-}, []); 
+          return {
+            id: cartItem.id,
+            stadium_id: cartItem.stadium_id,
+            court_id: cartItem.court_id,
+            date: cartItem.date.slice(0, 10),
+            start_time: cartItem.start_time.slice(0, 5),
+            end_time: cartItem.end_time.slice(0, 5),
+            status: cartItem.status,
+            stadium_name: cartItem.stadium_name,
+            court_type: cartItem.court_type,
+            court_number: cartItem.court_number,
+            selected: existingItem ? existingItem.selected : false, // เก็บค่า selected เดิม
+            point: cartItem.point,
+          };
+        });
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
   // คำนวณ totalAmount จากรายการที่ถูกเลือก
-  const totalAmount = bookings
-    .filter((item) => item.selected)
-    .reduce((sum, item) => {
-      const effectivePrice = item.type === "Group" && item.peopleCount ? item.price / item.peopleCount : item.price;
-      return sum + effectivePrice * (item.quantity || 1);
-    }, 0);
+  // const totalAmount = bookings
+  //   .filter((item) => item.selected)
+  //   .reduce((sum, item) => {
+  //     const effectivePrice = item.type === "Group" && item.peopleCount ? item.price / item.peopleCount : item.price;
+  //     return sum + effectivePrice * (item.quantity || 1);
+  //   }, 0);
   // คำนวณ Remaining Balance
-  const remainingBalance = balance - totalAmount;
+  // const remainingBalance = balance - totalAmount;
   // Toggle Checkbox และอัปเดต Amount + Remaining Balance
   // const toggleSelection = (item: caa) => {
   //   setBookings((prev) =>
@@ -128,34 +110,7 @@ const pay_court = () => {
     const response = api.post("/checkout", {
       cart_id:cart_id_selected, 
     });
-    console.log(response)
     router.push('/my_booking')
-    
-    api.get('/getcart')
-        .then(response => {
-            const data = response.data?.cartItems;
-            
-            if (!Array.isArray(data)) {
-                console.error("Expected an array but got:", data);
-                return;
-            }
-
-            const filteredData = data.map((cart: any) => ({
-                id: cart.id,
-                stadium_id: cart.stadium_id,
-                court_id: cart.court_id,
-                date: cart.date.slice(0,10),
-                start_time: cart.start_time.slice(0,5),
-                end_time: cart.end_time.slice(0,5),
-                status: cart.status,
-                stadium_name: cart.stadium_name,
-                court_type: cart.court_type,
-                court_numebr: cart.court_number,
-                selected: false,
-                point: cart.point,
-            }));
-            setCart(filteredData);
-        })
   }
   catch(error){
     console.log("error na jaa")
@@ -164,27 +119,24 @@ const pay_court = () => {
 };
 
   // อัปเดต Quantity และ Amount ตามการเปลี่ยนแปลง
-  const updateQuantity = (id: string, change: number) => {
-    setBookings((prev) =>
-      prev.map((item) =>
-        item.id === id && item.selected
-          ? { ...item, quantity: Math.max(1, (item.quantity || 1) + change) }
-          : item
-      )
-    );
-  };
+  // const updateQuantity = (id: string, change: number) => {
+  //   setBookings((prev) =>
+  //     prev.map((item) =>
+  //       item.id === id && item.selected
+  //         ? { ...item, quantity: Math.max(1, (item.quantity || 1) + change) }
+  //         : item
+  //     )
+  //   );
+  // };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <Text style={styles.header}>Booking</Text>
-      {/* List of bookings */}
       <FlatList
         data={cart}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            {/* Checkbox */}
             <TouchableOpacity onPress={() => toggleSelection(item.id)}>
               <Ionicons
                 name={item.selected ? "checkbox" : "square-outline"}
@@ -193,7 +145,6 @@ const pay_court = () => {
               />
             </TouchableOpacity>
 
-            {/* Booking Info */}
             <View style={styles.info}>
               <Text style={styles.place}>Place: <Text style={styles.bold}>{item.stadium_name}</Text></Text>
               <Text style={styles.detail}>Court: {item.court_type} {item.court_number}</Text>
@@ -218,13 +169,13 @@ const pay_court = () => {
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Amount</Text>
-          <Text style={styles.amount}>💎 {totalAmount}</Text>
+          <Text style={styles.amount}>💎 {22}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Remaining Balance</Text>
-          <Text style={[styles.amount, remainingBalance < 0 && styles.error]}>
+          {/* <Text style={[styles.amount, remainingBalance < 0 && styles.error]}>
             💎 {remainingBalance}
-          </Text>
+          </Text> */}
         </View>
       </View>
 
@@ -232,9 +183,9 @@ const pay_court = () => {
       <TouchableOpacity
         style={[
           styles.confirmButton,
-          remainingBalance < 0 && styles.disabledButton,
+          // remainingBalance < 0 && styles.disabledButton,
         ]}
-        disabled={remainingBalance < 0}
+        // disabled={remainingBalance < 0}
         onPress={pay_court}
       >
         <Text style={styles.confirmText}>Confirm</Text>
