@@ -73,9 +73,9 @@ const BookingSelection = () => {
     }
   };
   useFocusEffect(
-    useCallback(() => {
+    useCallback(() => {      
       fetchData();
-    }, [fetchData])
+      }, [])
   );
   // คำนวณ totalAmount จากรายการที่ถูกเลือก
   // const totalAmount = bookings

@@ -29,10 +29,10 @@ const HomeScreen = () => {
       api.get("/reservations")
           .then(response => {
 
-            console.log("API Response:", response.data); 
+            // console.log("API Response:", response.data); 
             const data = response.data;
             setMybook(data); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
-          
+            
           })
           .catch(error => {
               console.error("Error fetching data:", error);
