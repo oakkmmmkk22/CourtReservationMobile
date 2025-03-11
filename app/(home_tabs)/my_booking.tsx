@@ -23,23 +23,23 @@ interface Reservations {
 const HomeScreen = () => {
 
   const [mybook, setMybook] = useState<Reservations[]>([]);
-   
+  
+  const fetchData = () => {
+    api.get("/reservations")
+      .then((response) => {
+        console.log("API Response:", response.data);
+        setMybook(response.data); // อัพเดทข้อมูลใหม่ทั้งหมดที่ได้จาก API
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
   useFocusEffect(
-    useCallback(() => {      
-      api.get("/reservations")
-          .then(response => {
-
-            console.log("API Response:", response.data); 
-            const data = response.data;
-            setMybook(data); // ตั้งค่า stadiums ด้วยข้อมูลที่กรองมา
-          
-          })
-          .catch(error => {
-              console.error("Error fetching data:", error);
-          });
-      }, [])
+    () => {
+      fetchData(); // เรียก fetchData ทุกครั้งที่หน้าจอโฟกัส
+    }
   );
-
 
   return (
     
@@ -52,7 +52,18 @@ const HomeScreen = () => {
             </View>
           </View>
           <FlatList
-            data={mybook}
+            data={[...mybook].sort((a, b) => {
+              const dateTimeA = new Date(`${a.date}T${a.start_time}`).getTime();
+              const dateTimeB = new Date(`${b.date}T${b.start_time}`).getTime();
+
+              // ถ้าวันที่ต่างกัน ให้จัดเรียงวันที่ใหม่ก่อน
+              if (a.date !== b.date) {
+                return dateTimeB - dateTimeA; // ล่าสุดอยู่บน
+              } else {
+                // ถ้าวันที่เหมือนกัน ให้จัดเรียงตามเวลาที่เริ่มต้นมาก่อน
+                return dateTimeA - dateTimeB; // เวลาเริ่มต้นมาก่อนอยู่บน
+              }
+            })}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }:{ item: Reservations }) =>( 
@@ -62,7 +73,7 @@ const HomeScreen = () => {
                     {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
                   </View>
                   <View style={styles.cardContent}>
-
+                    <Text style={styles.dateText}>{item.date.slice(0,10)}</Text>
                     <View style={styles.cardFooter}>
                       <Text style={styles.t}>Place: </Text>
                       <Text style={styles.cardTitle}>{item.stadium_name}</Text>
@@ -112,6 +123,8 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     overflow: "hidden", 
     flex:1,
+    // padding: 10,
+    // position: "relative"
     
   },
   cardImage: { 
@@ -169,6 +182,14 @@ const styles = StyleSheet.create({
     fontSize:16,
     color:'gray',
     paddingRight:5,
+  },
+  dateText: {
+    position: "absolute",
+    top: 5,
+    right: 10,
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "gray",
   },
   
 });
