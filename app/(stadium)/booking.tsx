@@ -127,6 +127,10 @@ export default function BookingScreen() {
     );
 
     const filter_court = async () => {
+        if(!selectedTime || !formattedDate || !selectedSport){
+            alert("Please Select Time , Date and Sport")
+            return
+        }
         const utcDate = new Date(formattedDate + "T00:00:00Z").toISOString();
         const [startTime, endTime] = selectedTime ? selectedTime.split("-") : [null, null];
         console.log(utcDate);
