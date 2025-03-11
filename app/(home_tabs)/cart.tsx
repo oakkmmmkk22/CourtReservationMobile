@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Button,Alert } from "react-native";
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Dimensions } from "react-native";
 import api from '../axiosinstance';
+  import { Platform } from "react-native"; // ใช้ Platform เพื่อตรวจสอบว่ากำลังใช้งานอยู่บนเว็บหรือมือถือ
 
 interface BookingItem {
   id: string;
@@ -38,8 +39,7 @@ const BookingSelection = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false); // เพิ่ม isLoading state
   const [cart, setCart] = useState<caa[]>([]);
-  const [cart_id_selected,set_cart_id_selected] = useState(0);
-  
+  const [cart_id_selected, set_cart_id_selected] = useState(0);
 
 
 
@@ -78,9 +78,9 @@ const BookingSelection = () => {
     }
   };
   useFocusEffect(
-    useCallback(() => {      
+    useCallback(() => {
       fetchData();
-      }, [])
+    }, [])
   );
   // คำนวณ totalAmount จากรายการที่ถูกเลือก
   // const totalAmount = bookings
@@ -94,19 +94,20 @@ const BookingSelection = () => {
   // Toggle Checkbox และอัปเดต Amount + Remaining Balance
   // const toggleSelection = (item: caa) => {
   //   setBookings((prev) =>
-  //     prev.map((item) =>
+  //     prev.m
+  // ap((item) =>
   //       item.id === id ? { ...item, selected: !item.selected, quantity: item.selected ? 1 : (item.quantity || 1) } : item
   //     )
   //   );
 
   // };
-// คำนวณ totalAmount จากรายการที่ถูกเลือก
-const totalAmount = cart
+  // คำนวณ totalAmount จากรายการที่ถูกเลือก
+  const totalAmount = cart
     .filter(item => item.selected)
     .reduce((sum, item) => sum + item.point, 0);
 
-// คำนวณ Remaining Balance
-const remainingBalance = balance - totalAmount;
+  // คำนวณ Remaining Balance
+  const remainingBalance = balance - totalAmount;
 
 
 
@@ -116,39 +117,87 @@ const remainingBalance = balance - totalAmount;
 
   const toggleSelection = (id: number) => {
     setCart((prev) =>
-        prev.map((item) =>
-            item.id === id
-                ? { ...item, selected: !item.selected }
-                : item
-        )
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, selected: !item.selected }
+          : item
+      )
     );
     set_cart_id_selected(id)
-};  
-const pay_court = async () => {
-  try {
-    setIsLoading(true);
+  };
 
-    // ดึง cart_ids ที่ถูกเลือก
-    const selectedCartIds = cart.filter(item => item.selected).map(item => item.id);
-
-    const response = await api.post("/checkout", {
-      cart_ids: selectedCartIds,
-      user_id: 1, // ตัวอย่าง user_id
-    });
-
-    if (response.data.success) {
-      alert("การจองสำเร็จ");
-      router.push('/my_booking');
+  const handleDelete = (item: caa) => {
+    console.log("press delete");
+  
+    if (Platform.OS === "web") {
+      // สำหรับเว็บใช้ window.confirm() แทน
+      const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+      if (confirmDelete) {
+        deleteItem(item);
+      }
     } else {
-      alert(response.data.message);
+      // สำหรับมือถือใช้ Alert.alert
+      Alert.alert(
+        "Confirm Delete",
+        "Are you sure you want to delete this item?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: () => {
+              deleteItem(item);
+            },
+          },
+        ]
+      );
     }
-  } catch (error) {
-    console.error("Error during checkout:", error);
-    alert("เกิดข้อผิดพลาดในการจอง");
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
+  
+  const deleteItem = async (item: caa) => {
+    try {
+      console.log("Deleting:", item.id);
+      
+      const response = await api.delete("/cart", {
+        data: { cartId: item.id },
+      });
+  
+      fetchData(); // รีเฟรชข้อมูลหลังจากลบสำเร็จ
+      console.log("Delete success:", response.data);
+    } catch (error) {
+      console.error("Delete failed:", error.response?.data || error.message);
+    }
+  };
+  
+  
+  const pay_court = async () => {
+    try {
+      setIsLoading(true);
+
+      // ดึง cart_ids ที่ถูกเลือก
+      const selectedCartIds = cart.filter(item => item.selected).map(item => item.id);
+
+      const response = await api.post("/checkout", {
+        cart_ids: selectedCartIds,
+        user_id: 1, // ตัวอย่าง user_id
+      });
+
+      if (response.data.success) {
+        alert("การจองสำเร็จ");
+        router.push('/my_booking');
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      alert("เกิดข้อผิดพลาดในการจอง");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // อัปเดต Quantity และ Amount ตามการเปลี่ยนแปลง
   // const updateQuantity = (id: string, change: number) => {
@@ -184,6 +233,15 @@ const pay_court = async () => {
               <Text style={styles.detail}>Time: {item.start_time} {item.end_time}</Text>
               <Text style={styles.price}>Price: 💎 {item.point}</Text>
             </View>
+            <TouchableOpacity
+              onPress={() => handleDelete(item)}
+            >
+              <MaterialCommunityIcons
+                name={"delete"}
+                size={24}
+                color={"red"}
+              />
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -194,21 +252,21 @@ const pay_court = async () => {
       </TouchableOpacity>
 
       <View style={styles.summary}>
-    <View style={styles.row}>
-        <Text style={styles.label}>Balance</Text>
-        <Text style={styles.amount}>💎 {balance}</Text>
-    </View>
-    <View style={styles.row}>
-        <Text style={styles.label}>Amount</Text>
-        <Text style={styles.amount}>💎 {totalAmount}</Text>
-    </View>
-    <View style={styles.row}>
-        <Text style={styles.label}>Remaining Balance</Text>
-        <Text style={[styles.amount, remainingBalance < 0 && styles.error]}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Balance</Text>
+          <Text style={styles.amount}>💎 {balance}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Amount</Text>
+          <Text style={styles.amount}>💎 {totalAmount}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Remaining Balance</Text>
+          <Text style={[styles.amount, remainingBalance < 0 && styles.error]}>
             💎 {remainingBalance}
-        </Text>
-    </View>
-</View>
+          </Text>
+        </View>
+      </View>
 
       {/* Confirm Button */}
       <TouchableOpacity

@@ -36,11 +36,11 @@ const HomeScreen = () => {
   };
 
   useFocusEffect(
-    () => {
-      fetchData(); // เรียก fetchData ทุกครั้งที่หน้าจอโฟกัส
-    }
+    useCallback(() => {
+      fetchData();
+    }, [])
   );
-
+  
   return (
     
     <View style={styles.container}>
