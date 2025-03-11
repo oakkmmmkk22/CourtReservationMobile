@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from "expo-router";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function ReportPage() {
     const router = useRouter();
@@ -25,12 +26,18 @@ export default function ReportPage() {
             Alert.alert("Error submitting report. Please try again.");
         }
     };
-
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+      { label: 'Apple', value: 'apple' },
+      { label: 'Banana', value: 'banana' },
+      { label: 'Mango', value: 'mango' },
+    ]);
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Report Problem</Text>
 
-            <TextInput
+            {/* <TextInput
                 style={styles.input}
                 placeholder="Place"
                 value={place}
@@ -42,11 +49,24 @@ export default function ReportPage() {
                 placeholder="Court"
                 value={court}
                 onChangeText={setCourt}
-            />
+            /> */}
 
+            
+            <DropDownPicker
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                containerStyle={{ width: "100%" }}
+            />
+            <Text>Selected: {value}</Text>
+            
             <TextInput
                 style={styles.input}
                 placeholder="Report Problem"
+                placeholderTextColor={"gray"}
                 multiline // ทำให้ TextInput สามารถขึ้นบรรทัดใหม่ได้
                 numberOfLines={5} // กำหนดจำนวนบรรทัดสูงสุด
                 value={reportProblem}

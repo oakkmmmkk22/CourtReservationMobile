@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from 'jwt-decode';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function AccountPage() {
     const router = useRouter();
@@ -34,32 +35,29 @@ export default function AccountPage() {
     return (
         <View style={styles.container}>
             <View style={styles.profile}>
-                <Image 
-                    source={require('../../assets/images/favicon.png')} // เปลี่ยน path ตามรูปของคุณ
-                    style={styles.profileImage} 
-                />
+                <MaterialCommunityIcons name={"account-circle"} size={120}/>
             </View>
 
             <View style={styles.info}>
                 <View style={styles.row}>
                     <Text style={styles.label}>Username:</Text>
                     <Text style={styles.value}>{username}</Text>
-                    <TouchableOpacity onPress={() => handleEditPress("/changeusername")}>
+                    {/* <TouchableOpacity onPress={() => handleEditPress("/changeusername")}>
                         <Image 
                             source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
                             style={styles.editIcon} 
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.label}>Email:</Text>
                     <Text style={styles.value}>{email}</Text>
-                    <TouchableOpacity onPress={() => handleEditPress("/changeemail")}>
+                    {/* <TouchableOpacity onPress={() => handleEditPress("/changeemail")}>
                         <Image 
                             source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
                             style={styles.editIcon} 
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.label}>Password:</Text>
