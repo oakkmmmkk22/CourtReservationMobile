@@ -33,13 +33,11 @@ interface caa {
   selected: boolean;
   point: number;
 }
-const screenWidth = Dimensions.get("window").width;
 const BookingSelection = () => {
   const [balance, setBalance] = useState(200);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false); // เพิ่ม isLoading state
   const [cart, setCart] = useState<caa[]>([]);
-  const [cart_id_selected, set_cart_id_selected] = useState(0);
+  const [crytal,setCrytal] = useState(0);
 
 
 
@@ -73,6 +71,10 @@ const BookingSelection = () => {
           };
         });
       });
+      const response2 = await api.get("/point");
+      if (response2.data.length > 0) {
+        setCrytal(response2.data[0].point);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -107,12 +109,7 @@ const BookingSelection = () => {
     .reduce((sum, item) => sum + item.point, 0);
 
   // คำนวณ Remaining Balance
-  const remainingBalance = balance - totalAmount;
-
-
-
-
-
+  const remainingBalance = crytal - totalAmount;
 
 
   const toggleSelection = (id: number) => {
@@ -123,7 +120,6 @@ const BookingSelection = () => {
           : item
       )
     );
-    set_cart_id_selected(id)
   };
 
   const handleDelete = (item: caa) => {
@@ -168,18 +164,20 @@ const BookingSelection = () => {
       fetchData(); // รีเฟรชข้อมูลหลังจากลบสำเร็จ
       console.log("Delete success:", response.data);
     } catch (error) {
-      console.error("Delete failed:", error.response?.data || error.message);
+      console.error("Delete failed:");
     }
   };
   
   
   const pay_court = async () => {
     try {
-      setIsLoading(true);
-
       // ดึง cart_ids ที่ถูกเลือก
       const selectedCartIds = cart.filter(item => item.selected).map(item => item.id);
-
+      console.log(selectedCartIds)
+      if(selectedCartIds.length === 0){
+        alert("โปรดเลือกรายการชำระ");
+        return ;
+      }
       const response = await api.post("/checkout", {
         cart_ids: selectedCartIds,
         user_id: 1, // ตัวอย่าง user_id
@@ -195,7 +193,6 @@ const BookingSelection = () => {
       console.error("Error during checkout:", error);
       alert("เกิดข้อผิดพลาดในการจอง");
     } finally {
-      setIsLoading(false);
     }
   };
 
@@ -254,7 +251,7 @@ const BookingSelection = () => {
       <View style={styles.summary}>
         <View style={styles.row}>
           <Text style={styles.label}>Balance</Text>
-          <Text style={styles.amount}>💎 {balance}</Text>
+          <Text style={styles.amount}>💎 {crytal}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Amount</Text>
@@ -272,9 +269,9 @@ const BookingSelection = () => {
       <TouchableOpacity
         style={[
           styles.confirmButton,
-          // remainingBalance < 0 && styles.disabledButton,
+          remainingBalance < 0 && styles.disabledButton,
         ]}
-        // disabled={remainingBalance < 0}
+        disabled={remainingBalance < 0}
         onPress={pay_court}
       >
         <Text style={styles.confirmText}>Confirm</Text>
