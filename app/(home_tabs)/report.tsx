@@ -2,56 +2,49 @@ import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from "expo-router";
 import DropDownPicker from 'react-native-dropdown-picker';
+import { Platform } from "react-native"; // ใช้ Platform เพื่อตรวจสอบว่ากำลังใช้งานอยู่บนเว็บหรือมือถือ
+import api from '../axiosinstance';
 
 export default function ReportPage() {
     const router = useRouter();
-    const [place, setPlace] = useState("");
-    const [court, setCourt] = useState("");
     const [reportProblem, setReportProblem] = useState("");
 
     const handleReport = async () => {
         // ตรวจสอบว่าผู้ใช้กรอกข้อมูลครบถ้วนหรือไม่
-        if (!place || !court || !reportProblem) {
+        if (!value || !reportProblem) {
             Alert.alert("Please fill in all fields.");
             return;
         }
-
-        // ส่งข้อมูลรายงาน (สมมติว่าคุณมีฟังก์ชันสำหรับส่งรายงานในไฟล์ api.js)
-        //const success = await submitReport({ place, court, reportProblem }); // submitReport คือฟังก์ชันที่คุณต้อง implement เอง
-           const success =true;
+        console.log(value + " " + reportProblem)
+        const response = await api.post("/report", {
+            topic: value,
+            detail: reportProblem,
+        });
+        console.log(response.data)
+        if (Platform.OS === "web") {
+            alert("Report submitted successfully.");
+        }
+        const success =true;
         if (success) {
             Alert.alert("Report submitted successfully.");
             router.push('/setting'); // กลับไปหน้าก่อนหน้า
         } else {
             Alert.alert("Error submitting report. Please try again.");
         }
+        setValue(null);
+        setReportProblem("");
     };
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
-      { label: 'Apple', value: 'apple' },
-      { label: 'Banana', value: 'banana' },
-      { label: 'Mango', value: 'mango' },
+      { label: 'Payment Issues', value: 'point' },
+      { label: 'Reservation Issues', value: 'reserv' },
+      { label: 'Other', value: 'other' },
     ]);
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Report Problem</Text>
 
-            {/* <TextInput
-                style={styles.input}
-                placeholder="Place"
-                value={place}
-                onChangeText={setPlace}
-            />
-
-            <TextInput
-                style={styles.input}
-                placeholder="Court"
-                value={court}
-                onChangeText={setCourt}
-            /> */}
-
-            
             <DropDownPicker
                 open={open}
                 value={value}
@@ -60,9 +53,14 @@ export default function ReportPage() {
                 setValue={setValue}
                 setItems={setItems}
                 containerStyle={{ width: "100%" }}
+                placeholder='Please Selete Topic'
+                placeholderStyle={{ color: "gray" }}
+                textStyle={{
+                    fontWeight: value ? "bold" : "normal", // Bold after selection
+                    color: "black", // Change color if needed
+                }}
+                style={{borderRadius:10}}
             />
-            <Text>Selected: {value}</Text>
-            
             <TextInput
                 style={styles.input}
                 placeholder="Report Problem"
@@ -90,12 +88,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        height: 40, // เปลี่ยนเป็น auto เพื่อให้ TextInput ขยายตามเนื้อหา
-        borderColor: 'gray',
+        height: 50, // เปลี่ยนเป็น auto เพื่อให้ TextInput ขยายตามเนื้อหา
+        borderColor: 'black',
         borderWidth: 1,
+        borderRadius:10,
         marginBottom: 15,
         paddingHorizontal: 10,
         textAlignVertical: 'top', // จัดข้อความให้อยู่ด้านบนของ TextInput
+        marginTop:20,
     },
    
     

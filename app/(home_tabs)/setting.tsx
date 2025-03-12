@@ -53,7 +53,6 @@ export default function SettingPage() {
                     style={styles.option} 
                     onPress={() => handlePress(option.route)}
                 >
-                    {/* Render icon if provided */}
                     {option.icon && (
                         <Ionicons name={option.icon} size={24} color="black" style={styles.optionIcon} />
                     )}
@@ -63,7 +62,7 @@ export default function SettingPage() {
                             <Text style={styles.optionSubtitle}>{option.subtitle}</Text>
                         )}
                     </View>
-                    <Ionicons name="chevron-forward" size={20} color="gray" /> {/* Right arrow */}
+                    <Ionicons name="chevron-forward" size={20} color="gray" />
                 </TouchableOpacity>
             ))}
         </View>

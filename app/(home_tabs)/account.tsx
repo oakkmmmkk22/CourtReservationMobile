@@ -35,29 +35,19 @@ export default function AccountPage() {
     return (
         <View style={styles.container}>
             <View style={styles.profile}>
-                <MaterialCommunityIcons name={"account-circle"} size={120}/>
+                <Text>
+                    <MaterialCommunityIcons name={"account-circle"} size={120}/>
+                </Text>
             </View>
 
             <View style={styles.info}>
                 <View style={styles.row}>
                     <Text style={styles.label}>Username:</Text>
                     <Text style={styles.value}>{username}</Text>
-                    {/* <TouchableOpacity onPress={() => handleEditPress("/changeusername")}>
-                        <Image 
-                            source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
-                            style={styles.editIcon} 
-                        />
-                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.label}>Email:</Text>
                     <Text style={styles.value}>{email}</Text>
-                    {/* <TouchableOpacity onPress={() => handleEditPress("/changeemail")}>
-                        <Image 
-                            source={require('../../assets/images/pen.png')} // เปลี่ยน path ตามรูป icon ของคุณ
-                            style={styles.editIcon} 
-                        />
-                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.label}>Password:</Text>

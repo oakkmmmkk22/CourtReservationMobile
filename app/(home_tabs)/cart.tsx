@@ -4,7 +4,7 @@ import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-ic
 import { useFocusEffect, useRouter } from "expo-router";
 import { Dimensions } from "react-native";
 import api from '../axiosinstance';
-  import { Platform } from "react-native"; // ใช้ Platform เพื่อตรวจสอบว่ากำลังใช้งานอยู่บนเว็บหรือมือถือ
+import { Platform } from "react-native"; // ใช้ Platform เพื่อตรวจสอบว่ากำลังใช้งานอยู่บนเว็บหรือมือถือ
 
 interface BookingItem {
   id: string;
