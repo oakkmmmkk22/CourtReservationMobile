@@ -322,6 +322,7 @@ export default function BookingScreen() {
                                                 end_time_for_party: endTimeState,
                                                 date_for_party: formattedDate,
                                                 location_for_party: location,
+                                                court_id:item.court_id,
                                             },
                                             })
                                         }>

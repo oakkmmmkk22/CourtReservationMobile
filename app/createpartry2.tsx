@@ -39,7 +39,7 @@ const CreatePartyScreen = () => {
   const [wrongDes, setWrongDes] = useState("");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-  const { location_for_party,type_for_party,date_for_party,start_time_for_party,end_time_for_party} = useGlobalSearchParams();
+  const { location_for_party,type_for_party,date_for_party,start_time_for_party,end_time_for_party,court_id} = useGlobalSearchParams();
 
   const formattedDate = date_for_party instanceof Date 
   ? date_for_party.toISOString().slice(0,10) 
@@ -59,37 +59,38 @@ const CreatePartyScreen = () => {
 
   const handleCreateParty = () => {
     //  Here you would typically send the data to your backend
-    console.log("Creating party with data:", {
-      topic,
-      type,
-      total,
-      date_for_party,
-      start_time_for_party,
-      end_time_for_party,
-      description,
-    });
+    // console.log("Creating party with data:", {
+    //   topic,
+    //   type,
+    //   total,
+    //   date_for_party,
+    //   start_time_for_party,
+    //   end_time_for_party,
+    //   description,
+    //   court_id
+    // });
     if (
       topic != "" &&
       description != ""
     ) {
       api
-        .post("", {
+        .post("/createparty", {
           topic: topic,
           type: type,
-          total: total,
-          formattedDate: date_for_party,
-          start_time: start_time_for_party,
-          end_time:end_time_for_party,
-          description: description,
+          total_members: total,
+          date: date_for_party,
+          startTime: start_time_for_party,
+          endTime:end_time_for_party,
+          detail: description,
+          court_id:court_id,
         })
-        .then((response) => {
-          console.log(response.data);
-          if (response.data.status) {
-            console.log("Create successfully");
-            router.push("/home");
-          } else {
-            console.log("Create false");
-          }
+        .then(() => {
+          
+          console.log("PHONE HERE!!!");
+         
+          console.log("Create successfully");
+          router.push("/find_friend");
+          
         })
         .catch((error) => {
           console.error("Error fetching data: ", error);
@@ -98,6 +99,8 @@ const CreatePartyScreen = () => {
       // setUsername("")
       // setPassword("")
     } else {
+      console.log("input some data");
+
       if (topic == "") {
         setWrongT("*input Topic");
       }
