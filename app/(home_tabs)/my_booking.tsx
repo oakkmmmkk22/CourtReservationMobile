@@ -16,6 +16,7 @@ interface Reservations {
   court_number:number;
   type:string;
   price:number;
+  party_id:number;
   
 }
 
@@ -53,16 +54,28 @@ const HomeScreen = () => {
           </View>
           <FlatList
             data={[...mybook].sort((a, b) => {
-              const dateTimeA = new Date(`${a.date}T${a.start_time}`).getTime();
-              const dateTimeB = new Date(`${b.date}T${b.start_time}`).getTime();
+              const now = new Date().getTime(); // เวลาปัจจุบัน
+              const dateA = new Date(a.date).toISOString().split("T")[0];
+              const dateB = new Date(b.date).toISOString().split("T")[0];
+              const dateTimeA = new Date(`${dateA}T${a.start_time}`).getTime();
+              const dateTimeB = new Date(`${dateB}T${b.start_time}`).getTime();
 
-              // ถ้าวันที่ต่างกัน ให้จัดเรียงวันที่ใหม่ก่อน
-              if (a.date !== b.date) {
+              console.log(`🔍 A: ${dateA} ${a.start_time} → ${dateTimeA}`);
+              console.log(`🔍 B: ${dateB} ${b.start_time} → ${dateTimeB}`);
+              
+              if (dateTimeA < now && dateTimeB < now) {
                 return dateTimeB - dateTimeA; // ล่าสุดอยู่บน
-              } else {
-                // ถ้าวันที่เหมือนกัน ให้จัดเรียงตามเวลาที่เริ่มต้นมาก่อน
-                return dateTimeA - dateTimeB; // เวลาเริ่มต้นมาก่อนอยู่บน
+              } 
+              
+              if (dateTimeA < now) return 1;
+              if (dateTimeB < now) return -1;
+
+              if (dateA !== dateB) {
+                return dateTimeA - dateTimeB;
               }
+
+              return dateTimeA - dateTimeB;
+
             })}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
@@ -98,6 +111,13 @@ const HomeScreen = () => {
                       <Text style={styles.t}>Status: </Text>
                       <Text style={styles.cardStatus}>{item.status}</Text>
                     </View>
+
+                  
+                  <View style={styles.modeContainer}>
+                    <Text style={item.party_id ? styles.partyMode : styles.notPartyMode}>
+                      {item.party_id ? "🎉 Party" : "⚡ Individual"}
+                    </Text>
+                  </View>
 
                   </View>
                 </View>
@@ -191,7 +211,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "gray",
   },
-  
+  modeContainer: {
+    paddingVertical: 5,
+    alignItems:'flex-end',
+    borderRadius: 8,
+  },
+  partyMode: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#d9534f", // สีแดง
+  },
+  notPartyMode: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#007bff", // สีน้ำเงิน
+  },
 });
 
 export default HomeScreen;
