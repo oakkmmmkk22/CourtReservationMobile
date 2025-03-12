@@ -51,6 +51,7 @@ const HomeScreen = () => {
     }, [])
   );
 
+  
   const handleCancel = () => {
     console.log("Cancel button clicked");
     // ใส่ฟังก์ชันที่จะทำเมื่อกด Cancel ที่นี่
@@ -139,7 +140,22 @@ const HomeScreen = () => {
         renderItem={({ item }: { item: Reservations }) => {
           const isIndividual = !item.party_id;
           return (
-            <TouchableOpacity onPress={() => router.push("/pay-slip")}>
+            <TouchableOpacity 
+                onPress={() =>
+                  router.push({
+                  pathname: "/pay-slip",
+                  params: {
+                      mode_party: item.party_id,
+                      place: item.stadium_name,
+                      court: item.court_number,
+                      type: item.Type,
+                      date_pay: item.date,
+                      start_time:item.start_time,
+                      end_time:item.end_time,
+                      price:item.price,
+                  },
+                  })
+              }>
               <View style={styles.card}>
                 <View style={{ flex: 4 }}>
                   {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
