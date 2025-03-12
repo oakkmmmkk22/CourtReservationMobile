@@ -24,7 +24,7 @@ interface Reservations {
 const HomeScreen = () => {
 
   const [mybook, setMybook] = useState<Reservations[]>([]);
-  
+  const [mode, setMode] = useState<'party' | 'individual'|'all'>('all');
   const fetchData = () => {
     api.get("/reservations")
       .then((response) => {
@@ -41,6 +41,24 @@ const HomeScreen = () => {
       fetchData();
     }, [])
   );
+
+  const handleCancel = () => {
+    console.log("Cancel button clicked");
+    // ใส่ฟังก์ชันที่จะทำเมื่อกด Cancel ที่นี่
+  };
+
+  const filteredData = mybook.filter((item) => {
+    if (mode === 'party') {
+      return item.party_id !== null && item.party_id !== 0;
+    }
+    if (mode === 'individual') {
+      return item.party_id === null || item.party_id === 0;
+    }
+
+      return true;
+    
+
+  });
   
   return (
     
@@ -52,8 +70,19 @@ const HomeScreen = () => {
               <Text style={styles.itemCount}> {mybook.length} </Text> 
             </View>
           </View>
+          <View style={styles.modeSelection}>
+              <TouchableOpacity onPress={() => setMode('all')} style={[styles.button, mode === 'all' && styles.activeButton]}>
+                <Text style={mode === 'all' ? styles.activeMode : styles.inactiveMode}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setMode('party')} style={[styles.button, mode === 'party' && styles.activeButton]}>
+                <Text style={mode === 'party' ? styles.activeMode : styles.inactiveMode}>Party</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setMode('individual')} style={[styles.button, mode === 'individual' && styles.activeButton]}>
+                <Text style={mode === 'individual' ? styles.activeMode : styles.inactiveMode}>Individual</Text>
+              </TouchableOpacity>
+          </View>
           <FlatList
-            data={[...mybook].sort((a, b) => {
+            data={filteredData.sort((a, b) => {
               const now = new Date().getTime(); // เวลาปัจจุบัน
               const dateA = new Date(a.date).toISOString().split("T")[0];
               const dateB = new Date(b.date).toISOString().split("T")[0];
@@ -79,50 +108,59 @@ const HomeScreen = () => {
             })}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item }:{ item: Reservations }) =>( 
-              <TouchableOpacity  onPress={() => router.push("/pay-slip")}>
-                <View style={styles.card}>
-                  <View style={{flex:4}}>
-                    {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
+            renderItem={({ item }:{ item: Reservations }) =>{
+              const isIndividual = !item.party_id;
+              return(
+                <TouchableOpacity  onPress={() => router.push("/pay-slip")}>
+                  <View style={styles.card}>
+                    <View style={{flex:4}}>
+                      {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
+                    </View>
+                    <View style={styles.cardContent}>
+                      <Text style={styles.dateText}>{item.date.slice(0,10)}</Text>
+                      <View style={styles.cardFooter}>
+                        <Text style={styles.t}>Place: </Text>
+                        <Text style={styles.cardTitle}>{item.stadium_name}</Text>
+                      </View>
+
+                      <View style={styles.cardFooter}>
+                        <Text style={styles.t}>Court: </Text>
+                        <Text style={styles.cardCourt}>{item.Type} Court {item.court_number}</Text>
+                      </View>
+
+                      <View style={styles.cardFooter}>
+                        <Text style={styles.t}>Time: </Text>
+                        <Text style={styles.cardTime}>{item.start_time.slice(0,5)} - {item.end_time.slice(0,5)}</Text>
+                      </View>
+
+                      <View style={styles.cardFooter}>
+                        <Text style={styles.t}>Price: </Text>
+                        <Text style={styles.cardPrice}>{item.price}</Text>
+                      </View>
+
+                      <View style={styles.cardFooter}>
+                        <Text style={styles.t}>Status: </Text>
+                        <Text style={styles.cardStatus}>{item.status}</Text>
+                      </View>
+
+                    
+                      <Text style={item.party_id ? styles.partyMode : styles.notPartyMode}>
+                        {item.party_id ? "🎉 Party" : "⚡ Individual"}
+                      </Text>
+
+                    <View style={styles.modeContainer}>
+                      {isIndividual && (
+                        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                      </TouchableOpacity>
+                      )}
+                      </View>
+
+                    </View>
                   </View>
-                  <View style={styles.cardContent}>
-                    <Text style={styles.dateText}>{item.date.slice(0,10)}</Text>
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.t}>Place: </Text>
-                      <Text style={styles.cardTitle}>{item.stadium_name}</Text>
-                    </View>
-
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.t}>Court: </Text>
-                      <Text style={styles.cardCourt}>{item.Type} Court {item.court_number}</Text>
-                    </View>
-
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.t}>Time: </Text>
-                      <Text style={styles.cardTime}>{item.start_time.slice(0,5)} - {item.end_time.slice(0,5)}</Text>
-                    </View>
-
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.t}>Price: </Text>
-                      <Text style={styles.cardPrice}>{item.price}</Text>
-                    </View>
-
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.t}>Status: </Text>
-                      <Text style={styles.cardStatus}>{item.status}</Text>
-                    </View>
-
-                  
-                  <View style={styles.modeContainer}>
-                    <Text style={item.party_id ? styles.partyMode : styles.notPartyMode}>
-                      {item.party_id ? "🎉 Party" : "⚡ Individual"}
-                    </Text>
-                  </View>
-
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )}
+                </TouchableOpacity>
+              );
+            }}
           />
     </View>
   );
@@ -215,6 +253,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     alignItems:'flex-end',
     borderRadius: 8,
+    
   },
   partyMode: {
     fontSize: 16,
@@ -226,6 +265,52 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#007bff", // สีน้ำเงิน
   },
+  cancelButton: {
+    backgroundColor: "#d9534f", // สีแดง
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: "center",
+    width:80,
+
+  },
+  cancelButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  modeSelection: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+    
+  },
+  activeMode: {
+    fontWeight: 'bold',
+    color: 'blue',
+  },
+  inactiveMode: {
+    color: 'gray',
+  },
+  button: {
+    padding: 10,
+    margin: 5,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0', // พื้นหลังปกติ
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeButton: {
+    backgroundColor: '#007BFF', // พื้นหลังเมื่อถูกเลือก
+  },
+  activeMode: {
+    color: '#fff', // สีข้อความเมื่อถูกเลือก
+    fontWeight: 'bold',
+  },
+  inactiveMode: {
+    color: '#007BFF', // สีข้อความเมื่อไม่ได้เลือก
+  },
+
 });
 
 export default HomeScreen;
