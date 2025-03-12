@@ -72,14 +72,29 @@ const FindFriend = () => {
 
     const latestNotifications = noti.reverse().slice(0, 5);
 
-    const renderedNotifications = latestNotifications.map((notification) => (
-        <View key={notification.id} style={{ padding: 10, borderBottomWidth: 1, width:"100%" }}>
-          <Text>{notification.notification}</Text>
-          <Text>{notification.date.slice(0,10)}</Text>
-          <Text>{notification.time}</Text>
-        </View>
-      ));
+    const renderedNotifications = latestNotifications.map((notification) => {
+        const notificationTime = new Date(notification.date).getTime(); // เวลาของการแจ้งเตือน
+        const currentTime = Date.now(); // เวลาปัจจุบัน
+        const timestamp = currentTime - notificationTime; // คำนวณความแตกต่างระหว่างเวลา
+      
+        // แปลงความแตกต่างเป็นวินาที (หรือจะเป็นนาที/ชั่วโมงก็ได้)
+        const seconds = Math.floor(timestamp / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
 
+        return (
+          <View key={notification.id} style={{ padding: 10, width: "100%", borderRadius:10 , marginTop:15, backgroundColor:"#D0F9DC"}}>
+            <Text style={styles.description}>{notification.notification}</Text>
+            <Text style={styles.timestamp}>{notification.date.slice(0, 10)}</Text>
+            {/* <Text>{notification.time}</Text> */}
+            <Text style={styles.timestamp}>
+                Time Ago: {days > 0 ? `${days} days` : `${hours} hours, ${minutes % 60} minutes`}
+            </Text>
+          </View>
+        );
+      });
+      
     return (
         <View style={{ flex: 1, padding: 16 }}>
             {/* Header */}
@@ -89,7 +104,7 @@ const FindFriend = () => {
                     placeholder="Search Party"
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    style={{ flex: 1, padding: 10, borderWidth: 1, borderRadius: 8, marginRight: 12 }}
+                    style={{ flex: 1, padding: 10, borderWidth: 1, marginRight: 12 }}
                 />
                 <TouchableOpacity onPress={openNoti}>
                     <Bell size={24} />
@@ -99,7 +114,7 @@ const FindFriend = () => {
             {/* Filter Buttons */}
             <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 16 }}>
                 {/* Date Button */}
-                <TouchableOpacity style={styles.button} onPress={() => setShowModal(true)}>
+                <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => setShowModal(true)}>
                     <AntDesign name="calendar" size={18} color="white" />
                     {/* <Text style={styles.buttonText}>28/12/2567</Text> */}
                     <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
@@ -150,35 +165,17 @@ const FindFriend = () => {
 
             {/* Modal */}
             <Modal visible={modalOpen} transparent animationType="fade">
-                <View
-                style={{
-                    margin:10, 
-                    backgroundColor: "white" , 
-                    // backgroundColor: "rgba(0, 0, 0, 0.5)" , 
-                    borderRadius:10, 
-                    borderWidth:1,
-                    flex:0.5
-                }}>
-                    <View style={{ paddingLeft:30, width:"100%", flexDirection:"row", paddingRight:10, paddingTop:10}}>
-                        <Text style={{paddingTop:5, fontWeight:"bold", fontSize:20}}>
-                            Notifications
-                        </Text>
-                        <View style={{flex:1,alignItems:"flex-end"}} >
-                            <TouchableOpacity>
-                                <AntDesign name="close" size={25} color={"red"}  onPress={() => setModalOpen(false)}/>
-                            </TouchableOpacity>
-                        </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <View style={{ width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10 , height:"50%"}}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Notifications</Text>
+                        <ScrollView >{renderedNotifications}</ScrollView>
+                        <TouchableOpacity onPress={() => setModalOpen(false)}>
+                            <Text style={{ color: 'red', textAlign: 'right', marginTop: 10 }}>Close</Text>
+                        </TouchableOpacity>
                     </View>
-                    <ScrollView showsVerticalScrollIndicator={false} >
-                        <View style={{flex:1}}>
-                            <View style={{ padding: 20, backgroundColor: "white", justifyContent: "center", alignItems: "center" , paddingTop:0}}>
-                                <Text style={{ fontSize: 18, fontWeight: "bold" }}>{renderedNotifications}</Text>
-                                <Button title="Close" onPress={() => setModalOpen(false)} />
-                            </View>
-                        </View>
-                    </ScrollView>
                 </View>
             </Modal>
+
 
             {/* //all stadiums  */}
             <Text style={styles.sectionTitle}>FIND PARTY</Text>
@@ -323,6 +320,21 @@ const styles = StyleSheet.create({
         width: 100,
         alignItems: 'center',
 
+    },
+    description: {
+        fontSize: 18,
+        color: '#666',
+        marginBottom: 4,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 4,
+    },
+    timestamp: {
+        fontSize: 13,
+        color: '#999',
     },
 });
 
