@@ -153,6 +153,7 @@ const HomeScreen = () => {
                       start_time:item.start_time,
                       end_time:item.end_time,
                       price:item.price,
+                      id:item.id,
                   },
                   })
               }>
