@@ -145,7 +145,7 @@ const HomeScreen = () => {
                   router.push({
                   pathname: "/pay-slip",
                   params: {
-                      idslip:item.id,
+                      idslip_for_pay:item.id,
                       mode_party: item.party_id,
                       place: item.stadium_name,
                       court: item.court_number,
