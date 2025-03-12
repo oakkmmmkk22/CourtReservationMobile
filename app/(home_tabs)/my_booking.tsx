@@ -28,6 +28,7 @@ interface Reservations {
   type: string;
   price: number;
   party_id: number;
+  pictures: { path: string; photoUrl: string }[];
 }
 
 const HomeScreen = () => {
@@ -159,6 +160,15 @@ const HomeScreen = () => {
               }>
               <View style={styles.card}>
                 <View style={{ flex: 4 }}>
+                     
+                {item.pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
+                  <Image
+                    source={{ uri: item.pictures[0].photoUrl }}
+                    style={styles.cardImage}
+                  />
+                )}   
+                      
+                
                   {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
                 </View>
                 <View style={styles.cardContent}>
@@ -241,7 +251,11 @@ const styles = StyleSheet.create({
     // position: "relative"
   },
   cardImage: {
-    flex: 1,
+    width: '100%', // ขยายเต็มความกว้างของ container
+    height: 200, // กำหนดความสูง
+    borderRadius: 8, // มุมโค้ง
+    resizeMode: 'cover', // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
+    
   },
   cardContent: {
     padding: 10,
@@ -356,6 +370,12 @@ const styles = StyleSheet.create({
   inactiveMode: {
     color: "black", // สีข้อความเมื่อไม่ได้เลือก
   },
+  imageContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center", // หรือ "space-between"
+    marginBottom: 10,
+  }
 });
 
 export default HomeScreen;
