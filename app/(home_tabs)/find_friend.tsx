@@ -11,9 +11,12 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Bell, Calendar, MapPin, Sliders } from "lucide-react-native";
+import { Bell, MapPin, Sliders } from "lucide-react-native";
 import api from "../axiosinstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { AntDesign } from "@expo/vector-icons";
+import { Calendar } from "react-native-calendars";
 
 const FindFriend = () => {
   const router = useRouter();
@@ -21,7 +24,20 @@ const FindFriend = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [party, setParty] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
+
+
+  //Sample Location
+  const locations = [
+    "Arena 1", "Arena 2", "Stadium A", "Stadium B", "Field 1", "Field 2"
+  ];
+
+  
+  
   const fetchParties = async () => {
     try {
   
@@ -52,6 +68,20 @@ const FindFriend = () => {
   useEffect(() => {
     fetchParties();
   }, []);
+
+  useEffect(() => {
+    console.log("Selected Date:", selectedDate);
+  }, [selectedDate]);
+  
+
+  const filterParties = () => {
+    return party.filter((item) => {
+      const matchSearch = item.topic.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchDate = selectedDate ? item.date === selectedDate : true;
+      const matchLocation = selectedLocation ? item.stadium_name.toLowerCase().includes(selectedLocation.toLowerCase()) : true;
+      return matchSearch && matchDate && matchLocation;
+    });
+  };
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -88,14 +118,15 @@ const FindFriend = () => {
 
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Calendar size={18} color="white" />
-          <Text style={styles.buttonText}>Date</Text>
+      <TouchableOpacity style={styles.button} onPress={() => setShowCalendarModal(true)}>
+          <AntDesign name="calendar" size={18} color="white" />
+          <Text style={styles.buttonText}>{selectedDate ? selectedDate : "Date"}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+
+        <TouchableOpacity style={styles.button} onPress={() => setSelectedLocation("arena")}> 
           <MapPin size={18} color="white" />
-          <Text style={styles.buttonText}>Location</Text>
+          <Text style={styles.buttonText}>{selectedLocation ? selectedLocation : "Location"}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button}>
@@ -103,6 +134,54 @@ const FindFriend = () => {
           <Text style={styles.buttonText}>Filter</Text>
         </TouchableOpacity>
       </View>
+      
+      {/* Calendar Modal */}
+      <Modal visible={showCalendarModal} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Date</Text>
+            <Calendar
+              style={styles.calendar}
+              onDayPress={(date) => {
+                setSelectedDate(date.dateString); // Set selected date
+                setShowCalendarModal(false); // Close modal
+              }}
+              minDate={new Date().toISOString().split("T")[0]} // Set minimum date to today
+              maxDate={"2025-12-31"}
+            />
+            <TouchableOpacity onPress={() => setShowCalendarModal(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      
+
+      {/* Location Modal */}
+      <Modal visible={showLocationModal} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
+            <FlatList
+              data={locations}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => {
+                  setSelectedLocation(item); // Set selected location
+                  setShowLocationModal(false); // Close modal
+                }}>
+                  <View style={styles.locationItem}>
+                    <Text>{item}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity onPress={() => setShowLocationModal(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Section Title */}
       <Text style={styles.sectionTitle}>FIND PARTY</Text>
@@ -114,42 +193,38 @@ const FindFriend = () => {
         <Text style={styles.noDataText}>No parties available</Text>
       ) : (
         <FlatList
-          data={party}
-          keyExtractor={(item, index) => {
-            return item.party_id ? item.party_id.toString() : index.toString();
-          }}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                onPress={() =>
-                  router.push({
-                    pathname: "/partyjoin",
-                    params: { party_id: item.party_id },
-                  })
-                }
-              >
-                <View style={styles.card}>
-                  <Image
-                    source={{
-                      uri:
-                        item.pictures.length > 0
-                          ? item.pictures[0].photoUrl
-                          : "https://via.placeholder.com/100",
-                    }}
-                    style={styles.cardImage}
+          data={filterParties()}
+          keyExtractor={(item, index) => (item.party_id ? item.party_id.toString() : index.toString())}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              onPress={() => 
+                router.push({ 
+                  pathname: "/partyjoin",
+                  params: { party_id: item.party_id }
+                })
+              }
+            >
+              <View style={styles.card}>
+                <Image 
+                  source={{ 
+                    uri:  
+                      item.pictures.length > 0 
+                      ? item.pictures[0].photoUrl 
+                      : "https://via.placeholder.com/100",
+                  }} 
+                  style={styles.cardImage} 
                   />
-
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardTitle}>{item.topic}</Text>
-                    <Text style={styles.cardLocation}>{item.stadium_name}</Text>
-                    <Text style={styles.cardHours}>
-                      {`${item.start_time} - ${item.end_time}`}
-                    </Text>
-                  </View>
+                
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{item.topic}</Text>
+                  <Text style={styles.cardLocation}>{item.stadium_name}</Text>
+                  <Text style={styles.cardHours}>
+                    {`${item.start_time} - ${item.end_time}`}
+                  </Text>
                 </View>
-              </TouchableOpacity>
-            );
-          }}
+              </View>
+            </TouchableOpacity>
+          )}
         />
       )}
     </View>
