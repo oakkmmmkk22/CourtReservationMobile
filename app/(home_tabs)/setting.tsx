@@ -36,7 +36,7 @@ export default function SettingPage() {
             console.log("Token:",token );
             console.log("Logging out...");
             // After logout logic, navigate or reset navigation state if needed
-            router.push("/login"); // Example: navigate to login screen
+            router.push("/"); // Example: navigate to login screen
         } else if (route) {
             router.push(route);
         }

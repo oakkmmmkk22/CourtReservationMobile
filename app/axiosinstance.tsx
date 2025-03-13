@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //http://localhost:3000 for pc
 //geng phone 0970756504
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // ตั้ง base URL สำหรับทุก API
+  baseURL: 'http://10.0.2.2:3000', // ตั้ง base URL สำหรับทุก API
                                         
 });
 
