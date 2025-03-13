@@ -10,6 +10,8 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   ScrollView,
+  Platform,
+  Alert,
 } from "react-native";
 import api from "../axiosinstance";
 import { useFocusEffect } from "@react-navigation/native";
@@ -67,8 +69,32 @@ const HomeScreen = () => {
 
   const handleCancel = (item: Reservations) => {
     console.log("Cancel button clicked");
-    // ใส่ฟังก์ชันที่จะทำเมื่อกด Cancel ที่นี่
-    deleteItem(item);
+    if (Platform.OS === "web") {
+          // สำหรับเว็บใช้ window.confirm() แทน
+          const confirmDelete = window.confirm("Are you sure you want to Cancel this item?");
+          if (confirmDelete) {
+            deleteItem(item);
+          }
+        } else {
+          // สำหรับมือถือใช้ Alert.alert
+          Alert.alert(
+            "Confirm Cancel",
+            "Are you sure you want to Cancel this item?",
+            [
+              {
+                text: "Confirm",
+                style: "destructive",
+                onPress: () => {
+                  deleteItem(item);
+                },
+              },
+              {
+                text: "Cancel",
+                style: "cancel",
+              },
+            ]
+          );
+        }
   };
 
   const deleteItem = async (item: Reservations) => {
@@ -155,8 +181,8 @@ const HomeScreen = () => {
           const dateTimeA = new Date(`${dateA}T${a.start_time}`).getTime();
           const dateTimeB = new Date(`${dateB}T${b.start_time}`).getTime();
 
-          console.log(`🔍 A: ${dateA} ${a.start_time} → ${dateTimeA}`);
-          console.log(`🔍 B: ${dateB} ${b.start_time} → ${dateTimeB}`);
+          // console.log(`🔍 A: ${dateA} ${a.start_time} → ${dateTimeA}`);
+          // console.log(`🔍 B: ${dateB} ${b.start_time} → ${dateTimeB}`);
 
           if (dateTimeA < now && dateTimeB < now) {
             return dateTimeB - dateTimeA; // ล่าสุดอยู่บน
@@ -180,9 +206,9 @@ const HomeScreen = () => {
             `${item.date.slice(0, 10)}T${item.start_time}`
           ).getTime();
           // เพิ่มการพิมพ์ค่าเพื่อเช็คเวลา
-          console.log(`Date: ${item.date}, Start Time: ${item.start_time}`);
-          console.log(`Current Time: ${currentTime}`);
-          console.log(`Reservation Time: ${reservationTime}`);
+          // console.log(`Date: ${item.date}, Start Time: ${item.start_time}`);
+          // console.log(`Current Time: ${currentTime}`);
+          // console.log(`Reservation Time: ${reservationTime}`);
           const isPast = reservationTime < currentTime;
           const cardStyle =
             item.status === "cancelled"
@@ -190,7 +216,7 @@ const HomeScreen = () => {
               : isPast
               ? { ...styles.card, opacity: 0.7 } // จางเมื่อเวลาผ่านไปแล้ว
               : styles.card;
-          console.log(`Item ID: ${item.id}, Status: ${item.status}`);
+          // console.log(`Item ID: ${item.id}, Status: ${item.status}`);
           return (
             <TouchableOpacity
               onPress={() => {

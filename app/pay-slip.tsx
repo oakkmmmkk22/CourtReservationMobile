@@ -20,8 +20,7 @@ const Slip = () => {
 
     useEffect(() => {
       getToken();
-      console.log(location);
-      console.log(idslip_for_pay);
+      // console.log(idslip_for_pay);
     }, []);
 
     const getPartyMode = (mode_party: string | null) => {
@@ -114,7 +113,7 @@ const Slip = () => {
       </View>
 
       {/* ปุ่ม Done */}
-      <TouchableOpacity style={styles.doneButton} onPress={() => router.push("/home")}>
+      <TouchableOpacity style={styles.doneButton} onPress={() => router.push("/my_booking")}>
         <Text style={styles.doneText}>Done</Text>
       </TouchableOpacity>
     </View>
