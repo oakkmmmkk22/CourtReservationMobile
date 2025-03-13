@@ -20,10 +20,10 @@ import {
 } from "@expo/vector-icons";
 import axios from "axios";
 import api from "../axiosinstance";
-import { router, } from "expo-router";
+import { router } from "expo-router";
 import { Dropdown } from "react-native-element-dropdown";
 import * as Location from "expo-location";
- import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Stadium {
   id: string;
@@ -45,7 +45,9 @@ const HomeScreen = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
-  const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>([]);
+  const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>(
+    []
+  );
   const [modalOpen, setModalOpen] = useState(false);
 
   const [provinces, setProvinces] = useState([]);
@@ -54,7 +56,6 @@ const HomeScreen = () => {
   const [searchTextprovince, setSearchTextprovince] = useState("");
   const [location, setLocation] = useState(null);
   const [tempSelectedProvince, setTempSelectedProvince] = useState("");
-
 
   useEffect(() => {
     api
@@ -115,29 +116,26 @@ const HomeScreen = () => {
             .map((f) => f.trim().toLowerCase())
             .includes(facility)
         );
-  
+
     // การกรองตามคำค้นหาของผู้ใช้
     const searchText = searchQuery.toLowerCase();
     const matchesSearchQuery =
       stadium.name.toLowerCase().includes(searchText) ||
-      stadium.location.toLowerCase().includes(searchText);
+      stadium.location.toLowerCase().includes(searchText)||
+      stadium.facility_type.toLowerCase().includes(searchText);
 
     //กรอง province
     const matchesProvince =
-    selectedProvince === "" ||
-    stadium.location.toLowerCase().includes(selectedProvince.toLowerCase());
+      selectedProvince === "" ||
+      stadium.location.toLowerCase().includes(selectedProvince.toLowerCase());
 
     //กรองall
     const matchesSearch =
-    searchText.trim() === "" || stadium.name.includes(searchText);
-  
+      searchText.trim() === "" || stadium.name.includes(searchText);
+
     // รวมเงื่อนไขการกรองทั้งหมด
     return matchesFacilityType && matchesSearchQuery && matchesProvince;
   });
-  
-  
-  
-  
 
   useEffect(() => {
     (async () => {
@@ -176,8 +174,6 @@ const HomeScreen = () => {
     province.label.toLowerCase().includes(searchTextprovince.toLowerCase())
   );
 
-  
-
   return (
     <View style={styles.container}>
       {/* //search bar */}
@@ -209,8 +205,7 @@ const HomeScreen = () => {
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: "rgba(0, 0, 0, 0.5)",
-              paddingBottom:200
-              
+              paddingBottom: 200,
             }}
           >
             <View
@@ -219,8 +214,7 @@ const HomeScreen = () => {
                 backgroundColor: "white",
                 borderRadius: 10,
                 alignItems: "center",
-                height:200
-                
+                height: 200,
               }}
             >
               <View style={styles.containerdrop}>
@@ -251,11 +245,20 @@ const HomeScreen = () => {
                                             )} */}
               </View>
               <View style={styles.buttonContainer}>
-                <Button title="Done" color={"black"} onPress={() => {
-                  setSelectedProvince(tempSelectedProvince); // อัปเดตตัวกรองจังหวัดจริง
-                  setTempSelectedProvince("");
-                  setModalOpen(false);}}/>
-                <Button title="Close" color={"black"} onPress={() => setModalOpen(false)}/>
+                <Button
+                  title="Done"
+                  color={"black"}
+                  onPress={() => {
+                    setSelectedProvince(tempSelectedProvince); // อัปเดตตัวกรองจังหวัดจริง
+                    setTempSelectedProvince("");
+                    setModalOpen(false);
+                  }}
+                />
+                <Button
+                  title="Close"
+                  color={"black"}
+                  onPress={() => setModalOpen(false)}
+                />
               </View>
             </View>
           </View>
@@ -276,12 +279,11 @@ const HomeScreen = () => {
                 styles.ic,
                 {
                   color: selectedFacilityTypes.includes("football")
-                        
                     ? "gray"
                     : "black",
                 },
               ]}
-              onPress={() => handleIconPress("football") }
+              onPress={() => handleIconPress("football")}
             />
             <FontAwesome5
               name="table-tennis"
@@ -354,6 +356,18 @@ const HomeScreen = () => {
                 },
               ]}
               onPress={() => handleIconPress("rugby")}
+            />
+            <MaterialIcons
+              name="sports-soccer"
+              style={[
+                styles.ic,
+                {
+                  color: selectedFacilityTypes.includes("soccer")
+                    ? "gray"
+                    : "black",
+                },
+              ]}
+              onPress={() => handleIconPress("soccer")}
             />
           </View>
         </ScrollView>
