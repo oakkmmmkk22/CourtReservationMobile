@@ -33,7 +33,7 @@ interface Stadium {
   close_hour: string;
   rating: number;
   phone_number: string;
-  pictures: [];
+  pictures: { path: string; photoUrl: string }[];
   facility_type: string;
   facility_names: string;
   location_link: string;
@@ -492,13 +492,18 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     overflow: "hidden",
+    flex:1,
   },
   cardImage: {
-    flex: 1,
+    width: "100%", // ขยายเต็มความกว้างของ container
+    height: 200, // กำหนดความสูง
+    borderRadius: 8, // มุมโค้ง
+    resizeMode: "contain", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
   },
   cardContent: {
-    flex: 1,
-    padding: 30,
+    flex: 6,
+    padding: 10,
+    justifyContent:'center',
   },
   cardTitle: {
     fontSize: 18,
