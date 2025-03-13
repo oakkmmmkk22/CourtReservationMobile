@@ -94,6 +94,7 @@ const FindFriend = () => {
   
 
   
+
   const filterParties = () => {
     return party.filter((item) => {
       const matchSearch = item.topic.toLowerCase().includes(searchQuery.toLowerCase());
