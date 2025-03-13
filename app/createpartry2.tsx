@@ -137,7 +137,7 @@ const CreatePartyScreen = () => {
       <ScrollView>
         {/* username */}
         <View style={styles.memberItem}>
-          <FontAwesome name="user-circle-o" style={styles.memberIcon} />
+          <FontAwesome name="user-circle-o" size={100} />
           <Text style={styles.memberName}>{memberName}</Text>
         </View>
 
@@ -358,12 +358,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: "#FFFFFF",
     elevation: 2,
-  },
-  memberIcon: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#EEEEEE",
   },
   memberName: {
     fontSize: 26,

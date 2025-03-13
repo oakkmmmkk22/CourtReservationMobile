@@ -46,7 +46,7 @@ export default function Stadium() {
         const token = await AsyncStorage.getItem("token"); 
         console.log("Token:",token );
         console.log("Logging out...");
-        router.push("/login"); // Example: navigate to login screen
+        router.push("/"); // Example: navigate to login screen
 };
 
   return (
