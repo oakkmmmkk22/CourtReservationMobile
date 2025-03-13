@@ -91,9 +91,8 @@ const FindFriend = () => {
 
     fetchProvinces();
   }, []);
-  
 
-  
+
 
   const filterParties = () => {
     return party.filter((item) => {
