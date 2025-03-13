@@ -65,11 +65,6 @@ const FindFriend = () => {
 
       // console.log(response.data)
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        setParty(response.data);
-      } else {
-        setParty([]);
-      }
     } catch (error) {
       setParty([]);
     } finally {
@@ -110,29 +105,27 @@ const FindFriend = () => {
 
   const filterParties = () => {
     return party.filter((item) => {
-
       const matchSearch = searchQuery
         ? item.topic.toLowerCase().includes(searchQuery.toLowerCase())
         : true;
-
+  
       const matchDate = selectedDate
         ? new Date(item.date).toISOString().split('T')[0] === selectedDate
         : true;
-
+  
       const matchLocation = selectedLocation
         ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase()
         : true;
-
+  
       const matchSport = selectedSport
         ? (item.sport_type && item.sport_type.trim().toLowerCase() === selectedSport?.trim().toLowerCase())
         : true;
-
+  
       const matchCourtType = selectedSport
         ? item.court_type && item.court_type.toLowerCase() === selectedSport.toLowerCase()
         : true;
-
-
-      return matchSearch && matchDate && matchLocation && matchSport && matchCourtType;;
+  
+      return matchSearch && matchDate && matchLocation && matchSport && matchCourtType;
     });
   };
 
@@ -400,16 +393,6 @@ const FindFriend = () => {
                   }}
                   style={styles.cardImage}
                 />
-
-
-                <View style={styles.cardContent}>
-                  {/* <Text style={styles.cardTitle}>{item.topic}</Text>
-                  <Text style={styles.cardLocation}>{item.stadium_name}</Text>
-                  <Text style={styles.cardHours}>
-                    {`${item.start_time} - ${item.end_time}`}
-                  </Text> */}
-
-
                   <View style={styles.cardContent}>
                     <View style={styles.rowContainer}>
                       <View style={styles.memberInfo}>
@@ -426,13 +409,19 @@ const FindFriend = () => {
                     <Text style={styles.cardTitle}>{item.topic}</Text>
                     <Text style={styles.cardLocation}>{item.stadium_name}</Text>
                     <Text style={styles.cardHours}>
-                      {`${item.start_time} - ${item.end_time}`}
+                      {`${item.start_time.slice(0, 5)} - ${item.end_time.slice(0, 5)}`}
                     </Text>
+
+                    <Text style={styles.partyDateLocation}>
+                      {item.date} | {item.location}
+                    </Text>
+
                   </View>
 
-                </View>
+                
               </View>
             </TouchableOpacity>
+            
           )}
         />
       )}
