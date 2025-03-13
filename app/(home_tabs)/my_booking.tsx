@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     width: "100%", // ขยายเต็มความกว้างของ container
     height: 200, // กำหนดความสูง
     borderRadius: 8, // มุมโค้ง
-    resizeMode: "cover", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
+    resizeMode: "contain", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
   },
   cardContent: {
     padding: 10,
