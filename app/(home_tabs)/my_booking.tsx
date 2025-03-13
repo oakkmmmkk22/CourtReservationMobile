@@ -39,7 +39,20 @@ const HomeScreen = () => {
       .get("/reservations")
       .then((response) => {
         console.log("API Response:", response.data);
-        setMybook(response.data); // อัพเดทข้อมูลใหม่ทั้งหมดที่ได้จาก API
+  
+        // เพิ่มเวลา 7 ชั่วโมงให้กับวันที่
+        const updatedReservations = response.data.map((reservation:any) => {
+          const updatedDate = new Date(reservation.date);
+          updatedDate.setHours(updatedDate.getHours() + 7); // เพิ่ม 7 ชั่วโมง
+  
+          return {
+            ...reservation,
+            date: updatedDate.toISOString(), // แปลงกลับเป็นรูปแบบ ISO string
+          };
+        });
+  
+        // อัพเดทข้อมูลใหม่ทั้งหมดที่ได้จาก API พร้อมกับวันที่ที่เพิ่มขึ้น
+        setMybook(updatedReservations);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
