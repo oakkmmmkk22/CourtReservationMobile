@@ -33,7 +33,7 @@ interface Stadium {
   close_hour: string;
   rating: number;
   phone_number: string;
-  pictures: [];
+  pictures: { path: string; photoUrl: string }[];
   facility_type: string;
   facility_names: string;
   location_link: string;
@@ -394,7 +394,7 @@ const HomeScreen = () => {
                   facility_type: item.facility_type,
                   facility_names: item.facility_names,
                   email: item.email,
-                  pictures: item.pictures,
+                  pictures: JSON.stringify(item.pictures),
                   location: item.location,
                   phone_number: item.phone_number,
                 },
@@ -402,7 +402,16 @@ const HomeScreen = () => {
             }
           >
             <View style={styles.card}>
-              {/* <Image source={{ uri: item.pictures }} style={styles.cardImage} /> */}
+               <View style={{ flex: 4 }}>
+                  {item.pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
+                    <Image
+                      source={{ uri: item.pictures[0].photoUrl }}
+                      style={styles.cardImage}
+                    />
+                  )}
+
+                  {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
+                </View>
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{item.name}</Text>
                 <Text style={styles.cardLocation}>{item.location}</Text>
@@ -484,13 +493,21 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     overflow: "hidden",
+    flex: 1,
+
   },
   cardImage: {
-    flex: 1,
+    width: "100%", // ขยายเต็มความกว้างของ container
+    height: 200, // กำหนดความสูง
+    borderRadius: 8, // มุมโค้ง
+    resizeMode: "contain", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
+    // borderWidth:20
   },
   cardContent: {
-    flex: 1,
-    padding: 30,
+    flex: 6,
+    padding: 10,
+    justifyContent:'center',
+
   },
   cardTitle: {
     fontSize: 18,
@@ -506,7 +523,7 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     marginTop: 5,
   },
   cardPhone: {
