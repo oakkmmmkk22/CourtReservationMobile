@@ -125,9 +125,13 @@ const FindFriend = () => {
       const matchSport = selectedSport
         ? (item.sport_type && item.sport_type.trim().toLowerCase() === selectedSport?.trim().toLowerCase())
         : true;
+
+      const matchCourtType = selectedSport
+        ? item.court_type && item.court_type.toLowerCase() === selectedSport.toLowerCase()
+        : true;
       
   
-      return matchSearch && matchDate && matchLocation && matchSport;
+      return matchSearch && matchDate && matchLocation && matchSport && matchCourtType;;
     });
   };
   
@@ -304,19 +308,27 @@ const FindFriend = () => {
     <View style={styles.modalContent}>
       <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Sport</Text>
       <Dropdown
-        style={styles.dropdown}
-        data={sportsList} // ใช้ข้อมูลกีฬา
-        labelField="label" // label ของกีฬาที่แสดงใน dropdown
-        valueField="value" // value ของกีฬาที่ใช้
-        placeholder="Select Sport"
-        value={selectedSport} // ค่าเลือกที่เลือก
-        onChange={(item) => {
-          setSelectedSport(item.value); // เก็บค่า sport ที่เลือก
-          setShowSportsModal(false); // ปิด modal หลังเลือก
-        }}
-      />
+  style={styles.dropdown}
+  data={sportsList} // ใช้ข้อมูลกีฬา
+  labelField="label" // label ของกีฬาที่แสดงใน dropdown
+  valueField="value" // value ของกีฬาที่ใช้
+  placeholder="Select Sport"
+  value={selectedSport} // ค่าเลือกที่เลือก
+  onChange={(item) => {
+    setSelectedSport(item.value); // เก็บค่า sport ที่เลือก
+    setShowSportsModal(false); // ปิด modal หลังเลือก
+  }}
+/>
       <TouchableOpacity onPress={() => setShowSportsModal(false)}>
         <Text style={styles.closeText}>Close</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        onPress={() => {
+          setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
+          setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
+        }}
+      >
+        <Text style={styles.resetText}>Reset</Text>
       </TouchableOpacity>
     </View>
   </View>
