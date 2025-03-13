@@ -275,12 +275,13 @@ const HomeScreen = () => {
               style={[
                 styles.ic,
                 {
-                  color: selectedFacilityTypes.includes("Soccer")
+                  color: selectedFacilityTypes.includes("football")
+                        
                     ? "gray"
                     : "black",
                 },
               ]}
-              onPress={() => handleIconPress("Soccer")}
+              onPress={() => handleIconPress("football") }
             />
             <FontAwesome5
               name="table-tennis"
