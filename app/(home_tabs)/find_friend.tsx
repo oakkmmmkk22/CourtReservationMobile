@@ -57,12 +57,13 @@ const FindFriend = () => {
         ...party,
         date: party.date.split("T")[0], // แปลงให้เหลือแค่ YYYY-MM-DD
         location: party.stadium_location.split(",")[0].trim(), // ดึงชื่อจังหวัด
-        sport_type: party.sport_type// เพิ่ม sport_type เพื่อใช้ในการกรอง
+        sport_type: party.court_type// เพิ่ม sport_type เพื่อใช้ในการกรอง
       }));
 
       setParty(formattedData);
 
       console.log(response.data)
+
       if (Array.isArray(response.data) && response.data.length > 0) {
         setParty(response.data);
       } else {
@@ -108,14 +109,23 @@ const FindFriend = () => {
 
   const filterParties = () => {
     return party.filter((item) => {
-      const matchSearch = searchQuery ? item.topic.toLowerCase().includes(searchQuery.toLowerCase()) : true;
+
+      const matchSearch = searchQuery 
+      ? item.topic.toLowerCase().includes(searchQuery.toLowerCase()) 
+      : true;
+
       const matchDate = selectedDate 
         ? new Date(item.date).toISOString().split('T')[0] === selectedDate 
         : true;
+
       const matchLocation = selectedLocation 
         ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase() 
         : true;
-      const matchSport = selectedSport ? item.sport_type === selectedSport : true; // กรองตามชนิดกีฬา
+
+      const matchSport = selectedSport
+        ? (item.sport_type && item.sport_type.trim().toLowerCase() === selectedSport?.trim().toLowerCase())
+        : true;
+      
   
       return matchSearch && matchDate && matchLocation && matchSport;
     });
@@ -230,6 +240,14 @@ const FindFriend = () => {
             <TouchableOpacity onPress={() => setShowCalendarModal(false)}>
               <Text style={styles.closeText}>Close</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {
+                setSelectedDate(null); // Reset selected date
+                setShowCalendarModal(false); // Close modal after resetting
+              }}
+        >
+              <Text style={styles.resetText}>Reset</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -237,38 +255,48 @@ const FindFriend = () => {
 
       {/* Location Modal */}
       <Modal visible={showLocationModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
-      
-            <Dropdown
-              style={styles.dropdown}
-              data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
-              labelField="label"
-              valueField="value"
-              placeholder="Select Location"
-              value={selectedProvince} // แสดงจังหวัดที่เลือก
-              onChange={(item) => {
-                setSelectedLocation(item.label); // ✅ อัปเดตให้ปุ่มแสดงชื่อจังหวัดที่เลือก
-                setShowLocationModal(false); // ✅ ปิด Modal อัตโนมัติ
-              }}  
-              search
-              searchPlaceholder="Search Province..." // Placeholder สำหรับค้นหา
-              renderSearch={(searchQuery) => {
-                // ฟังก์ชันสำหรับกรองข้อมูลจังหวัด
-                return provinces.filter((province) =>
-                  province.label.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-              }}
-            />
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
 
+      <Dropdown
+        style={styles.dropdown}
+        data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
+        labelField="label"
+        valueField="value"
+        placeholder="Select Location" // แสดงข้อความ placeholder ถ้ายังไม่ได้เลือกจังหวัด
+        value={selectedProvince} // แสดงจังหวัดที่เลือก
+        onChange={(item) => {
+          setSelectedLocation(item.label); // อัปเดตชื่อจังหวัดที่เลือก
+          setShowLocationModal(false); // ปิด Modal
+        }}
+        search
+        searchPlaceholder="Search Province..." // Placeholder สำหรับค้นหา
+        renderSearch={(searchQuery) => {
+          return provinces.filter((province) =>
+            province.label.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }}
+      />
 
-            <TouchableOpacity onPress={() => setShowLocationModal(false)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => setShowLocationModal(false)}>
+          <Text style={styles.closeText}>Close</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          onPress={() => {
+            setSelectedProvince("Location"); // เปลี่ยนเป็น "Location"
+            setShowLocationModal(false); // ปิด Modal หลังจากรีเซ็ต
+            setSelectedLocation(null);
+          }}
+>
+          <Text style={styles.resetText}>Reset</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
 
       {/* Sports Filter Modal */}
       <Modal visible={showSportsModal} transparent animationType="fade">
@@ -417,9 +445,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   closeText: {
-    color: "red",
+    color: "black",
     textAlign: "right",
-    marginTop: 10,
+    marginTop: 2,
+  },
+  resetText: {
+    color: "red",
+    textAlign: "left",
+    marginTop: 2,
   },
   filterContainer: {
     flexDirection: "row",
