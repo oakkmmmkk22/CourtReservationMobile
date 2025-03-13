@@ -33,7 +33,7 @@ interface Stadium {
   close_hour: string;
   rating: number;
   phone_number: string;
-  pictures: { path: string; photoUrl: string }[];
+  pictures: [];
   facility_type: string;
   facility_names: string;
   location_link: string;
@@ -283,18 +283,6 @@ const HomeScreen = () => {
               ]}
               onPress={() => handleIconPress("football")}
             />
-            <MaterialCommunityIcons
-              name="badminton"
-              style={[
-                styles.ic,
-                {
-                  color: selectedFacilityTypes.includes("badminton")
-                    ? "gray"
-                    : "black",
-                },
-              ]}
-              onPress={() => handleIconPress("badminton")}
-            />
             <FontAwesome5
               name="table-tennis"
               style={[
@@ -330,6 +318,18 @@ const HomeScreen = () => {
                 },
               ]}
               onPress={() => handleIconPress("tennis")}
+            />
+            <MaterialCommunityIcons
+              name="badminton"
+              style={[
+                styles.ic,
+                {
+                  color: selectedFacilityTypes.includes("badminton")
+                    ? "gray"
+                    : "black",
+                },
+              ]}
+              onPress={() => handleIconPress("badminton")}
             />
             <FontAwesome5
               name="golf-ball"
@@ -405,7 +405,7 @@ const HomeScreen = () => {
                <View style={{ flex: 4 }}>
                   {item.pictures?.[0] && ( 
                     <Image
-                      source={{ uri: item.pictures[0].photoUrl }}
+                      source={{ uri: item.pictures[0].photoUrl}}
                       style={styles.cardImage}
                     />
                   )}
@@ -492,21 +492,13 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     overflow: "hidden",
-    flex: 1,
-
   },
   cardImage: {
-    width: "100%", // ขยายเต็มความกว้างของ container
-    height: 200, // กำหนดความสูง
-    borderRadius: 8, // มุมโค้ง
-    resizeMode: "contain", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
-    // borderWidth:20
+    flex: 1,
   },
   cardContent: {
-    flex: 6,
-    padding: 10,
-    justifyContent:'center',
-
+    flex: 1,
+    padding: 30,
   },
   cardTitle: {
     fontSize: 18,
@@ -522,7 +514,7 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     flexDirection: "row",
-    // alignItems: "center",
+    alignItems: "center",
     marginTop: 5,
   },
   cardPhone: {

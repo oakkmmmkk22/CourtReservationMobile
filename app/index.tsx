@@ -1,8 +1,25 @@
 import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const router = useRouter(); // ใช้เปลี่ยนหน้า
+  const fetchParties = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      console.log(token)
+      if (!token) {
+        console.log("go to login")
+        return;
+      }
+      else{
+        console.log("go to home")
+        return
+      }
+    } catch (error) {
+    } 
+  };
+  fetchParties();
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 

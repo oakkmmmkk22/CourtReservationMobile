@@ -3,9 +3,9 @@ import {
     MaterialTopTabNavigationOptions,
     MaterialTopTabNavigationEventMap,
 } from '@react-navigation/material-top-tabs';
-import { router, useGlobalSearchParams, withLayoutContext } from 'expo-router';
+import { router, useFocusEffect, useGlobalSearchParams, withLayoutContext } from 'expo-router';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Contact } from 'lucide-react-native';
@@ -22,39 +22,25 @@ export const MaterialTopTabs = withLayoutContext<
 const { width, height } = Dimensions.get("window");
 
 export default function App() {
-
+    console.log(width)
     const { name, rating ,location ,facility_type, pictures } = useGlobalSearchParams();
-    const images = [
-        "https://picsum.photos/600/400?random=1",
-        "https://picsum.photos/600/400?random=2",
-        "https://picsum.photos/600/400?random=3",
-        "https://picsum.photos/600/400?random=4",
-        "https://picsum.photos/600/400?random=5",
-      ];
-    // const images = pictures
-    console.log("img : " + images)
-    console.log("picture : " + pictures)
+    console.log("pictures : " + pictures);
+    const parsedPictures = pictures ? JSON.parse(pictures) : [];
     const facilities = facility_type?.split(",") || []; 
     return (
         <View style={styles.container}>
             <View style={{ flex: 4 }}>
                 <View style={styles.image1}>
-                         
-                    {pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
-                        <Image
-                        source={{ uri: pictures[0].photoUrl }}
-                        />
-                    )}   
-                    {/* <FlatList
-                        data={images}
+                    <FlatList
+                        data={parsedPictures}
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(_, index) => index.toString()}
                         renderItem={({ item }) => (
-                            <Image source={{ uri: item }} style={styles.image2} />
+                            <Image source={{ uri: item.photoUrl }} style={styles.image2} />
                         )}
-                    /> */}
+                    />
                 </View>
                 <TouchableOpacity style={styles.backButton} onPress={() => router.push('/home')}>
                     <Ionicons name="chevron-back-outline" size={30} color="white" />
@@ -170,6 +156,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    dotsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 10,
+    },
+    dot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      margin: 5,
     },
 });
 

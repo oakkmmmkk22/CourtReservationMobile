@@ -6,8 +6,8 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Platform,
   Alert,
+  Platform,
 } from "react-native";
 import api from "../axiosinstance";
 import { useFocusEffect } from "@react-navigation/native";
@@ -36,7 +36,7 @@ const HomeScreen = () => {
     api
       .get("/reservations")
       .then((response) => {
-        // console.log("API Response:", response.data);
+        console.log("API Response:", response.data);
 
         // เพิ่มเวลา 7 ชั่วโมงให้กับวันที่
         const updatedReservations = response.data.map((reservation: any) => {
@@ -179,8 +179,8 @@ const HomeScreen = () => {
           const dateTimeA = new Date(`${dateA}T${a.start_time}`).getTime();
           const dateTimeB = new Date(`${dateB}T${b.start_time}`).getTime();
 
-          // console.log(`🔍 A: ${dateA} ${a.start_time} → ${dateTimeA}`);
-          // console.log(`🔍 B: ${dateB} ${b.start_time} → ${dateTimeB}`);
+          console.log(`🔍 A: ${dateA} ${a.start_time} → ${dateTimeA}`);
+          console.log(`🔍 B: ${dateB} ${b.start_time} → ${dateTimeB}`);
 
           if (dateTimeA < now && dateTimeB < now) {
             return dateTimeB - dateTimeA; // ล่าสุดอยู่บน
@@ -204,9 +204,9 @@ const HomeScreen = () => {
             `${item.date.slice(0, 10)}T${item.start_time}`
           ).getTime();
           // เพิ่มการพิมพ์ค่าเพื่อเช็คเวลา
-          // console.log(`Date: ${item.date}, Start Time: ${item.start_time}`);
-          // console.log(`Current Time: ${currentTime}`);
-          // console.log(`Reservation Time: ${reservationTime}`);
+          console.log(`Date: ${item.date}, Start Time: ${item.start_time}`);
+          console.log(`Current Time: ${currentTime}`);
+          console.log(`Reservation Time: ${reservationTime}`);
           const isPast = reservationTime < currentTime;
           const cardStyle =
             item.status === "cancelled"
@@ -214,7 +214,7 @@ const HomeScreen = () => {
               : isPast
               ? { ...styles.card, opacity: 0.7 } // จางเมื่อเวลาผ่านไปแล้ว
               : styles.card;
-          // console.log(`Item ID: ${item.id}, Status: ${item.status}`);
+          console.log(`Item ID: ${item.id}, Status: ${item.status}`);
           return (
             <TouchableOpacity
               onPress={() => {
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     width: "100%", // ขยายเต็มความกว้างของ container
     height: 200, // กำหนดความสูง
     borderRadius: 8, // มุมโค้ง
-    resizeMode: "contain", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
+    resizeMode: "cover", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
   },
   cardContent: {
     padding: 10,
