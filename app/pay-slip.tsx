@@ -23,8 +23,9 @@ const Slip = () => {
       console.log(idslip_for_pay);
     }, []);
 
-    const getPartyMode = (mode_party: string | null) => {
-      return mode_party === null || mode_party === "null" ? "Individual" : "Party";
+    const getPartyMode = (mode_party) => {
+      // ถ้า mode_party เป็น null หรือ 'null' ให้แสดงเป็น "Individual" มิฉะนั้นแสดง "Party"
+      return mode_party && mode_party !== "null" ? "Party" : "Individual";
     };
 
     
@@ -95,10 +96,10 @@ const Slip = () => {
             <Text style={styles.label}>Total:</Text>
             <Text style={styles.value}>{price} 💎</Text>
           </View>
-          <View style={styles.row}>
+          {/* <View style={styles.row}>
             <Text style={styles.label}>Remaining Balance:</Text>
             <Text style={styles.value}>50 💎</Text>
-          </View>
+          </View> */}
         </View>
 
         {/* ผู้ดำเนินการ */}
