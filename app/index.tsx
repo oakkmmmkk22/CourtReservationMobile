@@ -33,7 +33,7 @@ export default function HomeScreen() {
     >
 
       {/* <Text style={{ fontSize: 24, marginBottom: 20, color:"white" }}>Welcome to First</Text> */}
-      <Image source={require('../assets/images/sport_image.png')} style={{ width: width , height: 100 }} />
+      <Image source={require('../assets/images/sport_image.png')} style={{ width: width , height: height/5 }} />
 
       {/* <Button title="Go to Profile" onPress={() => router.push("/profile")} />
       <Button title="Go to Login" onPress={() => router.push("/login")} />

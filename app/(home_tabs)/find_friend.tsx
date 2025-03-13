@@ -15,7 +15,7 @@ import { Bell, MapPin, Sliders } from "lucide-react-native";
 import api from "../axiosinstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 import { Dropdown } from 'react-native-element-dropdown';
 import axios from "axios";
@@ -37,9 +37,10 @@ const FindFriend = () => {
   const [sports, setSports] = useState([]); // สร้าง state สำหรับเก็บข้อมูลประเภทกีฬา
   const [selectedSport, setSelectedSport] = useState(null); // เก็บข้อมูลประเภทกีฬาที่เลือก
   const [showSportsModal, setShowSportsModal] = useState(false);
+  const [noti, setNoti] = useState([])
 
 
-  
+
   const fetchParties = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -62,7 +63,7 @@ const FindFriend = () => {
 
       setParty(formattedData);
 
-      console.log(response.data)
+      // console.log(response.data)
 
       if (Array.isArray(response.data) && response.data.length > 0) {
         setParty(response.data);
@@ -91,14 +92,14 @@ const FindFriend = () => {
           "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json"
         );
         const provinceList = response.data.map((province) => ({
-          label: province.name_en, 
+          label: province.name_en,
           value: province.id,
         }));
         setProvinces(provinceList); // ตั้งค่า provinces
       } catch (error) {
         console.error("Error fetching provinces:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -110,16 +111,16 @@ const FindFriend = () => {
   const filterParties = () => {
     return party.filter((item) => {
 
-      const matchSearch = searchQuery 
-      ? item.topic.toLowerCase().includes(searchQuery.toLowerCase()) 
-      : true;
-
-      const matchDate = selectedDate 
-        ? new Date(item.date).toISOString().split('T')[0] === selectedDate 
+      const matchSearch = searchQuery
+        ? item.topic.toLowerCase().includes(searchQuery.toLowerCase())
         : true;
 
-      const matchLocation = selectedLocation 
-        ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase() 
+      const matchDate = selectedDate
+        ? new Date(item.date).toISOString().split('T')[0] === selectedDate
+        : true;
+
+      const matchLocation = selectedLocation
+        ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase()
         : true;
 
       const matchSport = selectedSport
@@ -129,14 +130,14 @@ const FindFriend = () => {
       const matchCourtType = selectedSport
         ? item.court_type && item.court_type.toLowerCase() === selectedSport.toLowerCase()
         : true;
-      
-  
+
+
       return matchSearch && matchDate && matchLocation && matchSport && matchCourtType;;
     });
   };
-  
-  
-  
+
+
+
 
   useEffect(() => {
     console.log("Selected Date:", selectedDate);
@@ -157,22 +158,55 @@ const FindFriend = () => {
     { label: "Rugby", value: "Rugby" },
     { label: "Soccer", value: "Soccer" },
   ];
-  
+
 
   useEffect(() => {
     const fetchSports = async () => {
       try {
-        const response = await api.get("/sports"); // เปลี่ยนเป็น API ที่คุณใช้ดึงข้อมูลชนิดกีฬา
-        setSports(response.data); // สมมติว่า response.data คือ array ของชนิดกีฬา
+        const response1 = await api.get("/notifications");
+        setNoti(response1.data)
       } catch (error) {
         console.error("Error fetching sports:", error);
       }
     };
-  
     fetchSports();
   }, []);
 
 
+  const openNoti = async () => {
+    setModalOpen(true)
+    try {
+      const response = await api.get("/notifications");
+      setNoti(response.data)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+  const latestNotifications = noti.reverse().slice(0, 5);
+
+  const renderedNotifications = latestNotifications.map((notification) => {
+    const notificationTime = new Date(notification.date).getTime(); // เวลาของการแจ้งเตือน
+    const currentTime = Date.now(); // เวลาปัจจุบัน
+    const timestamp = currentTime - notificationTime; // คำนวณความแตกต่างระหว่างเวลา
+
+    // แปลงความแตกต่างเป็นวินาที (หรือจะเป็นนาที/ชั่วโมงก็ได้)
+    const seconds = Math.floor(timestamp / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    return (
+      <View key={notification.id} style={{ padding: 10, width: "100%", borderRadius: 10, marginTop: 15, backgroundColor: "#D0F9DC" }}>
+        <Text style={styles.description}>{notification.notification}</Text>
+        <Text style={styles.timestamp}>{notification.date.slice(0, 10)}</Text>
+        {/* <Text>{notification.time}</Text> */}
+        <Text style={styles.timestamp}>
+          Time Ago: {days > 0 ? `${days} days` : `${hours} hours, ${minutes % 60} minutes`}
+        </Text>
+      </View>
+    );
+  });
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -185,8 +219,8 @@ const FindFriend = () => {
           onChangeText={setSearchQuery}
           style={styles.searchInput}
         />
-        <TouchableOpacity onPress={() => setModalOpen(true)}>
-          <Bell size={24} />
+        <TouchableOpacity onPress={openNoti}>
+          <MaterialCommunityIcons name={"bell"} size={30} />
         </TouchableOpacity>
       </View>
 
@@ -199,7 +233,7 @@ const FindFriend = () => {
               Notifications
             </Text>
             <ScrollView>
-              <Text>ยังไม่มีการแจ้งเตือน</Text>
+              {renderedNotifications}
             </ScrollView>
             <TouchableOpacity onPress={() => setModalOpen(false)}>
               <Text style={styles.closeText}>Close</Text>
@@ -210,13 +244,13 @@ const FindFriend = () => {
 
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
-      <TouchableOpacity style={styles.button} onPress={() => setShowCalendarModal(true)}>
+        <TouchableOpacity style={styles.button} onPress={() => setShowCalendarModal(true)}>
           <AntDesign name="calendar" size={18} color="white" />
           <Text style={styles.buttonText}>{selectedDate ? selectedDate : "Date"}</Text>
         </TouchableOpacity>
 
 
-        <TouchableOpacity style={styles.button} onPress={() => setShowLocationModal(true)}> 
+        <TouchableOpacity style={styles.button} onPress={() => setShowLocationModal(true)}>
           <MapPin size={18} color="white" />
           <Text style={styles.buttonText}>{selectedLocation ? selectedLocation : "Location"}</Text>
         </TouchableOpacity>
@@ -226,7 +260,7 @@ const FindFriend = () => {
           <Text style={styles.buttonText}>{selectedSport ? selectedSport : "Filter"}</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* Calendar Modal */}
       <Modal visible={showCalendarModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
@@ -244,95 +278,95 @@ const FindFriend = () => {
             <TouchableOpacity onPress={() => setShowCalendarModal(false)}>
               <Text style={styles.closeText}>Close</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => {
                 setSelectedDate(null); // Reset selected date
                 setShowCalendarModal(false); // Close modal after resetting
               }}
-        >
+            >
               <Text style={styles.resetText}>Reset</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-      
+
 
       {/* Location Modal */}
       <Modal visible={showLocationModal} transparent animationType="fade">
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
 
-      <Dropdown
-        style={styles.dropdown}
-        data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
-        labelField="label"
-        valueField="value"
-        placeholder="Select Location" // แสดงข้อความ placeholder ถ้ายังไม่ได้เลือกจังหวัด
-        value={selectedProvince} // แสดงจังหวัดที่เลือก
-        onChange={(item) => {
-          setSelectedLocation(item.label); // อัปเดตชื่อจังหวัดที่เลือก
-          setShowLocationModal(false); // ปิด Modal
-        }}
-        search
-        searchPlaceholder="Search Province..." // Placeholder สำหรับค้นหา
-        renderSearch={(searchQuery) => {
-          return provinces.filter((province) =>
-            province.label.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-        }}
-      />
+            <Dropdown
+              style={styles.dropdown}
+              data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
+              labelField="label"
+              valueField="value"
+              placeholder="Select Location" // แสดงข้อความ placeholder ถ้ายังไม่ได้เลือกจังหวัด
+              value={selectedProvince} // แสดงจังหวัดที่เลือก
+              onChange={(item) => {
+                setSelectedLocation(item.label); // อัปเดตชื่อจังหวัดที่เลือก
+                setShowLocationModal(false); // ปิด Modal
+              }}
+              search
+              searchPlaceholder="Search Province..." // Placeholder สำหรับค้นหา
+              renderSearch={(searchQuery) => {
+                return provinces.filter((province) =>
+                  province.label.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+              }}
+            />
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => setShowLocationModal(false)}>
-          <Text style={styles.closeText}>Close</Text>
-        </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={() => setShowLocationModal(false)}>
+                <Text style={styles.closeText}>Close</Text>
+              </TouchableOpacity>
 
-        <TouchableOpacity 
-          onPress={() => {
-            setSelectedProvince("Location"); // เปลี่ยนเป็น "Location"
-            setShowLocationModal(false); // ปิด Modal หลังจากรีเซ็ต
-            setSelectedLocation(null);
-          }}
->
-          <Text style={styles.resetText}>Reset</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </View>
-</Modal>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedProvince("Location"); // เปลี่ยนเป็น "Location"
+                  setShowLocationModal(false); // ปิด Modal หลังจากรีเซ็ต
+                  setSelectedLocation(null);
+                }}
+              >
+                <Text style={styles.resetText}>Reset</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Sports Filter Modal */}
       <Modal visible={showSportsModal} transparent animationType="fade">
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Sport</Text>
-      <Dropdown
-  style={styles.dropdown}
-  data={sportsList} // ใช้ข้อมูลกีฬา
-  labelField="label" // label ของกีฬาที่แสดงใน dropdown
-  valueField="value" // value ของกีฬาที่ใช้
-  placeholder="Select Sport"
-  value={selectedSport} // ค่าเลือกที่เลือก
-  onChange={(item) => {
-    setSelectedSport(item.value); // เก็บค่า sport ที่เลือก
-    setShowSportsModal(false); // ปิด modal หลังเลือก
-  }}
-/>
-      <TouchableOpacity onPress={() => setShowSportsModal(false)}>
-        <Text style={styles.closeText}>Close</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        onPress={() => {
-          setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
-          setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
-        }}
-      >
-        <Text style={styles.resetText}>Reset</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Sport</Text>
+            <Dropdown
+              style={styles.dropdown}
+              data={sportsList} // ใช้ข้อมูลกีฬา
+              labelField="label" // label ของกีฬาที่แสดงใน dropdown
+              valueField="value" // value ของกีฬาที่ใช้
+              placeholder="Select Sport"
+              value={selectedSport} // ค่าเลือกที่เลือก
+              onChange={(item) => {
+                setSelectedSport(item.value); // เก็บค่า sport ที่เลือก
+                setShowSportsModal(false); // ปิด modal หลังเลือก
+              }}
+            />
+            <TouchableOpacity onPress={() => setShowSportsModal(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
+                setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
+              }}
+            >
+              <Text style={styles.resetText}>Reset</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
 
       {/* Section Title */}
@@ -348,26 +382,26 @@ const FindFriend = () => {
           data={filterParties()}
           keyExtractor={(item, index) => (item.party_id ? item.party_id.toString() : index.toString())}
           renderItem={({ item }) => (
-            <TouchableOpacity 
-              onPress={() => 
-                router.push({ 
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
                   pathname: "/partyjoin",
                   params: { party_id: item.party_id }
                 })
               }
             >
               <View style={styles.card}>
-                <Image 
-                  source={{ 
-                    uri:  
-                      item.pictures.length > 0 
-                      ? item.pictures[0].photoUrl 
-                      : "https://via.placeholder.com/100",
-                  }} 
-                  style={styles.cardImage} 
-                  />
+                <Image
+                  source={{
+                    uri:
+                      item.pictures.length > 0
+                        ? item.pictures[0].photoUrl
+                        : "https://via.placeholder.com/100",
+                  }}
+                  style={styles.cardImage}
+                />
 
-                
+
                 <View style={styles.cardContent}>
                   {/* <Text style={styles.cardTitle}>{item.topic}</Text>
                   <Text style={styles.cardLocation}>{item.stadium_name}</Text>
@@ -376,25 +410,25 @@ const FindFriend = () => {
                   </Text> */}
 
 
-<View style={styles.cardContent}>
-  <View style={styles.rowContainer}>
-    <View style={styles.memberInfo}>
-      <Text style={{ fontSize: 16 }}>👤 </Text>
-      <Text style={styles.cardLocation}>
-        {item.current_members}/{item.total_members}
-      </Text>
-    </View>
-    <View style={styles.cardCourtTypeContainer}>
-      <Text style={styles.cardCourtType}>{item.court_type}</Text>
-    </View>
-  </View>
-  
-  <Text style={styles.cardTitle}>{item.topic}</Text>
-  <Text style={styles.cardLocation}>{item.stadium_name}</Text>
-  <Text style={styles.cardHours}>
-    {`${item.start_time} - ${item.end_time}`}
-  </Text>
-</View>
+                  <View style={styles.cardContent}>
+                    <View style={styles.rowContainer}>
+                      <View style={styles.memberInfo}>
+                        <Text style={{ fontSize: 16 }}>👤 </Text>
+                        <Text style={styles.cardLocation}>
+                          {item.current_members}/{item.total_members}
+                        </Text>
+                      </View>
+                      <View style={styles.cardCourtTypeContainer}>
+                        <Text style={styles.cardCourtType}>{item.court_type}</Text>
+                      </View>
+                    </View>
+
+                    <Text style={styles.cardTitle}>{item.topic}</Text>
+                    <Text style={styles.cardLocation}>{item.stadium_name}</Text>
+                    <Text style={styles.cardHours}>
+                      {`${item.start_time} - ${item.end_time}`}
+                    </Text>
+                  </View>
 
                 </View>
               </View>
@@ -448,7 +482,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "right",
-    color:"white",
+    color: "white",
   },
   cardCourtTypeContainer: {
     backgroundColor: "#2A36B1", // สีน้ำเงิน
@@ -525,6 +559,21 @@ const styles = StyleSheet.create({
   cardHours: {
     fontSize: 15,
     color: "gray",
+  },
+  description: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 4,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  timestamp: {
+    fontSize: 13,
+    color: '#999',
   },
 });
 
