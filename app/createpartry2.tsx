@@ -12,7 +12,7 @@ import {
 import { Picker } from "@react-native-picker/picker"; // For newer React Native versions and Expo
 import DateTimePicker from "@react-native-community/datetimepicker"; // For Date/Time pickers
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // For handling safe areas
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 import { useGlobalSearchParams, useRouter } from "expo-router";
 import api from "./axiosinstance";
@@ -137,7 +137,7 @@ const CreatePartyScreen = () => {
       <ScrollView>
         {/* username */}
         <View style={styles.memberItem}>
-          <View style={styles.memberIcon} />
+          <FontAwesome name="user-circle-o" style={styles.memberIcon} />
           <Text style={styles.memberName}>{memberName}</Text>
         </View>
 
