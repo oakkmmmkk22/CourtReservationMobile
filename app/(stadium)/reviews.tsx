@@ -27,15 +27,15 @@ export default function App() {
             return;
         }
     
-        api.get(`/reviews/${idsss}`)
+        try{
+            api.get(`/reviews/${idsss}`)
             .then(response => {
                 const data = response.data?.data; // ใช้ optional chaining
-    
                 if (!Array.isArray(data)) {
                     console.error("Expected an array but got:", data);
                     return;
                 }
-    
+
                 const filteredData = data.map((review: any) => ({
                     id: review.id,
                     stadium_id: review.stadium_id,
@@ -47,35 +47,23 @@ export default function App() {
                 }));
                 setReviews(filteredData);
             })
-            .catch();
+            .catch(error => {
+                if (error.response) {
+                    if (error.response.status === 404) {
+                        console.error("Error 404: Data not found.");
+                        setReviews([]); // ตั้งค่าให้เป็น array ว่าง
+                    } else {
+                        console.error(`API Error: ${error.response.status}`);
+                    }
+                } else {
+                    console.error("Network Error or Server Down:", error);
+                }
+            });
+        }
+        catch(error){
+        }
     
-    }, [idsss]); 
-    // const reviews = [
-    //     {
-    //         username : "user1",
-    //         star : 1,
-    //         date : "10/2/2568",
-    //         comment : "goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี goodgood สวัสดี good"
-    //     },
-    //     {
-    //         username : "user2",
-    //         star : 2,
-    //         date : "10/2/2568",
-    //         comment : "good good"
-    //     },
-    //     {
-    //         username : "user3",
-    //         star : 5,
-    //         date : "10/2/2568",
-    //         comment : "good สวัสดี good"
-    //     },
-    //     {
-    //         username : "user4",
-    //         star : 0,
-    //         date : "10/2/2568",
-    //         comment : "good สวัสดี good"
-    //     },
-    // ]
+    }, []); 
     const closeee = () => {
         setispost(false);
     }
@@ -106,27 +94,34 @@ export default function App() {
             return;
         }
     
-        api.get(`/reviews/${idsss}`)
-            .then(response => {
-                const data = response.data?.data; // ใช้ optional chaining
-    
-                if (!Array.isArray(data)) {
-                    console.error("Expected an array but got:", data);
-                    return;
-                }
-    
-                const filteredData = data.map((review: any) => ({
-                    id: review.id,
-                    stadium_id: review.stadium_id,
-                    user_id: review.user_id,
-                    rating: review.rating,
-                    comment: review.comment,
-                    date: review.date,
-                    username: review.username,
-                }));
-                setReviews(filteredData);
-            })
-            .catch();
+            
+        try{
+            api.get(`/reviews/${idsss}`)
+                .then(response => {
+                    const data = response.data?.data; // ใช้ optional chaining
+        
+                    if (!Array.isArray(data)) {
+                        console.error("Expected an array but got:", data);
+                        return;
+                    }
+        
+                    const filteredData = data.map((review: any) => ({
+                        id: review.id,
+                        stadium_id: review.stadium_id,
+                        user_id: review.user_id,
+                        rating: review.rating,
+                        comment: review.comment,
+                        date: review.date,
+                        username: review.username,
+                    }));
+                    setReviews(filteredData);
+                })
+                .catch();
+            console.log("out useeffect")
+        }
+        catch(error){
+            console.log("na jaa");
+        }
     }
     return (
         <ScrollView>
@@ -215,7 +210,7 @@ export default function App() {
                 </View>
                 <View style={{ backgroundColor: "lightgray", height: 5, width: 1000 }}></View>
                 <FlatList
-                    data={reviews}
+                    data={reviews || []}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }: { item: ree }) => (
                         <View key={item.id} style={styles.item}>

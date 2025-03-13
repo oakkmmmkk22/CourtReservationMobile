@@ -54,12 +54,13 @@ const BookingSelection = () => {
       setCart((prevCart) => {
         return data.map((cartItem) => {
           const existingItem = prevCart.find((item) => item.id === cartItem.id);
-
+          const updatedDate = new Date(cartItem.date);
+          updatedDate.setHours(updatedDate.getHours() + 7);
           return {
             id: cartItem.id,
             stadium_id: cartItem.stadium_id,
             court_id: cartItem.court_id,
-            date: cartItem.date.slice(0, 10),
+            date: updatedDate.toISOString().slice(0, 10),
             start_time: cartItem.start_time.slice(0, 5),
             end_time: cartItem.end_time.slice(0, 5),
             status: cartItem.status,

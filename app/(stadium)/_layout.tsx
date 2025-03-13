@@ -8,6 +8,7 @@ import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import React from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Contact } from 'lucide-react-native';
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -22,7 +23,7 @@ const { width, height } = Dimensions.get("window");
 
 export default function App() {
 
-    const { name, rating ,location ,facility_type } = useGlobalSearchParams();
+    const { name, rating ,location ,facility_type, pictures } = useGlobalSearchParams();
     const images = [
         "https://picsum.photos/600/400?random=1",
         "https://picsum.photos/600/400?random=2",
@@ -30,12 +31,21 @@ export default function App() {
         "https://picsum.photos/600/400?random=4",
         "https://picsum.photos/600/400?random=5",
       ];
+    // const images = pictures
+    console.log("img : " + images)
+    console.log("picture : " + pictures)
     const facilities = facility_type?.split(",") || []; 
     return (
         <View style={styles.container}>
             <View style={{ flex: 4 }}>
                 <View style={styles.image1}>
-                    <FlatList
+                         
+                    {pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
+                        <Image
+                        source={{ uri: pictures[0].photoUrl }}
+                        />
+                    )}   
+                    {/* <FlatList
                         data={images}
                         horizontal
                         pagingEnabled
@@ -44,7 +54,7 @@ export default function App() {
                         renderItem={({ item }) => (
                             <Image source={{ uri: item }} style={styles.image2} />
                         )}
-                    />
+                    /> */}
                 </View>
                 <TouchableOpacity style={styles.backButton} onPress={() => router.push('/home')}>
                     <Ionicons name="chevron-back-outline" size={30} color="white" />

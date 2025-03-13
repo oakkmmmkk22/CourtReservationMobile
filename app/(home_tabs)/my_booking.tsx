@@ -28,6 +28,7 @@ interface Reservations {
   type: string;
   price: number;
   party_id: number;
+  pictures: { path: string; photoUrl: string }[];
 }
 
 const HomeScreen = () => {
@@ -51,10 +52,25 @@ const HomeScreen = () => {
     }, [])
   );
 
-  
-  const handleCancel = () => {
+  const handleCancel = (item: Reservations) => {
     console.log("Cancel button clicked");
     // ใส่ฟังก์ชันที่จะทำเมื่อกด Cancel ที่นี่
+    deleteItem(item);
+  };
+
+  const deleteItem = async (item: Reservations) => {
+    try {
+      console.log("cancel:", item.id);
+
+      const response = await api.post("/cancel_reservation", {
+        reservationId: item.id,
+      });
+
+      fetchData(); // รีเฟรชข้อมูลหลังจากลบสำเร็จ
+      console.log("Cancel success:", response.data);
+    } catch (error) {
+      console.error("Cancel failed:");
+    }
   };
 
   const filteredData = mybook.filter((item) => {
@@ -113,6 +129,13 @@ const HomeScreen = () => {
       </View>
       <FlatList
         data={filteredData.sort((a, b) => {
+          if (a.status === "cancelled" && b.status !== "cancelled") {
+            return 1; // ให้ "cancelled" อยู่ด้านล่าง
+          }
+          if (a.status !== "cancelled" && b.status === "cancelled") {
+            return -1; // ให้ "cancelled" อยู่ด้านล่าง
+          }
+
           const now = new Date().getTime(); // เวลาปัจจุบัน
           const dateA = new Date(a.date).toISOString().split("T")[0];
           const dateB = new Date(b.date).toISOString().split("T")[0];
@@ -139,26 +162,53 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }: { item: Reservations }) => {
           const isIndividual = !item.party_id;
+          const currentTime = new Date().getTime(); // เวลาปัจจุบัน
+          const reservationTime = new Date(
+            `${item.date.slice(0, 10)}T${item.start_time}`
+          ).getTime();
+          // เพิ่มการพิมพ์ค่าเพื่อเช็คเวลา
+          console.log(`Date: ${item.date}, Start Time: ${item.start_time}`);
+          console.log(`Current Time: ${currentTime}`);
+          console.log(`Reservation Time: ${reservationTime}`);
+          const isPast = reservationTime < currentTime;
+          const cardStyle =
+            item.status === "cancelled"
+              ? { ...styles.card, opacity: 0.5 } // ลดความทึบลงเมื่อเป็น cancelled
+              : isPast
+              ? { ...styles.card, opacity: 0.7 } // จางเมื่อเวลาผ่านไปแล้ว
+              : styles.card;
+          console.log(`Item ID: ${item.id}, Status: ${item.status}`);
           return (
-            <TouchableOpacity 
-                onPress={() =>
+            <TouchableOpacity
+              onPress={() => {
+                if (item.status !== "cancelled") {
                   router.push({
-                  pathname: "/pay-slip",
-                  params: {
-                      idslip_for_pay:item.id,
+                    pathname: "/pay-slip",
+                    params: {
+                      idslip_for_pay: item.id,
                       mode_party: item.party_id,
                       place: item.stadium_name,
                       court: item.court_number,
                       type: item.Type,
                       date_pay: item.date,
-                      start_time:item.start_time,
-                      end_time:item.end_time,
-                      price:item.price,
-                  },
-                  })
-              }>
-              <View style={styles.card}>
+                      start_time: item.start_time,
+                      end_time: item.end_time,
+                      price: item.price,
+                    },
+                  });
+                }
+              }}
+              disabled={item.status === "cancelled"} // Disable the TouchableOpacity if status is "cancelled"
+            >
+              <View style={cardStyle}>
                 <View style={{ flex: 4 }}>
+                  {item.pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
+                    <Image
+                      source={{ uri: item.pictures[0].photoUrl }}
+                      style={styles.cardImage}
+                    />
+                  )}
+
                   {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
                 </View>
                 <View style={styles.cardContent}>
@@ -190,11 +240,19 @@ const HomeScreen = () => {
 
                   <View style={styles.cardFooter}>
                     <Text style={styles.t}>Status: </Text>
-                    <Text style={styles.cardStatus}>{item.status}</Text>
+                    <Text
+                      style={
+                        item.status === "cancelled"
+                          ? styles.cancelledStatus
+                          : styles.cardStatus
+                      }
+                    >
+                      {item.status}
+                    </Text>
                   </View>
 
                   <View style={styles.modeContainer}>
-                    <View style={{marginBottom:13}}>
+                    <View style={{ marginBottom: 13 }}>
                       <Text
                         style={
                           item.party_id ? styles.partyMode : styles.notPartyMode
@@ -203,11 +261,13 @@ const HomeScreen = () => {
                         {item.party_id ? "🎉 Party" : "⚡ Individual"}
                       </Text>
                     </View>
-                    <View style={{alignItems:'flex-end',flex:1}}>
-                        {isIndividual && (
+                    <View style={{ alignItems: "flex-end", flex: 1 }}>
+                      {item.status !== "cancelled" &&
+                        isIndividual &&
+                        reservationTime > currentTime && (
                           <TouchableOpacity
+                            onPress={() => handleCancel(item)}
                             style={styles.cancelButton}
-                            onPress={handleCancel}
                           >
                             <Text style={styles.cancelButtonText}>Cancel</Text>
                           </TouchableOpacity>
@@ -241,7 +301,10 @@ const styles = StyleSheet.create({
     // position: "relative"
   },
   cardImage: {
-    flex: 1,
+    width: "100%", // ขยายเต็มความกว้างของ container
+    height: 200, // กำหนดความสูง
+    borderRadius: 8, // มุมโค้ง
+    resizeMode: "cover", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
   },
   cardContent: {
     padding: 10,
@@ -355,6 +418,17 @@ const styles = StyleSheet.create({
   },
   inactiveMode: {
     color: "black", // สีข้อความเมื่อไม่ได้เลือก
+  },
+  imageContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center", // หรือ "space-between"
+    marginBottom: 10,
+  },
+  cancelledStatus: {
+    fontSize: 15,
+    color: "red", // สีแดงสำหรับสถานะ "cancelled"
+    fontWeight: "bold",
   },
 });
 
