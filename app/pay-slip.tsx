@@ -31,9 +31,9 @@ const Slip = () => {
   return (
     <View style={styles.container}>
       {/* ปุ่มกลับไปหน้า Home */}
-      <TouchableOpacity style={styles.backButton} onPress={() => router.push("/home")}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.push("/my_booking")}>
         <Ionicons name="arrow-back" size={24} color="black" />
-        <Text style={styles.backText}>Return To Home</Text>
+        <Text style={styles.backText}>Return To My Book</Text>
       </TouchableOpacity>
 
       {/* ใบเสร็จ */}
@@ -113,7 +113,7 @@ const Slip = () => {
       </View>
 
       {/* ปุ่ม Done */}
-      <TouchableOpacity style={styles.doneButton} onPress={() => router.push("/home")}>
+      <TouchableOpacity style={styles.doneButton} onPress={() => router.push("/my_booking")}>
         <Text style={styles.doneText}>Done</Text>
       </TouchableOpacity>
     </View>
