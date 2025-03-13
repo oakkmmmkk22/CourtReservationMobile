@@ -14,6 +14,8 @@ const FindFriend = () => {
     const [showModal, setShowModal] = useState(false);
     const [formattedDate, setFormattedDate] = useState("");
     const [noti, setNoti] = useState([])
+    const [selectedLocation, setSelectedLocation] = useState("");
+    const [selectedFilter, setSelectedFilter] = useState("");
 
     const fetchData = async () => {
         try{
@@ -94,6 +96,23 @@ const FindFriend = () => {
           </View>
         );
       });
+
+
+
+    // Filter by location
+    const filterByLocation = (item) => {
+        if (!selectedLocation) return true; // If no location is selected, show all items
+        return item.location.includes(selectedLocation);
+    };
+
+    // Filter by other filters (if needed)
+    const filterByFilter = (item) => {
+        if (!selectedFilter) return true; // If no filter is selected, show all items
+        // Example: Check if the filter matches any part of the time or name (can adjust as needed)
+        return item.time.includes(selectedFilter) || item.name.includes(selectedFilter);
+    };
+
+    
       
     return (
         <View style={{ flex: 1, padding: 16 }}>
