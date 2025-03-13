@@ -21,34 +21,33 @@ const FindFriend = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [party, setParty] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchParties = async () => {
     try {
-  
       const token = await AsyncStorage.getItem("token");
       if (!token) {
         setParty([]);
         setLoading(false);
         return;
       }
-  
+
       const response = await api.get("/party/pending", {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       if (Array.isArray(response.data) && response.data.length > 0) {
         setParty(response.data);
       } else {
         setParty([]);
       }
-      
     } catch (error) {
       setParty([]);
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchParties();
   }, []);
@@ -139,13 +138,25 @@ const FindFriend = () => {
                     style={styles.cardImage}
                   />
 
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardTitle}>{item.topic}</Text>
-                    <Text style={styles.cardLocation}>{item.stadium_name}</Text>
-                    <Text style={styles.cardHours}>
-                      {`${item.start_time} - ${item.end_time}`}
-                    </Text>
-                  </View>
+<View style={styles.cardContent}>
+  <View style={styles.rowContainer}>
+    <View style={styles.memberInfo}>
+      <Text style={{ fontSize: 16 }}>👤 </Text>
+      <Text style={styles.cardLocation}>
+        {item.current_members}/{item.total_members}
+      </Text>
+    </View>
+    <View style={styles.cardCourtTypeContainer}>
+      <Text style={styles.cardCourtType}>{item.court_type}</Text>
+    </View>
+  </View>
+  
+  <Text style={styles.cardTitle}>{item.topic}</Text>
+  <Text style={styles.cardLocation}>{item.stadium_name}</Text>
+  <Text style={styles.cardHours}>
+    {`${item.start_time} - ${item.end_time}`}
+  </Text>
+</View>
                 </View>
               </TouchableOpacity>
             );
@@ -183,6 +194,28 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     height: "50%",
+  },
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  memberInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cardCourtType: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "right",
+    color:"white",
+  },
+  cardCourtTypeContainer: {
+    backgroundColor: "#2A36B1", // สีน้ำเงิน
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
   },
   closeText: {
     color: "red",
