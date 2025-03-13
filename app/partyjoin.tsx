@@ -177,7 +177,7 @@ export default JoinParty;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffff",
     paddingHorizontal: 20,
     paddingTop: 40,
   },
