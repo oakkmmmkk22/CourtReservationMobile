@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
+import { Dropdown } from 'react-native-element-dropdown';
 
 const FindFriend = () => {
   const router = useRouter();
@@ -25,18 +26,22 @@ const FindFriend = () => {
   const [party, setParty] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
 
 
-
-  //Sample Location
+  // Sample Location
   const locations = [
-    "Arena 1", "Arena 2", "Stadium A", "Stadium B", "Field 1", "Field 2"
+    { label: "Arena 1", value: "arena_1" },
+    { label: "Arena 2", value: "arena_2" },
+    { label: "Stadium A", value: "stadium_a" },
+    { label: "Stadium B", value: "stadium_b" },
+    { label: "Field 1", value: "field_1" },
+    { label: "Field 2", value: "field_2" }
   ];
 
-  
+
   
   const fetchParties = async () => {
     try {
@@ -124,7 +129,7 @@ const FindFriend = () => {
         </TouchableOpacity>
 
 
-        <TouchableOpacity style={styles.button} onPress={() => setSelectedLocation("arena")}> 
+        <TouchableOpacity style={styles.button} onPress={() => setShowLocationModal(true)}> 
           <MapPin size={18} color="white" />
           <Text style={styles.buttonText}>{selectedLocation ? selectedLocation : "Location"}</Text>
         </TouchableOpacity>
@@ -162,19 +167,14 @@ const FindFriend = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
-            <FlatList
+            <Dropdown
+              style={styles.dropdown}
               data={locations}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => {
-                  setSelectedLocation(item); // Set selected location
-                  setShowLocationModal(false); // Close modal
-                }}>
-                  <View style={styles.locationItem}>
-                    <Text>{item}</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Location"
+              value={selectedLocation}
+              onChange={(item) => setSelectedLocation(item.value)} // Set selected location
             />
             <TouchableOpacity onPress={() => setShowLocationModal(false)}>
               <Text style={styles.closeText}>Close</Text>
