@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+
+
 
 const Slip = () => {
   const router = useRouter();
+  
+  const { mode_party, place, court, type, date_pay, start_time, end_time, price, idslip_for_pay} = useGlobalSearchParams();
+  const [memberName, setMemberName] = useState("");
+  const getToken = async () => {
+    const token = await AsyncStorage.getItem("token");
+    const decoded = jwtDecode(token); // test decode
+    setMemberName(decoded.userData.username);
+  };
 
+    useEffect(() => {
+      getToken();
+      console.log(location);
+      console.log(idslip_for_pay);
+    }, []);
+
+    const getPartyMode = (mode_party: string | null) => {
+      return mode_party === null || mode_party === "null" ? "Individual" : "Party";
+    };
+
+    
   return (
     <View style={styles.container}>
       {/* ปุ่มกลับไปหน้า Home */}
@@ -17,30 +40,36 @@ const Slip = () => {
       {/* ใบเสร็จ */}
       <View style={styles.receipt}>
         <Text style={styles.logo}>sports</Text>
-        <Text style={styles.date}>Wed, May 27, 2028 • 9:27:53 AM</Text>
+        <Text style={styles.date}>{date_pay
+    ? (() => {
+        const [date, time] = date_pay.split("T"); // แยกวันที่และเวลา
+        const [hours, minutes] = time.split(":"); // แยกชั่วโมงและนาที
+        return `${date} ${hours}:${minutes}`; // แสดงวันที่และเวลา
+      })()
+    : "Invalid Date"}</Text>
 
         <View style={styles.receiptIdBox}>
           <Text style={styles.receiptIdLabel}>Receipt ID</Text>
-          <Text style={styles.receiptId}>0237-7746-8981-9028-5626</Text>
+          <Text style={styles.receiptId}>{idslip_for_pay}</Text>
         </View>
 
         {/* ข้อมูลการจอง */}
         <View style={styles.details}>
           <View style={styles.row}>
             <Text style={styles.label}>Type:</Text>
-            <Text style={styles.value}>Individual</Text>
+            <Text style={styles.value}>{getPartyMode(mode_party)}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Customer Name:</Text>
-            <Text style={styles.value}>Victor Shoaga</Text>
+            <Text style={styles.value}>{memberName}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Place:</Text>
-            <Text style={styles.value}>Ruammitr court</Text>
+            <Text style={styles.value}>{place}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Court:</Text>
-            <Text style={styles.value}>BADMINTON Zone1</Text>
+            <Text style={styles.value}>{type} Zone {court}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Date:</Text>
@@ -48,7 +77,8 @@ const Slip = () => {
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Time:</Text>
-            <Text style={styles.value}>20.00 - 21.00</Text>
+            <Text style={styles.value}> {start_time ? start_time.split(":").slice(0, 2).join(":") : "N/A"} - 
+            {end_time ? end_time.split(":").slice(0, 2).join(":") : "N/A"}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Count:</Text>
@@ -60,11 +90,11 @@ const Slip = () => {
         <View style={styles.summary}>
           <View style={styles.row}>
             <Text style={styles.label}>Amount:</Text>
-            <Text style={styles.value}>150 💎</Text>
+            <Text style={styles.value}>{price} 💎</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Total:</Text>
-            <Text style={styles.value}>150 💎</Text>
+            <Text style={styles.value}>{price} 💎</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Remaining Balance:</Text>
