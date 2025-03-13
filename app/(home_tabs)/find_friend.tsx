@@ -31,6 +31,7 @@ const FindFriend = () => {
   const [showLocationModal, setShowLocationModal] = useState(false);
 
 
+  
   // Sample Location
   const locations = [
     { label: "Arena 1", value: "arena_1" },
