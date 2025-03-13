@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     marginTop: 5,
   },
   cardPhone: {
