@@ -34,6 +34,10 @@ const FindFriend = () => {
   const [provinces, setProvinces] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState("Location");
   const [dates, setDates] = useState([]);
+  const [sports, setSports] = useState([]); // สร้าง state สำหรับเก็บข้อมูลประเภทกีฬา
+  const [selectedSport, setSelectedSport] = useState(null); // เก็บข้อมูลประเภทกีฬาที่เลือก
+  const [showSportsModal, setShowSportsModal] = useState(false);
+
 
   
   const fetchParties = async () => {
@@ -53,6 +57,7 @@ const FindFriend = () => {
         ...party,
         date: party.date.split("T")[0], // แปลงให้เหลือแค่ YYYY-MM-DD
         location: party.stadium_location.split(",")[0].trim(), // ดึงชื่อจังหวัด
+        sport_type: party.sport_type// เพิ่ม sport_type เพื่อใช้ในการกรอง
       }));
 
       setParty(formattedData);
@@ -104,18 +109,18 @@ const FindFriend = () => {
   const filterParties = () => {
     return party.filter((item) => {
       const matchSearch = searchQuery ? item.topic.toLowerCase().includes(searchQuery.toLowerCase()) : true;
-      
       const matchDate = selectedDate 
         ? new Date(item.date).toISOString().split('T')[0] === selectedDate 
         : true;
-      
       const matchLocation = selectedLocation 
         ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase() 
         : true;
-    
-      return matchSearch && matchDate && matchLocation;
+      const matchSport = selectedSport ? item.sport_type === selectedSport : true; // กรองตามชนิดกีฬา
+  
+      return matchSearch && matchDate && matchLocation && matchSport;
     });
   };
+  
   
   
 
@@ -126,6 +131,33 @@ const FindFriend = () => {
   useEffect(() => {
     console.log("Selected Location:", selectedLocation);
   }, [selectedLocation]);
+
+
+  const sportsList = [
+    { label: "Football", value: "Football" },
+    { label: "Table Tennis", value: "Table Tennis" },
+    { label: "Basketball", value: "Basketball" },
+    { label: "Tennis", value: "Tennis" },
+    { label: "Badminton", value: "Badminton" },
+    { label: "Golf", value: "Golf" },
+    { label: "Rugby", value: "Rugby" },
+    { label: "Soccer", value: "Soccer" },
+  ];
+  
+
+  useEffect(() => {
+    const fetchSports = async () => {
+      try {
+        const response = await api.get("/sports"); // เปลี่ยนเป็น API ที่คุณใช้ดึงข้อมูลชนิดกีฬา
+        setSports(response.data); // สมมติว่า response.data คือ array ของชนิดกีฬา
+      } catch (error) {
+        console.error("Error fetching sports:", error);
+      }
+    };
+  
+    fetchSports();
+  }, []);
+
 
 
   return (
@@ -175,9 +207,9 @@ const FindFriend = () => {
           <Text style={styles.buttonText}>{selectedLocation ? selectedLocation : "Location"}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => setShowSportsModal(true)}>
           <Sliders size={18} color="white" />
-          <Text style={styles.buttonText}>Filter</Text>
+          <Text style={styles.buttonText}>{selectedSport ? selectedSport : "Filter"}</Text>
         </TouchableOpacity>
       </View>
       
@@ -237,6 +269,31 @@ const FindFriend = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Sports Filter Modal */}
+      <Modal visible={showSportsModal} transparent animationType="fade">
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Sport</Text>
+      <Dropdown
+        style={styles.dropdown}
+        data={sportsList} // ใช้ข้อมูลกีฬา
+        labelField="label" // label ของกีฬาที่แสดงใน dropdown
+        valueField="value" // value ของกีฬาที่ใช้
+        placeholder="Select Sport"
+        value={selectedSport} // ค่าเลือกที่เลือก
+        onChange={(item) => {
+          setSelectedSport(item.value); // เก็บค่า sport ที่เลือก
+          setShowSportsModal(false); // ปิด modal หลังเลือก
+        }}
+      />
+      <TouchableOpacity onPress={() => setShowSportsModal(false)}>
+        <Text style={styles.closeText}>Close</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+
 
       {/* Section Title */}
       <Text style={styles.sectionTitle}>FIND PARTY</Text>
