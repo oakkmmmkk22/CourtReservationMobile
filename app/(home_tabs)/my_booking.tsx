@@ -36,7 +36,7 @@ const HomeScreen = () => {
     api
       .get("/reservations")
       .then((response) => {
-        console.log("API Response:", response.data);
+        // console.log("API Response:", response.data);
 
         // เพิ่มเวลา 7 ชั่วโมงให้กับวันที่
         const updatedReservations = response.data.map((reservation: any) => {
