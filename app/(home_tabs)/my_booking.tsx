@@ -53,9 +53,25 @@ const HomeScreen = () => {
   );
 
   
-  const handleCancel = () => {
+  const handleCancel = (item: Reservations) => {
     console.log("Cancel button clicked");
     // ใส่ฟังก์ชันที่จะทำเมื่อกด Cancel ที่นี่
+    deleteItem(item);
+  };
+
+  const deleteItem = async (item: Reservations) => {
+    try {
+      console.log("cancel:", item.id);
+      
+      const response = await api.post("/cancel_reservation", {
+        reservationId: item.id,
+      });
+  
+      fetchData(); // รีเฟรชข้อมูลหลังจากลบสำเร็จ
+      console.log("Cancel success:", response.data);
+    } catch (error) {
+      console.error("Cancel failed:");
+    }
   };
 
   const filteredData = mybook.filter((item) => {
@@ -114,6 +130,15 @@ const HomeScreen = () => {
       </View>
       <FlatList
         data={filteredData.sort((a, b) => {
+
+          
+          if (a.status === "cancelled" && b.status !== "cancelled") {
+            return 1; // ให้ "cancelled" อยู่ด้านล่าง
+          }
+          if (a.status !== "cancelled" && b.status === "cancelled") {
+            return -1; // ให้ "cancelled" อยู่ด้านล่าง
+          }
+
           const now = new Date().getTime(); // เวลาปัจจุบัน
           const dateA = new Date(a.date).toISOString().split("T")[0];
           const dateB = new Date(b.date).toISOString().split("T")[0];
@@ -122,7 +147,7 @@ const HomeScreen = () => {
 
           console.log(`🔍 A: ${dateA} ${a.start_time} → ${dateTimeA}`);
           console.log(`🔍 B: ${dateB} ${b.start_time} → ${dateTimeB}`);
-
+          
           if (dateTimeA < now && dateTimeB < now) {
             return dateTimeB - dateTimeA; // ล่าสุดอยู่บน
           }
@@ -147,8 +172,12 @@ const HomeScreen = () => {
           console.log(`Current Time: ${currentTime}`);
           console.log(`Reservation Time: ${reservationTime}`);
           const isPast = reservationTime < currentTime;
-          const cardStyle = isPast ? { ...styles.card, opacity: 0.7 } : styles.card; // ถ้าเป็นอดีตให้จาง
-  
+           const cardStyle = item.status === "cancelled" 
+      ? { ...styles.card, opacity: 0.5 }  // ลดความทึบลงเมื่อเป็น cancelled
+      : isPast 
+      ? { ...styles.card, opacity: 0.7 }  // จางเมื่อเวลาผ่านไปแล้ว
+      : styles.card;
+          console.log(`Item ID: ${item.id}, Status: ${item.status}`);
           return (
             <TouchableOpacity 
                 onPress={() =>
@@ -209,7 +238,11 @@ const HomeScreen = () => {
 
                   <View style={styles.cardFooter}>
                     <Text style={styles.t}>Status: </Text>
-                    <Text style={styles.cardStatus}>{item.status}</Text>
+                    <Text
+                      style={item.status === "cancelled" ? styles.cancelledStatus : styles.cardStatus}
+                    >
+                    {item.status}
+              </Text>
                   </View>
 
                   <View style={styles.modeContainer}>
@@ -223,10 +256,10 @@ const HomeScreen = () => {
                       </Text>
                     </View>
                     <View style={{alignItems:'flex-end',flex:1}}>
-                        {isIndividual && reservationTime > currentTime && (
+                        {item.status !== "cancelled" && isIndividual && reservationTime > currentTime && (
                           <TouchableOpacity
+                            onPress={() => handleCancel(item)}
                             style={styles.cancelButton}
-                            onPress={handleCancel}
                           >
                             <Text style={styles.cancelButtonText}>Cancel</Text>
                           </TouchableOpacity>
@@ -384,7 +417,13 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "center", // หรือ "space-between"
     marginBottom: 10,
-  }
+  },
+  cancelledStatus: {
+    fontSize: 15,
+    color: "red", // สีแดงสำหรับสถานะ "cancelled"
+    fontWeight: "bold",
+  },
+  
 });
 
 export default HomeScreen;
