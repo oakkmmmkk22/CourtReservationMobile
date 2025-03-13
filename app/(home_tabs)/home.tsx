@@ -285,6 +285,18 @@ const HomeScreen = () => {
               ]}
               onPress={() => handleIconPress("football")}
             />
+            <MaterialCommunityIcons
+              name="badminton"
+              style={[
+                styles.ic,
+                {
+                  color: selectedFacilityTypes.includes("badminton")
+                    ? "gray"
+                    : "black",
+                },
+              ]}
+              onPress={() => handleIconPress("badminton")}
+            />
             <FontAwesome5
               name="table-tennis"
               style={[
@@ -320,18 +332,6 @@ const HomeScreen = () => {
                 },
               ]}
               onPress={() => handleIconPress("tennis")}
-            />
-            <MaterialCommunityIcons
-              name="badminton"
-              style={[
-                styles.ic,
-                {
-                  color: selectedFacilityTypes.includes("badminton")
-                    ? "gray"
-                    : "black",
-                },
-              ]}
-              onPress={() => handleIconPress("badminton")}
             />
             <FontAwesome5
               name="golf-ball"
