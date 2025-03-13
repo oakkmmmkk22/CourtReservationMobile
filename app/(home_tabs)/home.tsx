@@ -61,7 +61,7 @@ const HomeScreen = () => {
     api
       .get("/home")
       .then((response) => {
-        const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
+        const data = response.data?.data; // ใช้กัน error
 
         if (!data || !Array.isArray(data)) {
           console.error("Expected an array but got:", data);
@@ -176,6 +176,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+
       {/* //search bar */}
       <View style={styles.searchContainer}>
         <Ionicons
@@ -240,9 +241,6 @@ const HomeScreen = () => {
                     searchPlaceholder="Find Province..."
                   />
                 )}
-                {/* {selectedProvince && (
-                                              <Text style={styles.result}>คุณเลือกจังหวัด ID: {selectedProvince}</Text>
-                                            )} */}
               </View>
               <View style={styles.buttonContainer}>
                 <Button
@@ -373,6 +371,7 @@ const HomeScreen = () => {
         </ScrollView>
       </View>
 
+
       {/* //all stadiums  */}
       <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
       <FlatList
@@ -394,7 +393,7 @@ const HomeScreen = () => {
                   facility_type: item.facility_type,
                   facility_names: item.facility_names,
                   email: item.email,
-                  pictures: item.pictures,
+                  pictures: JSON.stringify(item.pictures),
                   location: item.location,
                   phone_number: item.phone_number,
                 },
@@ -402,7 +401,16 @@ const HomeScreen = () => {
             }
           >
             <View style={styles.card}>
-              {/* <Image source={{ uri: item.pictures }} style={styles.cardImage} /> */}
+
+               <View style={{ flex: 4 }}>
+                  {item.pictures?.[0] && ( 
+                    <Image
+                      source={{ uri: item.pictures[0].photoUrl}}
+                      style={styles.cardImage}
+                    />
+                  )}
+                </View>
+
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{item.name}</Text>
                 <Text style={styles.cardLocation}>{item.location}</Text>

@@ -61,11 +61,10 @@ const CreatePartyScreen = () => {
 
   useEffect(() => {
     getToken();
-    console.log(location);
+    // console.log(location);
   }, []);
 
   const handleCreateParty = () => {
-    //  Here you would typically send the data to your backend
     // console.log("Creating party with data:", {
     //   topic,
     //   type,
