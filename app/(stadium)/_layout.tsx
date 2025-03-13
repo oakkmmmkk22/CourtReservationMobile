@@ -22,7 +22,6 @@ export const MaterialTopTabs = withLayoutContext<
 const { width, height } = Dimensions.get("window");
 
 export default function App() {
-    console.log(width)
     const { name, rating ,location ,facility_type, pictures } = useGlobalSearchParams();
     console.log("pictures : " + pictures);
     const parsedPictures = pictures ? JSON.parse(pictures) : [];
