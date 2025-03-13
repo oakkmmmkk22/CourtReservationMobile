@@ -20,7 +20,6 @@ const Slip = () => {
 
     useEffect(() => {
       getToken();
-      console.log(location);
       console.log(idslip_for_pay);
     }, []);
 

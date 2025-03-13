@@ -210,17 +210,26 @@ const FindFriend = () => {
             <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
       
             <Dropdown
-        style={styles.dropdown}
-        data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
-        labelField="label"
-        valueField="value"
-        placeholder="Select Location"
-        value={selectedProvince} // แสดงจังหวัดที่เลือก
-        onChange={(item) => {
-          setSelectedLocation(item.label); // ✅ อัปเดตให้ปุ่มแสดงชื่อจังหวัดที่เลือก
-          setShowLocationModal(false); // ✅ ปิด Modal อัตโนมัติ
-        }}
-/>
+              style={styles.dropdown}
+              data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
+              labelField="label"
+              valueField="value"
+              placeholder="Select Location"
+              value={selectedProvince} // แสดงจังหวัดที่เลือก
+              onChange={(item) => {
+                setSelectedLocation(item.label); // ✅ อัปเดตให้ปุ่มแสดงชื่อจังหวัดที่เลือก
+                setShowLocationModal(false); // ✅ ปิด Modal อัตโนมัติ
+              }}  
+              search
+              searchPlaceholder="Search Province..." // Placeholder สำหรับค้นหา
+              renderSearch={(searchQuery) => {
+                // ฟังก์ชันสำหรับกรองข้อมูลจังหวัด
+                return provinces.filter((province) =>
+                  province.label.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+              }}
+            />
+
 
             <TouchableOpacity onPress={() => setShowLocationModal(false)}>
               <Text style={styles.closeText}>Close</Text>
