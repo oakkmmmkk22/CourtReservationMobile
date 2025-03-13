@@ -20,7 +20,7 @@ const TrueMoneyComponent = () => {
         // 🎟️ Redeem Voucher
         const response = await api.post("/redeem_voucher", {
             voucher: url,
-            phone: "0925682555",
+            phone: "0902236785",
         });
 
         console.log("Redeem Response:", response.data);
