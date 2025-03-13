@@ -8,6 +8,7 @@ import axios from "axios";
 import api from '../axiosinstance';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Stadium() {
@@ -40,7 +41,13 @@ export default function Stadium() {
       };
     }, [])
   );
-
+  const handlePressLogOut = async () => {
+        await AsyncStorage.removeItem("token");
+        const token = await AsyncStorage.getItem("token"); 
+        console.log("Token:",token );
+        console.log("Logging out...");
+        router.push("/login"); // Example: navigate to login screen
+};
 
   return (
 
@@ -95,7 +102,7 @@ export default function Stadium() {
                         </TouchableOpacity>
                         <View style={styles.line} />
 
-                        <TouchableOpacity style={styles.btn} onPress={() => { router.push('/login'); setShowModal(false); }}>
+                        <TouchableOpacity style={styles.btn} onPress={() => { setShowModal(false); handlePressLogOut();}}>
                           <Ionicons name="log-out" size={18} color="black" />
                           <Text style={{ marginLeft: 8 }}>Logout</Text>
                         </TouchableOpacity>
