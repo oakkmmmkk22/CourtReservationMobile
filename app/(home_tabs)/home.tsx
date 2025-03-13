@@ -61,7 +61,7 @@ const HomeScreen = () => {
     api
       .get("/home")
       .then((response) => {
-        const data = response.data?.data; // ใช้ optional chaining เพื่อป้องกัน error
+        const data = response.data?.data; // ใช้กัน error
 
         if (!data || !Array.isArray(data)) {
           console.error("Expected an array but got:", data);
@@ -176,6 +176,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+
       {/* //search bar */}
       <View style={styles.searchContainer}>
         <Ionicons
@@ -240,9 +241,6 @@ const HomeScreen = () => {
                     searchPlaceholder="Find Province..."
                   />
                 )}
-                {/* {selectedProvince && (
-                                              <Text style={styles.result}>คุณเลือกจังหวัด ID: {selectedProvince}</Text>
-                                            )} */}
               </View>
               <View style={styles.buttonContainer}>
                 <Button
@@ -373,6 +371,7 @@ const HomeScreen = () => {
         </ScrollView>
       </View>
 
+
       {/* //all stadiums  */}
       <Text style={styles.sectionTitle}>RECOMMEND STADIUM</Text>
       <FlatList
@@ -402,16 +401,16 @@ const HomeScreen = () => {
             }
           >
             <View style={styles.card}>
+
                <View style={{ flex: 4 }}>
-                  {item.pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
+                  {item.pictures?.[0] && ( 
                     <Image
                       source={{ uri: item.pictures[0].photoUrl }}
                       style={styles.cardImage}
                     />
                   )}
-
-                  {/* <Image source={{ uri: item.image }} style={styles.cardImage} /> */}
                 </View>
+
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{item.name}</Text>
                 <Text style={styles.cardLocation}>{item.location}</Text>
