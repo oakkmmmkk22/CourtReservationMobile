@@ -181,7 +181,7 @@ const BookingSelection = () => {
       }
       const response = await api.post("/checkout", {
         cart_ids: selectedCartIds,
-        user_id: 1, // ตัวอย่าง user_id
+        // user_id: 1, // ตัวอย่าง user_id
       });
 
       if (response.data.success) {
