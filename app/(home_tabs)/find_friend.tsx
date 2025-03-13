@@ -144,6 +144,7 @@ const FindFriend = () => {
         </TouchableOpacity>
       </View>
 
+
       {/* Modal สำหรับแจ้งเตือน */}
       <Modal visible={modalOpen} transparent animationType="fade">
         <View style={styles.modalContainer}>
