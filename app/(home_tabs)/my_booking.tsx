@@ -2,14 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
-  TextInput,
   FlatList,
   Image,
   StyleSheet,
-  Modal,
-  TouchableWithoutFeedback,
   TouchableOpacity,
-  ScrollView,
   Platform,
   Alert,
 } from "react-native";
@@ -70,31 +66,33 @@ const HomeScreen = () => {
   const handleCancel = (item: Reservations) => {
     console.log("Cancel button clicked");
     if (Platform.OS === "web") {
-          // สำหรับเว็บใช้ window.confirm() แทน
-          const confirmDelete = window.confirm("Are you sure you want to Cancel this item?");
-          if (confirmDelete) {
-            deleteItem(item);
-          }
-        } else {
-          // สำหรับมือถือใช้ Alert.alert
-          Alert.alert(
-            "Confirm Cancel",
-            "Are you sure you want to Cancel this item?",
-            [
-              {
-                text: "Confirm",
-                style: "destructive",
-                onPress: () => {
-                  deleteItem(item);
-                },
-              },
-              {
-                text: "Cancel",
-                style: "cancel",
-              },
-            ]
-          );
-        }
+      // สำหรับเว็บใช้ window.confirm() แทน
+      const confirmDelete = window.confirm(
+        "Are you sure you want to Cancel this item?"
+      );
+      if (confirmDelete) {
+        deleteItem(item);
+      }
+    } else {
+      // สำหรับมือถือใช้ Alert.alert
+      Alert.alert(
+        "Confirm Cancel",
+        "Are you sure you want to Cancel this item?",
+        [
+          {
+            text: "Confirm",
+            style: "destructive",
+            onPress: () => {
+              deleteItem(item);
+            },
+          },
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ]
+      );
+    }
   };
 
   const deleteItem = async (item: Reservations) => {
