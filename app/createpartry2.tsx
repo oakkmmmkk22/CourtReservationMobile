@@ -39,12 +39,19 @@ const CreatePartyScreen = () => {
   const [wrongDes, setWrongDes] = useState("");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-  const { location_for_party,type_for_party,date_for_party,start_time_for_party,end_time_for_party,court_id} = useGlobalSearchParams();
+  const {
+    location_for_party,
+    type_for_party,
+    date_for_party,
+    start_time_for_party,
+    end_time_for_party,
+    court_id,
+  } = useGlobalSearchParams();
 
-  const formattedDate = date_for_party instanceof Date 
-  ? date_for_party.toISOString().slice(0,10) 
-  : String(date_for_party || "").slice(0,10);
-
+  const formattedDate =
+    date_for_party instanceof Date
+      ? date_for_party.toISOString().slice(0, 10)
+      : String(date_for_party || "").slice(0, 10);
 
   const getToken = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -69,10 +76,7 @@ const CreatePartyScreen = () => {
     //   description,
     //   court_id
     // });
-    if (
-      topic != "" &&
-      description != ""
-    ) {
+    if (topic != "" && description != "") {
       api
         .post("/createparty", {
           topic: topic,
@@ -80,17 +84,15 @@ const CreatePartyScreen = () => {
           total_members: total,
           date: date_for_party,
           startTime: start_time_for_party,
-          endTime:end_time_for_party,
+          endTime: end_time_for_party,
           detail: description,
-          court_id:court_id,
+          court_id: court_id,
         })
         .then(() => {
-          
           console.log("PHONE HERE!!!");
-         
+
           console.log("Create successfully");
           router.push("/find_friend");
-          
         })
         .catch((error) => {
           console.error("Error fetching data: ", error);
@@ -109,8 +111,6 @@ const CreatePartyScreen = () => {
       }
     }
   };
-
-
 
   return (
     <View
@@ -157,7 +157,16 @@ const CreatePartyScreen = () => {
           {/* Type sport */}
           <Text style={styles.label}>Type:</Text>
           <View style={styles.pickerContainer}>
-            <Text style={{padding:10,fontSize:16,fontWeight:'bold',color:'gray'}}>{type_for_party}</Text>
+            <Text
+              style={{
+                padding: 10,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "gray",
+              }}
+            >
+              {type_for_party}
+            </Text>
           </View>
 
           {/* Total people */}
@@ -171,22 +180,68 @@ const CreatePartyScreen = () => {
 
           {/* /Date */}
           <Text style={styles.label}>Date:</Text>
-          <View style={{ borderWidth: 1, borderColor: "lightgray",borderRadius:5,alignItems:'center' }}>
-            <Text style={{padding:10,fontSize:16,fontWeight:'bold',color:'gray'}}>{formattedDate}</Text>
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: "lightgray",
+              borderRadius: 5,
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                padding: 10,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "gray",
+              }}
+            >
+              {formattedDate}
+            </Text>
           </View>
-         
 
           {/* Time*/}
           <Text style={styles.label}>Time:</Text>
-          <View style={{ borderWidth: 1, borderColor: "lightgray",borderRadius:5,alignItems:'center'}}>
-            <Text style={{padding:10,fontSize:16,fontWeight:'bold',color:'gray'}}>{start_time_for_party} - {end_time_for_party}</Text>
-          </View>       
-      
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: "lightgray",
+              borderRadius: 5,
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                padding: 10,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "gray",
+              }}
+            >
+              {start_time_for_party} - {end_time_for_party}
+            </Text>
+          </View>
 
           {/* Place */}
           <Text style={styles.label}>Place:</Text>
-          <View style={{ borderWidth: 1, borderColor: "lightgray",borderRadius:5,alignItems:'center' }}>
-            <Text style={{padding:10,fontSize:16,fontWeight:'bold',color:'gray'}}>{location_for_party}</Text>
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: "lightgray",
+              borderRadius: 5,
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                padding: 10,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "gray",
+              }}
+            >
+              {location_for_party}
+            </Text>
           </View>
 
           {/* Description */}
@@ -259,7 +314,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
     marginBottom: 10,
-    alignItems:'center'
+    alignItems: "center",
   },
   picker: {},
 

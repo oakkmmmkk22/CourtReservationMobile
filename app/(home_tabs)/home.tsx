@@ -121,7 +121,7 @@ const HomeScreen = () => {
     const searchText = searchQuery.toLowerCase();
     const matchesSearchQuery =
       stadium.name.toLowerCase().includes(searchText) ||
-      stadium.location.toLowerCase().includes(searchText)||
+      stadium.location.toLowerCase().includes(searchText) ||
       stadium.facility_type.toLowerCase().includes(searchText);
 
     //กรอง province
