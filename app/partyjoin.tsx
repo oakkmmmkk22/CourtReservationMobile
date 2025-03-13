@@ -37,7 +37,6 @@ const JoinParty = () => {
         if (selectedParty) {
           setPartyInfo(selectedParty);
 
-          // ✅ ตรวจสอบว่าผู้ใช้เคยเข้าร่วมปาร์ตี้นี้แล้วหรือไม่
           const userToken = await AsyncStorage.getItem("token");
           const user = JSON.parse(atob(userToken.split(".")[1])); // Decode JWT
           if (
@@ -79,6 +78,7 @@ const JoinParty = () => {
         Alert.alert("Authentication Error", "User token not found!");
         return;
       }
+
       console.log("🔹 [Frontend] Sending Request to /party/join");
       console.log("📝 Data Sent:", { partyid: party_id });
 
@@ -89,16 +89,18 @@ const JoinParty = () => {
       );
 
       if (response.status === 200) {
+        await AsyncStorage.setItem("party_id", party_id.toString());
+
         Alert.alert("Success", "You have successfully joined the party! 🎉");
-        await fetchParties();
         router.push("/partyin");
       } else {
-        console.error("❌ API returned:", response.status, response.data);
         Alert.alert("Error", response.data.error);
       }
     } catch (error) {
-      console.error("❌ Error joining party:", error);
-      Alert.alert("Error", "Failed to join the party or you have already joined. Please check again or not have enough points to join the party.");
+      Alert.alert(
+        "Error",
+        "Failed to join the party or you have already joined. Please check again or not have enough points to join the party."
+      );
     }
   };
 
@@ -216,11 +218,12 @@ const styles = StyleSheet.create({
   },
   joinButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
   loadingText: { textAlign: "center", fontSize: 16, color: "gray" },
-  noDataText: { textAlign: "center", fontSize: 16, color: "red" },joinedText: {
+  noDataText: { textAlign: "center", fontSize: 16, color: "red" },
+  joinedText: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
     color: "green",
     marginTop: 10,
-  },  
+  },
 });

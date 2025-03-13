@@ -13,7 +13,7 @@ const PartyScreen = () => {
   const [loading, setLoading] = useState(true);
   const [partyID, setPartyID] = useState(null);
 
-  // ✅ โหลด party_id จาก AsyncStorage
+  // โหลด party_id จาก AsyncStorage
   const getStoredPartyID = async () => {
     const storedID = await AsyncStorage.getItem("party_id");
     if (storedID) {
@@ -23,7 +23,7 @@ const PartyScreen = () => {
     }
   };
 
-  // ✅ ดึงข้อมูลปาร์ตี้ (รวม Broadcast)
+  //ดึงข้อมูลปาร์ตี้ (รวม Broadcast)
   const fetchPartyInfo = async () => {
     if (!partyID) return;
     try {
@@ -38,32 +38,32 @@ const PartyScreen = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("✅ Party Info Response:", response.data);
+      console.log(" Party Info Response:", response.data);
 
-      // ✅ ค้นหา party_id ที่ตรงกัน
+      // ค้นหา party_id ที่ตรงกัน
       const partyData = response.data.find((party) => party.party_id == partyID);
 
       if (partyData) {
         setPartyInfo(partyData);
       } else {
-        console.error("❌ Party not found");
+        console.error("Party not found");
         setPartyInfo(null);
       }
     } catch (error) {
-      console.error("❌ Error fetching party info:", error);
+      console.error("Error fetching party info:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ ดึงข้อมูลสมาชิกของปาร์ตี้
+  //  ดึงข้อมูลสมาชิกของปาร์ตี้
   const fetchPartyMembers = async () => {
     if (!partyID) return;
     try {
       const token = await AsyncStorage.getItem("token");
 
       if (!token || !partyID) {
-        console.error("❌ Token or party_id not found!");
+        console.error("Token or party_id not found!");
         setLoading(false);
         return;
       }
@@ -72,16 +72,16 @@ const PartyScreen = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("✅ Members Response:", response.data);
+      console.log("Members Response:", response.data);
 
       if (response.data.members.length > 0) {
         setMembers(response.data.members);
       } else {
-        console.error("❌ No members found in this party");
+        console.error("No members found in this party");
         setMembers([]);
       }
     } catch (error) {
-      console.error("❌ Error fetching party members:", error);
+      console.error("Error fetching party members:", error);
     } finally {
       setLoading(false);
     }
