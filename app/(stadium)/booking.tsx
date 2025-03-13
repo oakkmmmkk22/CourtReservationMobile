@@ -35,8 +35,8 @@ export default function BookingScreen() {
     const router = useRouter();
     const { facility_names, facility_type, idsss, open_hour, close_hour, location } = useGlobalSearchParams();
 
-    const facilities = facility_names?.split(",") || [];
-    const facilitiesType = facility_type?.split(",") || [];
+    const facilities = facility_names ? facility_names.split(",") : [];
+    const facilitiesType = facility_type ? facility_type.split(",") : [];
 
     // const facility_names = "Swimming Pool,Gym,Parking,WiFi,Restaurant";
     // const facilities = facility_names.split(","); 
@@ -117,13 +117,17 @@ export default function BookingScreen() {
         { label: "🏌️‍♂️ Golf", value: "golf" },
         { label: "🏄‍♀️ Surfing", value: "surfing" },
         { label: "🏊‍♂️ Swimming", value: "swimming" },
-        { label: "🏓 Table Tennis", value: "table_tennis" },
+        { label: "🏓 Table Tennis", value: "table tennis" },
         { label: "🏉 Rugby", value: "rugby" },
         { label: "⚽ Soccer", value: "soccer" },
 
     ];
+    const facilitiesTypeArray = Array.isArray(facilitiesType) ? facilitiesType : [facilitiesType];
+
     const availableSports = sports.filter(sport =>
-        facilitiesType.some(facility => facility.toLowerCase() === sport.value.toLowerCase()) // ตรวจสอบแบบ case-insensitive
+        facilitiesTypeArray.some(facility => 
+            facility?.toLowerCase() === sport?.value?.toLowerCase()
+        )
     );
 
     const filter_court = async () => {
