@@ -38,17 +38,12 @@ export default function BookingScreen() {
     const facilities = facility_names ? facility_names.split(",") : [];
     const facilitiesType = facility_type ? facility_type.split(",") : [];
 
-    // const facility_names = "Swimming Pool,Gym,Parking,WiFi,Restaurant";
-    // const facilities = facility_names.split(","); 
-    const courts = [
-        { id: "1", name: "BADMINTON", zone: "Zone 1", price: 150, available: true },
-        { id: "2", name: "BADMINTON", zone: "Zone 2", price: 150, available: false },
-    ];
+    const [gotocart, setgotocart] = useState("");
 
     const addToCart = async (item) => {
-        setCartItems([...cartItems, item]);
         setCartVisible(true);
         try{
+            console.log("court id : " + item.court_id)
             const response = await api.post("/addcart", {
                 stadium_id: idsss,
                 court_id: item.court_id,
@@ -56,9 +51,11 @@ export default function BookingScreen() {
                 start_time: startTimeState,
                 end_time: endTimeState,
             });
+            setgotocart("Add to Cart Success");
             console.log(response.data.message);
         }
         catch(error){
+            setgotocart("Order Already In Cart");
             console.log("error na jaa");
         }
     };
@@ -287,10 +284,13 @@ export default function BookingScreen() {
                 <Modal visible={cartVisible} transparent animationType="slide">
                     <View style={styles.modalContainer}>
                         <View style={styles.modalContent}>
-                            <Text style={styles.modalTitle}>Shopping Cart</Text>
+                            <Text style={styles.modalTitle}>{gotocart}</Text>
                             {cartItems.map((item, index) => (
                                 <Text key={index} style={styles.cartItem}>{item.name} - {item.zone}</Text>
                             ))}
+                            <TouchableOpacity onPress={() => {setCartVisible(false);router.push('/cart')}} style={styles.closeButton}>
+                                <Text style={styles.closeText}>Go To Cart</Text>
+                            </TouchableOpacity>
                             <TouchableOpacity onPress={() => setCartVisible(false)} style={styles.closeButton}>
                                 <Text style={styles.closeText}>Close</Text>
                             </TouchableOpacity>
