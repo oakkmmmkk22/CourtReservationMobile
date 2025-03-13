@@ -33,6 +33,7 @@ const FindFriend = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [provinces, setProvinces] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState("Location");
+  const [dates, setDates] = useState([]);
 
   
   const fetchParties = async () => {
@@ -48,9 +49,15 @@ const FindFriend = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      const formattedData = response.data.map((party) => ({
+        ...party,
+        date: party.date.split("T")[0], // แปลงให้เหลือแค่ YYYY-MM-DD
+        location: party.stadium_location.split(",")[0].trim(), // ดึงชื่อจังหวัด
+      }));
+
+      setParty(formattedData);
+
       console.log(response.data)
-
-
       if (Array.isArray(response.data) && response.data.length > 0) {
         setParty(response.data);
       } else {
@@ -96,12 +103,30 @@ const FindFriend = () => {
 
   const filterParties = () => {
     return party.filter((item) => {
-      const matchSearch = item.topic.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchDate = selectedDate ? item.date === selectedDate : true;
-      const matchLocation = selectedLocation ? item.stadium_name.toLowerCase().includes(selectedLocation.toLowerCase()) : true;
+      const matchSearch = searchQuery ? item.topic.toLowerCase().includes(searchQuery.toLowerCase()) : true;
+      
+      const matchDate = selectedDate 
+        ? new Date(item.date).toISOString().split('T')[0] === selectedDate 
+        : true;
+      
+      const matchLocation = selectedLocation 
+        ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase() 
+        : true;
+    
       return matchSearch && matchDate && matchLocation;
     });
   };
+  
+  
+
+  useEffect(() => {
+    console.log("Selected Date:", selectedDate);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    console.log("Selected Location:", selectedLocation);
+  }, [selectedLocation]);
+
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -179,11 +204,11 @@ const FindFriend = () => {
 
       {/* Location Modal */}
       <Modal visible={showLocationModal} transparent animationType="fade">
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
       
-      <Dropdown
+            <Dropdown
         style={styles.dropdown}
         data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
         labelField="label"
@@ -194,13 +219,14 @@ const FindFriend = () => {
           setSelectedLocation(item.label); // ✅ อัปเดตให้ปุ่มแสดงชื่อจังหวัดที่เลือก
           setShowLocationModal(false); // ✅ ปิด Modal อัตโนมัติ
         }}
-      />
-      <TouchableOpacity onPress={() => setShowLocationModal(false)}>
-        <Text style={styles.closeText}>Close</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
+/>
+
+            <TouchableOpacity onPress={() => setShowLocationModal(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Section Title */}
       <Text style={styles.sectionTitle}>FIND PARTY</Text>
