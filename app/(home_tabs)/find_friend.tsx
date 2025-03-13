@@ -18,6 +18,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
 import { Dropdown } from 'react-native-element-dropdown';
+import axios from "axios";
 
 const FindFriend = () => {
   const router = useRouter();
@@ -26,51 +27,42 @@ const FindFriend = () => {
   const [party, setParty] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
-
-
-  
-  // Sample Location
-  const locations = [
-    { label: "Arena 1", value: "arena_1" },
-    { label: "Arena 2", value: "arena_2" },
-    { label: "Stadium A", value: "stadium_a" },
-    { label: "Stadium B", value: "stadium_b" },
-    { label: "Field 1", value: "field_1" },
-    { label: "Field 2", value: "field_2" }
-  ];
-
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [provinces, setProvinces] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState("Location");
 
   
   const fetchParties = async () => {
     try {
-  
       const token = await AsyncStorage.getItem("token");
       if (!token) {
         setParty([]);
         setLoading(false);
         return;
       }
-  
+
       const response = await api.get("/party/pending", {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
+      console.log(response.data)
+
+
       if (Array.isArray(response.data) && response.data.length > 0) {
         setParty(response.data);
       } else {
         setParty([]);
       }
-      
     } catch (error) {
       setParty([]);
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchParties();
   }, []);
@@ -78,6 +70,27 @@ const FindFriend = () => {
   useEffect(() => {
     console.log("Selected Date:", selectedDate);
   }, [selectedDate]);
+
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await axios.get(
+          "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json"
+        );
+        const provinceList = response.data.map((province) => ({
+          label: province.name_en, 
+          value: province.id,
+        }));
+        setProvinces(provinceList); // ตั้งค่า provinces
+      } catch (error) {
+        console.error("Error fetching provinces:", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchProvinces();
+  }, []);
   
 
   const filterParties = () => {
@@ -165,24 +178,28 @@ const FindFriend = () => {
 
       {/* Location Modal */}
       <Modal visible={showLocationModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
-            <Dropdown
-              style={styles.dropdown}
-              data={locations}
-              labelField="label"
-              valueField="value"
-              placeholder="Select Location"
-              value={selectedLocation}
-              onChange={(item) => setSelectedLocation(item.value)} // Set selected location
-            />
-            <TouchableOpacity onPress={() => setShowLocationModal(false)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      <Text style={{ fontSize: 18, fontWeight: "bold" }}>Select Location</Text>
+      
+      <Dropdown
+        style={styles.dropdown}
+        data={provinces} // ใช้ข้อมูลจังหวัดที่โหลดมา
+        labelField="label"
+        valueField="value"
+        placeholder="Select Location"
+        value={selectedProvince} // แสดงจังหวัดที่เลือก
+        onChange={(item) => {
+          setSelectedLocation(item.label); // ✅ อัปเดตให้ปุ่มแสดงชื่อจังหวัดที่เลือก
+          setShowLocationModal(false); // ✅ ปิด Modal อัตโนมัติ
+        }}
+      />
+      <TouchableOpacity onPress={() => setShowLocationModal(false)}>
+        <Text style={styles.closeText}>Close</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
 
       {/* Section Title */}
       <Text style={styles.sectionTitle}>FIND PARTY</Text>
@@ -215,13 +232,36 @@ const FindFriend = () => {
                   }} 
                   style={styles.cardImage} 
                   />
+
                 
                 <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>{item.topic}</Text>
+                  {/* <Text style={styles.cardTitle}>{item.topic}</Text>
                   <Text style={styles.cardLocation}>{item.stadium_name}</Text>
                   <Text style={styles.cardHours}>
                     {`${item.start_time} - ${item.end_time}`}
-                  </Text>
+                  </Text> */}
+
+
+<View style={styles.cardContent}>
+  <View style={styles.rowContainer}>
+    <View style={styles.memberInfo}>
+      <Text style={{ fontSize: 16 }}>👤 </Text>
+      <Text style={styles.cardLocation}>
+        {item.current_members}/{item.total_members}
+      </Text>
+    </View>
+    <View style={styles.cardCourtTypeContainer}>
+      <Text style={styles.cardCourtType}>{item.court_type}</Text>
+    </View>
+  </View>
+  
+  <Text style={styles.cardTitle}>{item.topic}</Text>
+  <Text style={styles.cardLocation}>{item.stadium_name}</Text>
+  <Text style={styles.cardHours}>
+    {`${item.start_time} - ${item.end_time}`}
+  </Text>
+</View>
+
                 </View>
               </View>
             </TouchableOpacity>
@@ -259,6 +299,28 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     height: "50%",
+  },
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  memberInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cardCourtType: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "right",
+    color:"white",
+  },
+  cardCourtTypeContainer: {
+    backgroundColor: "#2A36B1", // สีน้ำเงิน
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
   },
   closeText: {
     color: "red",
