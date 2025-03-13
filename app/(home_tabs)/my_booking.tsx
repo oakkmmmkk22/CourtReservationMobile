@@ -140,6 +140,15 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }: { item: Reservations }) => {
           const isIndividual = !item.party_id;
+          const currentTime = new Date().getTime(); // เวลาปัจจุบัน
+          const reservationTime = new Date(`${item.date.slice(0, 10)}T${item.start_time}`).getTime();
+          // เพิ่มการพิมพ์ค่าเพื่อเช็คเวลา
+          console.log(`Date: ${item.date}, Start Time: ${item.start_time}`);
+          console.log(`Current Time: ${currentTime}`);
+          console.log(`Reservation Time: ${reservationTime}`);
+          const isPast = reservationTime < currentTime;
+          const cardStyle = isPast ? { ...styles.card, opacity: 0.7 } : styles.card; // ถ้าเป็นอดีตให้จาง
+  
           return (
             <TouchableOpacity 
                 onPress={() =>
@@ -158,7 +167,7 @@ const HomeScreen = () => {
                   },
                   })
               }>
-              <View style={styles.card}>
+              <View style={cardStyle}>
                 <View style={{ flex: 4 }}>
                      
                 {item.pictures?.[0] && ( // ถ้ามีรูปแรกให้แสดง ถ้าไม่มีให้ข้ามไปเลย
@@ -214,7 +223,7 @@ const HomeScreen = () => {
                       </Text>
                     </View>
                     <View style={{alignItems:'flex-end',flex:1}}>
-                        {isIndividual && (
+                        {isIndividual && reservationTime > currentTime && (
                           <TouchableOpacity
                             style={styles.cancelButton}
                             onPress={handleCancel}
