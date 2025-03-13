@@ -1,360 +1,254 @@
-import React, { useCallback, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Modal, Button, FlatList, Image, StyleSheet, TouchableWithoutFeedback, ScrollView } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
-import { Bell, MapPin, Sliders } from "lucide-react-native";
-import { Ionicons, FontAwesome5, MaterialIcons, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
-import { Calendar } from 'react-native-calendars';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  Image,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Bell, Calendar, MapPin, Sliders } from "lucide-react-native";
 import api from "../axiosinstance";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FindFriend = () => {
-    const router = useRouter();
-    const [modalOpen, setModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [showModal, setShowModal] = useState(false);
-    const [formattedDate, setFormattedDate] = useState("");
-    const [noti, setNoti] = useState([])
-    const [selectedLocation, setSelectedLocation] = useState("");
-    const [selectedFilter, setSelectedFilter] = useState("");
+  const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [party, setParty] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    const fetchData = async () => {
-        try{
-            const response = await api.get("/notifications");
-            setNoti(response.data)
-        }
-        catch(error){
-            console.log(error)
-        }
-      };
-    
-    useFocusEffect(
-        useCallback(() => {
-            fetchData();
-        }, [])
-    );
-    const [party, setparty] = useState([
-        {
-            id: "1",
-            name: "หาเพื่อนเตะครับ",
-            location: "MUAY STADIUM",
-            time: "TIME 12.00 AM - 1.00 PM",
-            phone: "099-405-2444",
-            image: "../assets/images/foot.jpg",
-        },
-        {
-            id: "2",
-            name: "หาคนจริงจังตึงๆ",
-            location: "SRIRACHA, ARENA",
-            time: "TIME 12.00 AM - 2.00 PM",
-            phone: "088-303-4784",
-            image: "https://your-image-url.com/image2.jpg",
-        },
-        {
-            id: "3",
-            name: "หาเพื่อนชิวๆ",
-            location: "SRIRACHA, ARENA",
-            time: "TIME 2.00 PM - 4.00 PM",
-            phone: "065-988-3508",
-            image: "https://your-image-url.com/image3.jpg",
-        },
-        {
-            id: "4",
-            name: "ขาด5คน ครับ",
-            location: "BAN PIM",
-            time: "TIME 6.00 PM - 8.00 PM",
-            phone: "099-788-3555",
-            image: "https://your-image-url.com/image3.jpg",
-        },
-    ]);
-
-    const openNoti = async () => {
-        setModalOpen(true)
-        fetchData();
-    }
-
-    const latestNotifications = noti.reverse().slice(0, 5);
-
-    const renderedNotifications = latestNotifications.map((notification) => {
-        const notificationTime = new Date(notification.date).getTime(); // เวลาของการแจ้งเตือน
-        const currentTime = Date.now(); // เวลาปัจจุบัน
-        const timestamp = currentTime - notificationTime; // คำนวณความแตกต่างระหว่างเวลา
-      
-        // แปลงความแตกต่างเป็นวินาที (หรือจะเป็นนาที/ชั่วโมงก็ได้)
-        const seconds = Math.floor(timestamp / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-
-        return (
-          <View key={notification.id} style={{ padding: 10, width: "100%", borderRadius:10 , marginTop:15, backgroundColor:"#D0F9DC"}}>
-            <Text style={styles.description}>{notification.notification}</Text>
-            <Text style={styles.timestamp}>{notification.date.slice(0, 10)}</Text>
-            {/* <Text>{notification.time}</Text> */}
-            <Text style={styles.timestamp}>
-                Time Ago: {days > 0 ? `${days} days` : `${hours} hours, ${minutes % 60} minutes`}
-            </Text>
-          </View>
-        );
+  const fetchParties = async () => {
+    try {
+  
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        setParty([]);
+        setLoading(false);
+        return;
+      }
+  
+      const response = await api.get("/party/pending", {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-
-
-    // Filter by location
-    const filterByLocation = (item) => {
-        if (!selectedLocation) return true; // If no location is selected, show all items
-        return item.location.includes(selectedLocation);
-    };
-
-    // Filter by other filters (if needed)
-    const filterByFilter = (item) => {
-        if (!selectedFilter) return true; // If no filter is selected, show all items
-        // Example: Check if the filter matches any part of the time or name (can adjust as needed)
-        return item.time.includes(selectedFilter) || item.name.includes(selectedFilter);
-    };
-
-    
+  
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setParty(response.data);
+      } else {
+        setParty([]);
+      }
       
-    return (
-        <View style={{ flex: 1, padding: 16 }}>
-            {/* Header */}
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                {/* Search Bar */}
-                <TextInput
-                    placeholder="Search Party"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    style={{ flex: 1, padding: 10, borderWidth: 1, marginRight: 12 }}
-                />
-                <TouchableOpacity onPress={openNoti}>
-                    <Bell size={24} />
-                </TouchableOpacity>
-            </View>
+    } catch (error) {
+      setParty([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchParties();
+  }, []);
 
-            {/* Filter Buttons */}
-            <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 16 }}>
-                {/* Date Button */}
-                <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => setShowModal(true)}>
-                    <AntDesign name="calendar" size={18} color="white" />
-                    {/* <Text style={styles.buttonText}>28/12/2567</Text> */}
-                    <Text style={styles.buttonText}>{formattedDate ? formattedDate : "Choose Date"}</Text>
-                </TouchableOpacity>
+  return (
+    <View style={{ flex: 1, padding: 16 }}>
+      {/* Header */}
+      <View style={styles.header}>
+        {/* Search Bar */}
+        <TextInput
+          placeholder="Search Party"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.searchInput}
+        />
+        <TouchableOpacity onPress={() => setModalOpen(true)}>
+          <Bell size={24} />
+        </TouchableOpacity>
+      </View>
 
-                <Modal visible={showModal} animationType="fade" transparent={true} >
-                    <View style={styles.centerview1}>
-                        <View style={styles.modalview1}>
-                            <Calendar style={styles.calendar}
-
-                                onDayPress={(date) => {
-                                    //console.log(date);
-                                    let selectedDate = date.dateString;
-                                    // selectedDate.setHours(0, 0, 0, 0);
-                                    // setDate(selectedDate);
-                                    setFormattedDate(selectedDate);
-                                    setShowModal(false);
-                                }}
-                                minDate={new Date().toISOString().split("T")[0]} // กำหนดให้เลือกได้ตั้งแต่วันนี้
-                                maxDate={"2025-12-31"}
-
-                            />
-
-                            <TouchableOpacity onPress={() => setShowModal(false)}>
-                                <View style={styles.close}>
-                                    <Text style={{ color: 'white', fontWeight: 'bold' }} >Close</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                        </View>
-                    </View>
-                </Modal>
-
-
-
-                {/* Location Button */}
-                <TouchableOpacity style={styles.button}>
-                    <MapPin size={18} color="white" />
-                    <Text style={styles.buttonText}>Location</Text>
-                </TouchableOpacity>
-
-                {/* Filter Button */}
-                <TouchableOpacity style={styles.button}>
-                    <Sliders size={18} color="white" />
-                    <Text style={styles.buttonText}>Filter</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Modal */}
-            <Modal visible={modalOpen} transparent animationType="fade">
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                    <View style={{ width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10 , height:"50%"}}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Notifications</Text>
-                        <ScrollView >{renderedNotifications}</ScrollView>
-                        <TouchableOpacity onPress={() => setModalOpen(false)}>
-                            <Text style={{ color: 'red', textAlign: 'right', marginTop: 10 }}>Close</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-
-
-            {/* //all stadiums  */}
-            <Text style={styles.sectionTitle}>FIND PARTY</Text>
-            <FlatList
-                data={party}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => router.push({ pathname: "/partyjoin", params: item })}>
-                        <View style={styles.card}>
-                            <Image source={{ uri: item.image }} style={styles.cardImage} />
-                            <View style={styles.cardContent}>
-                                <Text style={styles.cardTitle}>{item.name}</Text>
-                                <Text style={styles.cardLocation}>{item.location}</Text>
-                                <Text style={styles.cardHours}>{item.time}</Text>
-                                <View style={styles.cardFooter}>
-                                </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                )}
-            />
+      {/* Modal สำหรับแจ้งเตือน */}
+      <Modal visible={modalOpen} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              Notifications
+            </Text>
+            <ScrollView>
+              <Text>ยังไม่มีการแจ้งเตือน</Text>
+            </ScrollView>
+            <TouchableOpacity onPress={() => setModalOpen(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-    );
+      </Modal>
+
+      {/* Filter Buttons */}
+      <View style={styles.filterContainer}>
+        <TouchableOpacity style={styles.button}>
+          <Calendar size={18} color="white" />
+          <Text style={styles.buttonText}>Date</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button}>
+          <MapPin size={18} color="white" />
+          <Text style={styles.buttonText}>Location</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button}>
+          <Sliders size={18} color="white" />
+          <Text style={styles.buttonText}>Filter</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Section Title */}
+      <Text style={styles.sectionTitle}>FIND PARTY</Text>
+
+      {/* แสดง Loading ถ้ากำลังโหลดข้อมูล */}
+      {loading ? (
+        <Text style={styles.loadingText}>Loading...</Text>
+      ) : party.length === 0 ? (
+        <Text style={styles.noDataText}>No parties available</Text>
+      ) : (
+        <FlatList
+          data={party}
+          keyExtractor={(item, index) => {
+            return item.party_id ? item.party_id.toString() : index.toString();
+          }}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  router.push({
+                    pathname: "/partyjoin",
+                    params: { party_id: item.party_id },
+                  })
+                }
+              >
+                <View style={styles.card}>
+                  <Image
+                    source={{
+                      uri:
+                        item.pictures.length > 0
+                          ? item.pictures[0].photoUrl
+                          : "https://via.placeholder.com/100",
+                    }}
+                    style={styles.cardImage}
+                  />
+
+                  <View style={styles.cardContent}>
+                    <Text style={styles.cardTitle}>{item.topic}</Text>
+                    <Text style={styles.cardLocation}>{item.stadium_name}</Text>
+                    <Text style={styles.cardHours}>
+                      {`${item.start_time} - ${item.end_time}`}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      )}
+    </View>
+  );
 };
-// const styles = {
-//   button: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
-//     paddingVertical: 10,
-//     paddingHorizontal: 15,
-//     borderRadius: 8,
-//   },
-//   buttonText: {
-//     color: "white",
-//     fontSize: 14,
-//     marginLeft: 6,
-//   },
-// };
 
-
+// StyleSheet
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#F5F5F5" },
-    header: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "black", padding: 15 },
-    logo: { color: "white", fontSize: 20, fontWeight: "bold" },
-    pointsContainer: { flexDirection: "row", alignItems: "center" },
-    points: { color: "white", marginHorizontal: 5 },
-
-    searchContainer: { flexDirection: "row", backgroundColor: "white", margin: 10, padding: 10, borderRadius: 10 },
-    searchIcon: { padding: 10 },
-    searchInput: { flex: 1 },
-
-    categoryContainer: { flexDirection: "row", justifyContent: "space-around", paddingVertical: 10 },
-
-    sectionTitle: { fontSize: 16, fontWeight: "bold", padding: 10 },
-
-    card: { flexDirection: "row", backgroundColor: "white", margin: 10, borderRadius: 10, overflow: "hidden" },
-    cardImage: { width: 100, height: 150 },
-    cardContent: { flex: 1, padding: 30 },
-    cardTitle: { fontSize: 18, fontWeight: "bold" },
-    cardLocation: { fontSize: 15, color: "gray" },
-    cardHours: { fontSize: 15, color: "gray" },
-    cardFooter: { flexDirection: "row", alignItems: "center", marginTop: 5 },
-    cardPhone: { marginLeft: 5, marginRight: 10, fontSize: 15 },
-    cardRating: { marginLeft: 5, fontSize: 15 },
-
-    bottomNav: { flexDirection: "row", justifyContent: "space-around", padding: 10, backgroundColor: "white" },
-    centerview: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: '7%',
-        alignItems: 'flex-end'
-
-    },
-    modalview: {
-        borderRadius: 20,
-        shadowColor: '#000',
-        width: 130,
-        height: 160,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-
-    },
-    btn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        margin: 10,
-
-    },
-    line: {
-        backgroundColor: 'black',
-        height: 0.5,
-        width: '75%',
-        marginVertical: 5,
-    },
-    ic: {
-        fontSize: 34,
-        color: 'black',
-        marginRight: 40,
-        // paddingBottom:'10%'
-    },
-    button: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#3B82F6", // ปรับสีตามต้องการ
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 14,
-        marginLeft: 6,
-    },
-    calendar: {
-        width: 280,
-        height: 350,
-    },
-    centerview1: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    modalview1: {
-        borderRadius: 20,
-        padding: 5,
-        alignItems: 'center',
-        shadowColor: '#000',
-        width: 300,
-        height: 420,
-        backgroundColor: 'white',
-
-    },
-    close: {
-        margin: 30,
-        fontSize: 15,
-        backgroundColor: 'black',
-        width: 100,
-        alignItems: 'center',
-
-    },
-    description: {
-        fontSize: 18,
-        color: '#666',
-        marginBottom: 4,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 4,
-    },
-    timestamp: {
-        fontSize: 13,
-        color: '#999',
-    },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    height: "50%",
+  },
+  closeText: {
+    color: "red",
+    textAlign: "right",
+    marginTop: 10,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 16,
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#3B82F6",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    marginLeft: 6,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    padding: 10,
+  },
+  loadingText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "gray",
+  },
+  noDataText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "red",
+  },
+  card: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    margin: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  cardImage: {
+    width: 100,
+    height: 100,
+  },
+  cardContent: {
+    flex: 1,
+    padding: 15,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  cardLocation: {
+    fontSize: 15,
+    color: "gray",
+  },
+  cardHours: {
+    fontSize: 15,
+    color: "gray",
+  },
 });
 
 export default FindFriend;
