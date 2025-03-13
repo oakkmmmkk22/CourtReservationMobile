@@ -2,14 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
-  TextInput,
   FlatList,
   Image,
   StyleSheet,
-  Modal,
-  TouchableWithoutFeedback,
   TouchableOpacity,
-  ScrollView,
+  Alert,
+  Platform,
 } from "react-native";
 import api from "../axiosinstance";
 import { useFocusEffect } from "@react-navigation/native";
@@ -67,8 +65,34 @@ const HomeScreen = () => {
 
   const handleCancel = (item: Reservations) => {
     console.log("Cancel button clicked");
-    // ใส่ฟังก์ชันที่จะทำเมื่อกด Cancel ที่นี่
-    deleteItem(item);
+    if (Platform.OS === "web") {
+      // สำหรับเว็บใช้ window.confirm() แทน
+      const confirmDelete = window.confirm(
+        "Are you sure you want to Cancel this item?"
+      );
+      if (confirmDelete) {
+        deleteItem(item);
+      }
+    } else {
+      // สำหรับมือถือใช้ Alert.alert
+      Alert.alert(
+        "Confirm Cancel",
+        "Are you sure you want to Cancel this item?",
+        [
+          {
+            text: "Confirm",
+            style: "destructive",
+            onPress: () => {
+              deleteItem(item);
+            },
+          },
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ]
+      );
+    }
   };
 
   const deleteItem = async (item: Reservations) => {
@@ -317,7 +341,7 @@ const styles = StyleSheet.create({
     width: "100%", // ขยายเต็มความกว้างของ container
     height: 200, // กำหนดความสูง
     borderRadius: 8, // มุมโค้ง
-    resizeMode: "cover", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
+    resizeMode: "contain", // ขยายรูปเต็มขนาดแต่ไม่บิดเบี้ยว
   },
   cardContent: {
     padding: 10,
