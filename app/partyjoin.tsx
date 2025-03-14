@@ -63,7 +63,6 @@ const JoinParty = () => {
     fetchPartyInfo();
   }, [party_id]);
 
-
   const fetchPartyMembers = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -190,7 +189,7 @@ const JoinParty = () => {
           style={styles.icon}
         />
         <Text style={styles.detailText}>
-          Location: 
+          Location:
           {partyInfo?.stadium_location || "Unknown Location"}
         </Text>
       </View>
@@ -208,6 +207,19 @@ const JoinParty = () => {
           {partyInfo?.end_time?.slice(0, 5)}
         </Text>
       </View>
+      {/* Price Per Person */}
+      <View style={styles.detailRow}>
+        <FontAwesome5
+          name="money-bill-wave-alt"
+          size={30}
+          color="green"
+          style={styles.icon}
+        />
+        <Text style={styles.detailText}>
+          Price: {partyInfo?.price_per_person || "N/A"} ฿
+        </Text>
+      </View>
+
       {/* Member List*/}
       <View style={styles.memberBox}>
         <Text style={styles.memberTitle}>Members:</Text>
@@ -316,12 +328,12 @@ const styles = StyleSheet.create({
     color: "black",
   },
   partyInfo: {
-    flexDirection: "row", 
-    alignItems: "center", 
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   topicRow: {
-    flexDirection: "row", 
+    flexDirection: "row",
     alignItems: "center",
     marginTop: 2,
     marginBottom: 10,
@@ -330,12 +342,12 @@ const styles = StyleSheet.create({
   topicText: {
     fontSize: 18,
     color: "gray",
-    marginLeft: 5, // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+    marginLeft: 5,
   },
   topicLabel: {
     fontSize: 25,
-    fontWeight: "bold", // ทำให้ "Topic:" เป็นตัวหนา
-    color: "black", // สีดำ
+    fontWeight: "bold",
+    color: "black",
   },
 });
 
