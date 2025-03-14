@@ -9,37 +9,25 @@ export default function ChangePasswordPage() {
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
     const handleChangePassword = async () => {
-        
-        
-            const passwordCorrect = true;
         if (newPassword === confirmNewPassword) {
-           
-                api.put("/change_password", {
-                    
-                    oldPassword : currentPassword,
-                    newPassword: newPassword,
-                   
-                   
-                }).then((response) => {
-                    console.log(response.data);
-                    if (response.data.success) {
-                        router.push('/account');
-                        setTimeout(() => {
-                            Alert.alert("Change Password Successful");
-                        }, 500); // แสดง Alert หลังจาก redirect ครึ่งวินาที
-                    }
-                })
-                .catch(error => {
-                    console.error("Axios error:", error.message);
-                });
-            
-
-            
-
-
-          //  Alert.alert("Change Password Successful");
+            api.put("/change_password", {
+                oldPassword: currentPassword,
+                newPassword: newPassword,
+            })
+            .then((response) => {
+                console.log(response.data);
+                if (response.data.message === 'Password changed successfully!') {
+                    router.push('/account'); // สำหรับ Next.js
+                    // navigation.navigate('Account'); // สำหรับ React Native
+                    Alert.alert("Change Password Successful");
+                }
+            })
+            .catch(error => {
+                console.error("Axios error:", error.message);
+                Alert.alert("An error occurred. Please try again.");
+            });
         } else {
-            Alert.alert("Wrong Current Password");
+            Alert.alert("New passwords do not match");
         }
     };
 
