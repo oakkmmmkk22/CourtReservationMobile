@@ -351,17 +351,22 @@ const FindFriend = () => {
                 setShowSportsModal(false); // ปิด modal หลังเลือก
               }}
             />
-            <TouchableOpacity onPress={() => setShowSportsModal(false)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
-                setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
-              }}
-            >
-              <Text style={styles.resetText}>Reset</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+             
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
+                  setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
+                }}
+              >
+                <Text style={styles.resetText}>Reset</Text>
+              </TouchableOpacity>
+
+              
+              <TouchableOpacity onPress={() => setShowSportsModal(false)}>
+                <Text style={styles.closeText}>Close</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -450,10 +455,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   buttonContainer: {
-    flexDirection: 'row', // ทำให้ปุ่มอยู่ในแนวนอน
-    justifyContent: 'space-between', // ห่างระหว่างปุ่ม
-    width: '100%', // ทำให้ปุ่มเต็มความกว้าง
-    marginTop: 10, // เพิ่มระยะห่างจากส่วนอื่น ๆ
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    width: '100%', 
+    marginTop: 10, 
   },
   modalContainer: {
     flex: 1,
