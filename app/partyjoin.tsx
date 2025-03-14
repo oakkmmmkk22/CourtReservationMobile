@@ -104,14 +104,14 @@ const JoinParty = () => {
       if (response.status === 200) {
         await AsyncStorage.setItem("party_id", party_id.toString());
         Alert.alert("Success", "You have joined the party!");
-        fetchPartyMembers(); // ✅ โหลดข้อมูลสมาชิกใหม่
+        fetchPartyMembers(); 
       }
     } catch (error) {
       Alert.alert("Error", "Failed to join party.");
     }
   };
 
-  // ✅ ออกจากปาร์ตี้
+  // ออกจากปาร์ตี้
   const handleLeaveParty = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -128,7 +128,7 @@ const JoinParty = () => {
       if (response.status === 200) {
         await AsyncStorage.removeItem("party_id");
         Alert.alert("Success", "You have left the party!");
-        fetchPartyMembers(); // ✅ โหลดข้อมูลสมาชิกใหม่
+        fetchPartyMembers();
       }
     } catch (error) {
       Alert.alert("Error", "Failed to leave party.");
@@ -193,6 +193,7 @@ const JoinParty = () => {
           {partyInfo?.stadium_location || "Unknown Location"}
         </Text>
       </View>
+
       {/* Time */}
       <View style={styles.detailRow}>
         <FontAwesome5
@@ -207,14 +208,10 @@ const JoinParty = () => {
           {partyInfo?.end_time?.slice(0, 5)}
         </Text>
       </View>
+
       {/* Price Per Person */}
       <View style={styles.detailRow}>
-        <FontAwesome5
-          name="money-bill-wave-alt"
-          size={30}
-          color="green"
-          style={styles.icon}
-        />
+        <Text style={styles.icondiamon}>💎</Text>
         <Text style={styles.detailText}>
           Price: {partyInfo?.price_per_person || "N/A"} ฿
         </Text>
@@ -341,14 +338,17 @@ const styles = StyleSheet.create({
 
   topicText: {
     fontSize: 18,
-    color: "gray",
+    color: "black",
     marginLeft: 5,
   },
   topicLabel: {
     fontSize: 25,
     fontWeight: "bold",
     color: "black",
-  },
+  },icondiamon:{
+    fontSize: 30,
+    marginLeft:10
+  }
 });
 
 export default JoinParty;
