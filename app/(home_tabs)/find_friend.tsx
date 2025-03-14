@@ -65,11 +65,6 @@ const FindFriend = () => {
 
       // console.log(response.data)
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        setParty(response.data);
-      } else {
-        setParty([]);
-      }
     } catch (error) {
       setParty([]);
     } finally {
@@ -110,29 +105,27 @@ const FindFriend = () => {
 
   const filterParties = () => {
     return party.filter((item) => {
-
       const matchSearch = searchQuery
         ? item.topic.toLowerCase().includes(searchQuery.toLowerCase())
         : true;
-
+  
       const matchDate = selectedDate
         ? new Date(item.date).toISOString().split('T')[0] === selectedDate
         : true;
-
+  
       const matchLocation = selectedLocation
         ? item.stadium_location && item.stadium_location.split(",")[0].trim().toLowerCase() === selectedLocation.toLowerCase()
         : true;
-
+  
       const matchSport = selectedSport
         ? (item.sport_type && item.sport_type.trim().toLowerCase() === selectedSport?.trim().toLowerCase())
         : true;
-
+  
       const matchCourtType = selectedSport
         ? item.court_type && item.court_type.toLowerCase() === selectedSport.toLowerCase()
         : true;
-
-
-      return matchSearch && matchDate && matchLocation && matchSport && matchCourtType;;
+  
+      return matchSearch && matchDate && matchLocation && matchSport && matchCourtType;
     });
   };
 
@@ -149,14 +142,14 @@ const FindFriend = () => {
 
 
   const sportsList = [
-    { label: "Football", value: "Football" },
+    { label: "Soccer", value: "Soccer" },
+    { label: "Badminton", value: "Badminton" },
     { label: "Table Tennis", value: "Table Tennis" },
     { label: "Basketball", value: "Basketball" },
     { label: "Tennis", value: "Tennis" },
-    { label: "Badminton", value: "Badminton" },
     { label: "Golf", value: "Golf" },
     { label: "Rugby", value: "Rugby" },
-    { label: "Soccer", value: "Soccer" },
+    
   ];
 
 
@@ -183,7 +176,7 @@ const FindFriend = () => {
       console.log(error)
     }
   }
-  const latestNotifications = noti.reverse().slice(0, 5);
+  const latestNotifications = noti.slice(0, 5);
 
   const renderedNotifications = latestNotifications.map((notification) => {
     const notificationTime = new Date(notification.date).getTime(); // เวลาของการแจ้งเตือน
@@ -275,17 +268,21 @@ const FindFriend = () => {
               minDate={new Date().toISOString().split("T")[0]} // Set minimum date to today
               maxDate={"2025-12-31"}
             />
-            <TouchableOpacity onPress={() => setShowCalendarModal(false)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
             <TouchableOpacity
-              onPress={() => {
-                setSelectedDate(null); // Reset selected date
-                setShowCalendarModal(false); // Close modal after resetting
-              }}
-            >
-              <Text style={styles.resetText}>Reset</Text>
-            </TouchableOpacity>
+    onPress={() => {
+      setSelectedDate(null); // Reset selected date
+      setShowCalendarModal(false); // Close modal after resetting
+    }}
+  >
+    <Text style={styles.resetText}>Reset</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity onPress={() => setShowCalendarModal(false)}>
+    <Text style={styles.closeText}>Close</Text>
+  </TouchableOpacity>
+  
+            </View>
           </View>
         </View>
       </Modal>
@@ -318,10 +315,6 @@ const FindFriend = () => {
             />
 
             <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={() => setShowLocationModal(false)}>
-                <Text style={styles.closeText}>Close</Text>
-              </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={() => {
                   setSelectedProvince("Location"); // เปลี่ยนเป็น "Location"
@@ -330,6 +323,11 @@ const FindFriend = () => {
                 }}
               >
                 <Text style={styles.resetText}>Reset</Text>
+
+
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowLocationModal(false)}>
+                <Text style={styles.closeText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -353,17 +351,22 @@ const FindFriend = () => {
                 setShowSportsModal(false); // ปิด modal หลังเลือก
               }}
             />
-            <TouchableOpacity onPress={() => setShowSportsModal(false)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
-                setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
-              }}
-            >
-              <Text style={styles.resetText}>Reset</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+             
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedSport(null); // รีเซ็ตค่ากีฬาเป็น null
+                  setShowSportsModal(false); // ปิด modal หลังจากรีเซ็ต
+                }}
+              >
+                <Text style={styles.resetText}>Reset</Text>
+              </TouchableOpacity>
+
+              
+              <TouchableOpacity onPress={() => setShowSportsModal(false)}>
+                <Text style={styles.closeText}>Close</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -400,16 +403,6 @@ const FindFriend = () => {
                   }}
                   style={styles.cardImage}
                 />
-
-
-                <View style={styles.cardContent}>
-                  {/* <Text style={styles.cardTitle}>{item.topic}</Text>
-                  <Text style={styles.cardLocation}>{item.stadium_name}</Text>
-                  <Text style={styles.cardHours}>
-                    {`${item.start_time} - ${item.end_time}`}
-                  </Text> */}
-
-
                   <View style={styles.cardContent}>
                     <View style={styles.rowContainer}>
                       <View style={styles.memberInfo}>
@@ -426,13 +419,19 @@ const FindFriend = () => {
                     <Text style={styles.cardTitle}>{item.topic}</Text>
                     <Text style={styles.cardLocation}>{item.stadium_name}</Text>
                     <Text style={styles.cardHours}>
-                      {`${item.start_time} - ${item.end_time}`}
+                      {`${item.start_time.slice(0, 5)} - ${item.end_time.slice(0, 5)}`}
                     </Text>
+
+                    <Text style={styles.partyDateLocation}>
+                      {item.date} | {item.location}
+                    </Text>
+
                   </View>
 
-                </View>
+                
               </View>
             </TouchableOpacity>
+            
           )}
         />
       )}
@@ -454,6 +453,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     marginRight: 12,
+  },
+  buttonContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    width: '100%', 
+    marginTop: 10, 
   },
   modalContainer: {
     flex: 1,
@@ -492,11 +497,13 @@ const styles = StyleSheet.create({
   },
   closeText: {
     color: "black",
+    fontSize: 16,
     textAlign: "right",
     marginTop: 2,
   },
   resetText: {
     color: "red",
+    fontSize: 16,
     textAlign: "left",
     marginTop: 2,
   },

@@ -116,7 +116,7 @@ export default function BookingScreen() {
         { label: "🏊‍♂️ Swimming", value: "swimming" },
         { label: "🏓 Table Tennis", value: "table tennis" },
         { label: "🏉 Rugby", value: "rugby" },
-        { label: "⚽ Soccer", value: "soccer" },
+        { label: "⚽ Soccer", value: "Soccer" },
 
     ];
     const facilitiesTypeArray = Array.isArray(facilitiesType) ? facilitiesType : [facilitiesType];
@@ -310,10 +310,10 @@ export default function BookingScreen() {
                             <Text style={styles.price}>💎 {item.price} /Hr</Text>
                             
                             {/* เช็คเงื่อนไขการแสดงปุ่ม */}
-                            {reservationData.includes(item.court_number) ? (
-                                <View style={styles.fullButton}>
-                                    <Text style={styles.fullButtonText}>Full</Text>
-                                </View>
+{reservationData.includes(item.court_id) ? (
+    <View style={styles.fullButton}>
+        <Text style={styles.fullButtonText}>Full</Text>
+    </View>
                             ) : item.Status === "available" ? (
                                 <View>
                                     <TouchableOpacity style={styles.cartButton} 

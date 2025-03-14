@@ -192,7 +192,7 @@ const BookingSelection = () => {
       }
     } catch (error) {
       console.error("Error during checkout:", error);
-      alert("เกิดข้อผิดพลาดในการจอง");
+      alert("สนามถูกจองไปแล้วหรือเลยเวลาจองสนาม");
     } finally {
     }
   };
