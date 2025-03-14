@@ -22,11 +22,11 @@ export default function ChangePasswordPage() {
                    
                 }).then((response) => {
                     console.log(response.data);
-                    if(response.data.success){
-                         
+                    if (response.data.success) {
                         router.push('/account');
-                        
-                        
+                        setTimeout(() => {
+                            Alert.alert("Change Password Successful");
+                        }, 500); // แสดง Alert หลังจาก redirect ครึ่งวินาที
                     }
                 })
                 .catch(error => {
@@ -37,7 +37,7 @@ export default function ChangePasswordPage() {
             
 
 
-            Alert.alert("Change Password Successful");
+          //  Alert.alert("Change Password Successful");
         } else {
             Alert.alert("Wrong Current Password");
         }
