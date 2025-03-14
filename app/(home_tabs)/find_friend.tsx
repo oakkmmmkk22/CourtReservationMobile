@@ -176,7 +176,7 @@ const FindFriend = () => {
       console.log(error)
     }
   }
-  const latestNotifications = noti.reverse().slice(0, 5);
+  const latestNotifications = noti.slice(0, 5);
 
   const renderedNotifications = latestNotifications.map((notification) => {
     const notificationTime = new Date(notification.date).getTime(); // เวลาของการแจ้งเตือน
