@@ -26,7 +26,6 @@ const JoinParty = () => {
   const [isJoined, setIsJoined] = useState(false);
   const [username, setUsername] = useState("");
 
-  // ✅ ดึง username จาก token
   const getUsername = async () => {
     const token = await AsyncStorage.getItem("token");
     if (!token) return;
@@ -34,7 +33,6 @@ const JoinParty = () => {
     setUsername(user.userData.username);
   };
 
-  // ✅ ดึงข้อมูลปาร์ตี้
   const fetchPartyInfo = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -42,18 +40,16 @@ const JoinParty = () => {
 
       console.log("🔹 Fetching party info from /party/pending");
 
-      // ✅ ใช้ API `/party/pending`
       const response = await api.get("/party/pending", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("✅ Party Pending Response:", response.data);
+      console.log("Party Pending Response:", response.data);
 
-      // ✅ ค้นหา party_id ที่ตรงกัน
       const selectedParty = response.data.find((p) => p.party_id == party_id);
 
       if (selectedParty) {
-        setPartyInfo(selectedParty); // ✅ อัปเดตข้อมูลปาร์ตี้
+        setPartyInfo(selectedParty);
       } else {
         console.error("❌ Party not found in /party/pending");
         setPartyInfo(null);
@@ -63,27 +59,22 @@ const JoinParty = () => {
     }
   };
 
-  // ✅ โหลด `partyInfo` ใหม่เมื่อ `party_id` เปลี่ยนแปลง
   useEffect(() => {
     fetchPartyInfo();
   }, [party_id]);
 
-  // ✅ ดึงรายชื่อสมาชิก
+
   const fetchPartyMembers = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) return;
 
-      console.log("🔹 Fetching members for Party ID:", party_id);
-
       const response = await api.get(`/getparty/${party_id}/members`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("✅ Members Response:", response.data);
       setMembers(response.data.members);
 
-      // ✅ เช็คว่าผู้ใช้เป็นสมาชิกหรือไม่
       if (
         response.data.members.some((member) => member.username === username)
       ) {
@@ -98,7 +89,6 @@ const JoinParty = () => {
     }
   };
 
-  // ✅ เข้าร่วมปาร์ตี้
   const handleJoinParty = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -326,14 +316,14 @@ const styles = StyleSheet.create({
     color: "black",
   },
   partyInfo: {
-    flexDirection: "row", // จัดเรียงในแนวระนาบ (แนวนอน)
-    alignItems: "center", // จัดให้อยู่ตรงกลางแนวตั้ง
+    flexDirection: "row", 
+    alignItems: "center", 
     marginBottom: 10,
   },
   topicRow: {
-    flexDirection: "row", // จัดให้อยู่ในแนวนอน
-    alignItems: "center", // จัดให้อยู่ตรงกลางแนวตั้ง
-    marginTop: 2, // เพิ่มระยะห่างระหว่าง Leader กับ Topic
+    flexDirection: "row", 
+    alignItems: "center",
+    marginTop: 2,
     marginBottom: 10,
   },
 
