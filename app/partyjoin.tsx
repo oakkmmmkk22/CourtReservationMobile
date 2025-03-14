@@ -1,86 +1,110 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Alert,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Dimensions } from "react-native";
 import api from "./axiosinstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams } from "expo-router";
-import { Alert } from "react-native";
+import { Bold } from "lucide-react-native";
 
 const JoinParty = () => {
   const router = useRouter();
-  const [isJoined, setIsJoined] = useState(false);
-  const screenWidth = Dimensions.get("window").width;
   const params = useLocalSearchParams();
   const { party_id } = params;
 
   const [partyInfo, setPartyInfo] = useState(null);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isJoined, setIsJoined] = useState(false);
+  const [username, setUsername] = useState("");
 
-  const fetchParties = async () => {
+  // ✅ ดึง username จาก token
+  const getUsername = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) return;
+    const user = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+    setUsername(user.userData.username);
+  };
+
+  // ✅ ดึงข้อมูลปาร์ตี้
+  const fetchPartyInfo = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        console.error("No token found! Authentication required.");
-        setLoading(false);
-        return;
-      }
+      if (!token) return;
 
+      console.log("🔹 Fetching party info from /party/pending");
+
+      // ✅ ใช้ API `/party/pending`
       const response = await api.get("/party/pending", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.data.length > 0) {
-        const selectedParty = response.data.find((p) => p.party_id == party_id);
-        if (selectedParty) {
-          setPartyInfo(selectedParty);
+      console.log("✅ Party Pending Response:", response.data);
 
-          const userToken = await AsyncStorage.getItem("token");
-          const user = JSON.parse(atob(userToken.split(".")[1])); // Decode JWT
-          if (
-            selectedParty.members?.some(
-              (member) => member.username === user.userData.username
-            )
-          ) {
-            setIsJoined(true);
-          }
-        } else {
-          console.error("Party not found");
-          setPartyInfo(null);
-        }
+      // ✅ ค้นหา party_id ที่ตรงกัน
+      const selectedParty = response.data.find((p) => p.party_id == party_id);
+
+      if (selectedParty) {
+        setPartyInfo(selectedParty); // ✅ อัปเดตข้อมูลปาร์ตี้
       } else {
+        console.error("❌ Party not found in /party/pending");
         setPartyInfo(null);
       }
     } catch (error) {
-      console.error("Error fetching parties:", error);
+      console.error("❌ Error fetching party info:", error);
+    }
+  };
+
+  // ✅ โหลด `partyInfo` ใหม่เมื่อ `party_id` เปลี่ยนแปลง
+  useEffect(() => {
+    fetchPartyInfo();
+  }, [party_id]);
+
+  // ✅ ดึงรายชื่อสมาชิก
+  const fetchPartyMembers = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) return;
+
+      console.log("🔹 Fetching members for Party ID:", party_id);
+
+      const response = await api.get(`/getparty/${party_id}/members`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("✅ Members Response:", response.data);
+      setMembers(response.data.members);
+
+      // ✅ เช็คว่าผู้ใช้เป็นสมาชิกหรือไม่
+      if (
+        response.data.members.some((member) => member.username === username)
+      ) {
+        setIsJoined(true);
+      } else {
+        setIsJoined(false);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching party members:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (party_id) {
-      fetchParties();
-    }
-  }, [party_id]);
-
+  // ✅ เข้าร่วมปาร์ตี้
   const handleJoinParty = async () => {
-    if (!party_id) {
-      Alert.alert("Error", "No party selected!");
-      return;
-    }
-
     try {
       const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        Alert.alert("Authentication Error", "User token not found!");
-        return;
-      }
+      if (!token) return;
 
-      console.log("🔹 [Frontend] Sending Request to /party/join");
-      console.log("📝 Data Sent:", { partyid: party_id });
+      console.log("🔹 Joining party ID:", party_id);
 
       const response = await api.post(
         "/party/join",
@@ -90,19 +114,44 @@ const JoinParty = () => {
 
       if (response.status === 200) {
         await AsyncStorage.setItem("party_id", party_id.toString());
-
-        Alert.alert("Success", "You have successfully joined the party! 🎉");
-        router.push("/partyin");
-      } else {
-        Alert.alert("Error", response.data.error);
+        Alert.alert("Success", "You have joined the party!");
+        fetchPartyMembers(); // ✅ โหลดข้อมูลสมาชิกใหม่
       }
     } catch (error) {
-      Alert.alert(
-        "Error",
-        "Failed to join the party or you have already joined. Please check again or not have enough points to join the party."
-      );
+      Alert.alert("Error", "Failed to join party.");
     }
   };
+
+  // ✅ ออกจากปาร์ตี้
+  const handleLeaveParty = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) return;
+
+      console.log("🔹 Leaving party ID:", party_id);
+
+      const response = await api.post(
+        "/party/leave",
+        { partyId: Number(party_id) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        await AsyncStorage.removeItem("party_id");
+        Alert.alert("Success", "You have left the party!");
+        fetchPartyMembers(); // ✅ โหลดข้อมูลสมาชิกใหม่
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to leave party.");
+    }
+  };
+
+  useEffect(() => {
+    getUsername().then(() => {
+      fetchPartyInfo();
+      fetchPartyMembers();
+    });
+  }, [party_id, username]);
 
   return (
     <View style={styles.container}>
@@ -111,119 +160,193 @@ const JoinParty = () => {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Join Party</Text>
-        <MaterialCommunityIcons name="party-popper" size={24} color="red" />
+        <Text style={styles.headerTitle}>Party Details</Text>
       </View>
 
-      {/* เช็คว่าโหลดข้อมูลเสร็จหรือไม่ */}
-      {loading ? (
-        <Text style={styles.loadingText}>Loading...</Text>
-      ) : partyInfo ? (
-        <>
-          {/* Party Info */}
-          <View style={styles.partyInfo}>
-            <FontAwesome5 name="user-circle" size={40} color="gray" />
-            <Text style={styles.partyName}>{partyInfo.leader_username}</Text>
-          </View>
+      {/* Party Info */}
+      <View style={styles.partyInfo}>
+        <FontAwesome5
+          name="user-circle"
+          size={50}
+          color="gray"
+          style={styles.icon_lead}
+        />
+        <Text style={styles.leader_name}>
+          {partyInfo?.leader_username || "Unknown Leader"}
+        </Text>
+      </View>
 
-          {/* Total Members */}
-          <View style={styles.totalContainer}>
-            <FontAwesome5 name="user-friends" size={24} color="blue" />
-            <Text style={styles.totalText}>
-              Total :{" "}
-              <Text style={styles.bold}>
-                {partyInfo.current_members}/{partyInfo.total_members}
-              </Text>
-            </Text>
-          </View>
+      {/* Topic */}
+      <View style={styles.topicRow}>
+        <Text style={styles.topicLabel}>Topic: </Text>
+        <Text style={styles.topicText}>{partyInfo?.topic || "No Topic"}</Text>
+      </View>
 
-          {/* Location */}
-          <View style={styles.contactContainer}>
-            <FontAwesome5 name="map-marker-alt" size={22} color="red" />
-            <Text style={styles.contactText}>{partyInfo.stadium_location}</Text>
-          </View>
+      {/* Total Members */}
+      <View style={styles.detailRow}>
+        <FontAwesome5 name="users" size={35} color="blue" />
+        <Text style={styles.detailText}>
+          Total: {partyInfo?.members.length || 0}/
+          {partyInfo?.total_members || "?"}
+        </Text>
+      </View>
 
-          {/* Broadcast */}
-          <View style={styles.broadcastBox}>
-            <View style={styles.memberItem}>
-              <FontAwesome5 name="crown" size={16} color="orange" />
-              <Text style={styles.memberText}> Broadcast</Text>
-            </View>
-            <Text style={styles.broadcastText}>
-              {partyInfo.detail || "No Description"}
-            </Text>
-          </View>
+      {/* Location */}
+      <View style={styles.detailRow}>
+        <FontAwesome5
+          name="map-marker-alt"
+          size={30}
+          color="red"
+          style={styles.icon}
+        />
+        <Text style={styles.detailText}>
+          Location: 
+          {partyInfo?.stadium_location || "Unknown Location"}
+        </Text>
+      </View>
+      {/* Time */}
+      <View style={styles.detailRow}>
+        <FontAwesome5
+          style={styles.icon}
+          name="clock"
+          size={30}
+          color="black"
+        />
+        <Text style={styles.detailText}>
+          Time:
+          {partyInfo?.start_time?.slice(0, 5)} -{" "}
+          {partyInfo?.end_time?.slice(0, 5)}
+        </Text>
+      </View>
+      {/* Member List*/}
+      <View style={styles.memberBox}>
+        <Text style={styles.memberTitle}>Members:</Text>
+        {loading ? (
+          <Text style={styles.loadingText}>Loading members...</Text>
+        ) : members.length === 0 ? (
+          <Text style={styles.noDataText}>No members in this party</Text>
+        ) : (
+          <FlatList
+            data={members}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.memberItem}>
+                <FontAwesome5 name="user-circle" size={14} />
+                <Text style={styles.memberName}> {item.username}</Text>
+              </View>
+            )}
+          />
+        )}
+      </View>
 
-          {/* Join Party Button */}
-          {/* ถ้าเคยเข้าร่วมแล้วให้แสดงข้อความแทนปุ่ม */}
-          {isJoined ? (
-            <Text style={styles.joinedText}>คุณได้เข้าร่วมปาร์ตี้นี้แล้ว!</Text>
-          ) : (
-            <TouchableOpacity
-              style={styles.joinButton}
-              onPress={handleJoinParty}
-            >
-              <Text style={styles.joinButtonText}>Join Party</Text>
-            </TouchableOpacity>
-          )}
-        </>
-      ) : (
-        <Text style={styles.noDataText}>No parties available</Text>
-      )}
+      {/* Broadcast*/}
+      <View style={styles.broadcastBox}>
+        <Text style={styles.broadcastTitle}>
+          <FontAwesome5 name="crown" size={14} /> Broadcast
+        </Text>
+        <Text style={styles.broadcastText}>
+          {partyInfo?.detail || "No Broadcast available"}
+        </Text>
+      </View>
+
+      {/*  ปุ่ม Join หรือ Leave */}
+      <View style={styles.buttonContainer}>
+        {isJoined ? (
+          <TouchableOpacity
+            style={styles.leaveButton}
+            onPress={handleLeaveParty}
+          >
+            <Text style={styles.leaveButtonText}>Leave Party</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.joinButton} onPress={handleJoinParty}>
+            <Text style={styles.joinButtonText}>Join Party</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
 
-export default JoinParty;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffff",
-    paddingHorizontal: 20,
-    paddingTop: 40,
-  },
+  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
   header: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
   headerTitle: { fontSize: 20, fontWeight: "bold", marginLeft: 10 },
-  partyInfo: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  partyName: { fontSize: 20, fontWeight: "bold", marginLeft: 10 },
-  totalContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  totalText: { fontSize: 16, marginLeft: 10 },
-  bold: { fontWeight: "bold" },
-  contactContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 15,
-    marginTop: 10,
-  },
-  contactText: { fontSize: 16, marginLeft: 10 },
   broadcastBox: {
-    backgroundColor: "#f0f0f0",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 20,
-    marginTop: 10,
+    borderWidth: 1,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
   },
-  broadcastText: { fontSize: 16, marginTop: 5, color: "gray" },
+  memberBox: { borderWidth: 1, padding: 12, borderRadius: 8, marginBottom: 16 },
+  broadcastTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 6 },
+  broadcastText: { fontSize: 16 },
+  memberTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+  memberItem: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
+  memberName: { fontSize: 18, marginLeft: 10 },
+  leader_name: { fontSize: 20, fontWeight: "bold" },
+  loadingText: { textAlign: "center", fontSize: 16, color: "gray" },
+  noDataText: { textAlign: "center", fontSize: 16, color: "red" },
+  buttonContainer: { alignItems: "center", marginTop: 20 },
   joinButton: {
     backgroundColor: "blue",
-    paddingVertical: 12,
+    padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
   joinButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
-  loadingText: { textAlign: "center", fontSize: 16, color: "gray" },
-  noDataText: { textAlign: "center", fontSize: 16, color: "red" },
-  joinedText: {
-    textAlign: "center",
+  leaveButton: {
+    backgroundColor: "red",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  leaveButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
+  partyDetails: {
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginTop: 2,
+  },
+  icon: {
+    marginLeft: 10,
+  },
+  icon_lead: {
+    marginRight: 10,
+  },
+  detailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  detailText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "green",
-    marginTop: 10,
+    marginLeft: 10,
+    color: "black",
+  },
+  partyInfo: {
+    flexDirection: "row", // จัดเรียงในแนวระนาบ (แนวนอน)
+    alignItems: "center", // จัดให้อยู่ตรงกลางแนวตั้ง
+    marginBottom: 10,
+  },
+  topicRow: {
+    flexDirection: "row", // จัดให้อยู่ในแนวนอน
+    alignItems: "center", // จัดให้อยู่ตรงกลางแนวตั้ง
+    marginTop: 2, // เพิ่มระยะห่างระหว่าง Leader กับ Topic
+    marginBottom: 10,
+  },
+
+  topicText: {
+    fontSize: 18,
+    color: "gray",
+    marginLeft: 5, // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+  },
+  topicLabel: {
+    fontSize: 25,
+    fontWeight: "bold", // ทำให้ "Topic:" เป็นตัวหนา
+    color: "black", // สีดำ
   },
 });
+
+export default JoinParty;
